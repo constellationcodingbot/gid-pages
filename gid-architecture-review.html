@@ -1,0 +1,525 @@
+<title>Склад вместо памяти</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{
+  --ground:#F1F4F7; --surface:#FFFFFF; --surface-2:#F7F9FB; --surface-3:#EDF1F6;
+  --ink:#141A23; --ink-2:#4E5966; --ink-3:#79838F;
+  --rule:#DCE2E9; --rule-2:#EAEEF3; --accent:#27406B;
+  --s-on:#0F7350; --s-part:#B87214; --s-off:#A32749; --s-dead:#6E4E9C; --s-nil:#6B7480;
+  --s-on-bg:#E4F0EA; --s-part-bg:#F7EEDF; --s-off-bg:#F7E6EB; --s-dead-bg:#EEE9F5; --s-nil-bg:#ECEFF2;
+  --c1:#2a78d6; --c2:#eb6834;
+  --fd:'Alegreya', Georgia, 'Times New Roman', serif;
+  --fb:'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fm:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --maxw:1120px; --readw:70ch;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme:dark;
+  --ground:#0F1319; --surface:#171C24; --surface-2:#1D232C; --surface-3:#232A34;
+  --ink:#E4E9F0; --ink-2:#9BA6B5; --ink-3:#6D7787;
+  --rule:#2A313C; --rule-2:#222831; --accent:#8FAFDD;
+  --s-on:#2E9C72; --s-part:#BF8A22; --s-off:#D95C7C; --s-dead:#9880CC; --s-nil:#8A94A1;
+  --s-on-bg:#12281F; --s-part-bg:#2A2211; --s-off-bg:#2C1720; --s-dead-bg:#211C2E; --s-nil-bg:#1F242C;
+  --c1:#3987e5; --c2:#d95926;
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#0F1319; --surface:#171C24; --surface-2:#1D232C; --surface-3:#232A34;
+  --ink:#E4E9F0; --ink-2:#9BA6B5; --ink-3:#6D7787;
+  --rule:#2A313C; --rule-2:#222831; --accent:#8FAFDD;
+  --s-on:#2E9C72; --s-part:#BF8A22; --s-off:#D95C7C; --s-dead:#9880CC; --s-nil:#8A94A1;
+  --s-on-bg:#12281F; --s-part-bg:#2A2211; --s-off-bg:#2C1720; --s-dead-bg:#211C2E; --s-nil-bg:#1F242C;
+  --c1:#3987e5; --c2:#d95926;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px 96px}
+.read{max-width:var(--readw)}
+p{margin:0 0 1.05em}
+a{color:var(--accent)}
+strong,b{font-weight:600}
+code,.mono{font-family:var(--fm);font-size:0.86em}
+h1,h2,h3{font-family:var(--fd);text-wrap:balance;margin:0}
+h1{font-size:clamp(2.4rem,6vw,3.9rem);font-weight:800;line-height:1.02;letter-spacing:-0.02em}
+h2{font-size:clamp(1.55rem,3vw,2.1rem);font-weight:700;line-height:1.12}
+h3{font-size:1.14rem;font-weight:700;line-height:1.25}
+.eyebrow{font-family:var(--fm);font-size:0.72rem;font-weight:500;letter-spacing:0.13em;text-transform:uppercase;color:var(--ink-3)}
+header{padding:64px 0 36px;border-bottom:2px solid var(--ink)}
+header .eyebrow{margin-bottom:18px}
+.dek{font-size:1.14rem;line-height:1.6;color:var(--ink-2);max-width:66ch;margin-top:22px}
+.dek b{color:var(--ink)}
+.band{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule);border-bottom:1px solid var(--rule)}
+@media (min-width:620px){.band{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:1040px){.band{grid-template-columns:repeat(6,1fr)}}
+.tile{background:var(--surface);padding:20px 18px}
+.tile .n{white-space:nowrap;font-family:var(--fm);font-size:1.95rem;font-weight:600;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.tile .n.bad{color:var(--s-off)}
+.tile .n.ok{color:var(--s-on)}
+.tile .l{font-size:0.82rem;color:var(--ink-2);margin-top:9px;line-height:1.42}
+section{padding:56px 0 0}
+.lede{font-size:1.04rem;color:var(--ink-2);margin-top:14px}
+figure{margin:28px 0 0;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:20px 20px 14px;overflow-x:auto}
+figure svg{display:block;width:100%;min-width:560px;max-width:780px;height:auto;margin:0 auto}
+figcaption{margin-top:12px;font-size:0.86rem;color:var(--ink-2);line-height:1.5;max-width:80ch}
+.tw{overflow-x:auto;margin-top:26px;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:0.9rem}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+thead th{font-family:var(--fm);font-size:0.69rem;letter-spacing:0.09em;text-transform:uppercase;color:var(--ink-3);font-weight:500;background:var(--surface-2);border-bottom:1px solid var(--rule)}
+tbody tr:last-child td{border-bottom:0}
+td.what{min-width:190px}
+td.what b{display:block}
+td.what span{color:var(--ink-2);font-size:0.88em}
+td.meas{color:var(--ink-2);min-width:260px}
+td.meas .mono{color:var(--ink)}
+td.dec{min-width:120px;color:var(--ink-3);font-family:var(--fm);font-size:0.78rem}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:0.68rem;font-weight:500;letter-spacing:0.04em;padding:3px 8px;border-radius:3px;white-space:nowrap;text-transform:uppercase}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.c-on{color:var(--s-on);background:var(--s-on-bg)}
+.c-part{color:var(--s-part);background:var(--s-part-bg)}
+.c-off{color:var(--s-off);background:var(--s-off-bg)}
+.c-dead{color:var(--s-dead);background:var(--s-dead-bg)}
+.c-nil{color:var(--s-nil);background:var(--s-nil-bg)}
+.causes{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin-top:26px}
+.cause{background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:18px 18px 8px}
+.cause h3{margin:10px 0 8px}
+.cause p{font-size:0.92rem;color:var(--ink-2)}
+ol.plain,ul.plain{margin:18px 0 0;padding-left:1.2em;max-width:var(--readw)}
+ol.plain li,ul.plain li{margin-bottom:0.7em}
+.q{border-left:3px solid var(--accent);padding:4px 0 4px 16px;margin:14px 0;max-width:var(--readw)}
+.q b{display:block;margin-bottom:2px}
+.q span{color:var(--ink-2);font-size:0.94rem}
+.src{margin-top:48px;padding-top:18px;border-top:1px solid var(--rule);font-size:0.84rem;color:var(--ink-2);max-width:86ch}
+.src b{color:var(--ink)}
+.n-on{fill:var(--s-on-bg);stroke:var(--s-on)}
+.n-off{fill:var(--s-off-bg);stroke:var(--s-off)}
+.n-nil{fill:var(--s-nil-bg);stroke:var(--s-nil)}
+.n-row{fill:var(--surface-3);stroke:var(--rule)}
+.n-miss{fill:none;stroke:var(--ink-3);stroke-dasharray:4 3}
+.tt{font-family:var(--fb);font-size:14px;font-weight:600;fill:var(--ink)}
+.ts{font-family:var(--fm);font-size:11.5px;fill:var(--ink-2)}
+.band.mini{margin-top:26px;border:1px solid var(--rule);border-radius:6px;overflow:hidden;grid-template-columns:1fr}
+@media (min-width:620px){.band.mini{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:860px){.band.mini{grid-template-columns:repeat(4,1fr)}}
+.find{display:grid;grid-template-columns:minmax(150px,200px) 1fr;margin:26px 0 0;border-top:1px solid var(--rule);max-width:94ch}
+.find dt,.find dd{margin:0;padding:13px 0;border-bottom:1px solid var(--rule-2)}
+.find dt{font-weight:600;padding-right:20px}
+.find dd{color:var(--ink-2);font-size:0.95rem}
+.find dd .mono{color:var(--ink)}
+.bar{fill:var(--c1)}
+.bar2{fill:var(--c2)}
+.whisk{stroke:var(--ink-3);stroke-width:1.5}
+circle.bar,circle.bar2{stroke:var(--surface);stroke-width:1.5}
+.track{fill:var(--surface-3)}
+.grid{stroke:var(--rule);stroke-width:1}
+.tl{font-family:var(--fb);font-size:13px;fill:var(--ink)}
+.tv{font-family:var(--fm);font-size:12px;fill:var(--ink)}
+.th{font-family:var(--fm);font-size:10.5px;letter-spacing:0.08em;fill:var(--ink-3)}
+.done{font-family:var(--fm);font-size:0.72rem;color:var(--s-on);letter-spacing:0.04em;text-transform:uppercase;margin-right:6px}
+@media (max-width:600px){ header{padding-top:40px} .tile .n{font-size:1.6rem} .find{grid-template-columns:1fr} .find dt{border-bottom:0;padding-bottom:2px} .find dd{padding-top:2px} }
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto} }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">gid · разбор архитектуры для обсуждения · 28.09.2026</div>
+  <h1>Склад вместо памяти</h1>
+  <p class="dek">Задумка gid: пользователь спрашивает, агент отвечает из памяти и веба, новое сохраняет с провенансом. За месяц <b>запись в память стала надёжной</b>, а чтение почти не отличается от поиска с нуля. Страница собирает замеры, объясняет, почему механизмы Vestige простаивают, и перечисляет кандидатов на удаление и на добавление. Решений здесь нет, колонка «решение» оставлена пустой. Дополнено тем же днём: <a href="#dream">dream прогнан на копии базы</a>, <a href="#tags">разобраны теги</a> и <a href="#tree">проверено дерево тегов</a>, <a href="#full">проекции проверены на всей базе</a>.</p>
+</header>
+
+<div class="band" aria-label="Ключевые замеры">
+  <div class="tile"><div class="n bad">37%</div><div class="l">живых записей хоть раз выдавались поиском (1 074 из 2 870)</div></div>
+  <div class="tile"><div class="n bad">0</div><div class="l">записей с отметкой полезности; затухание идёт вслепую</div></div>
+  <div class="tile"><div class="n bad">9</div><div class="l">связей в графе памяти, все от одного срабатывания 19.08</div></div>
+  <div class="tile"><div class="n bad">18</div><div class="l">живых фактов от фоновой дистилляции против 1 041 из сессий</div></div>
+  <div class="tile"><div class="n">680/269</div><div class="l">вызовов ремонта <code>dedup</code> против вызовов записи за 30 дней</div></div>
+  <div class="tile"><div class="n ok">47 из 55</div><div class="l">фактов поправил верификатор при разборе очереди 27.09</div></div>
+</div>
+
+<section>
+  <div class="eyebrow">Пайплайн, как он работал</div>
+  <h2>Пять слоёв и где в них трение</h2>
+  <p class="lede read">Зелёное держалось, красное создавало трение или оказалось лишним, серое нейтрально, пунктир отсутствует вовсе. Числа из замеров 28.09.2026.</p>
+  <figure>
+    <svg viewBox="0 0 680 450" role="img" aria-labelledby="pl-t pl-d"><title id="pl-t">Пайплайн gid по слоям</title><desc id="pl-d">Входы, обработка, память, выходы и недостающие звенья, с оценкой каждого узла.</desc>
+      <g><rect class="n-row" x="20" y="20" width="110" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="75" y="48" text-anchor="middle" dominant-baseline="central">Входы</text></g>
+      <rect class="n-on" x="148" y="20" width="162" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="229" y="40" text-anchor="middle" dominant-baseline="central">gate-web</text><text class="ts" x="229" y="60" text-anchor="middle" dominant-baseline="central">1 712 записей</text>
+      <rect class="n-off" x="328" y="20" width="162" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="409" y="40" text-anchor="middle" dominant-baseline="central">Фоновые фиды</text><text class="ts" x="409" y="60" text-anchor="middle" dominant-baseline="central">18 фактов за месяц</text>
+      <rect class="n-on" x="508" y="20" width="152" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="584" y="40" text-anchor="middle" dominant-baseline="central">gate-archive</text><text class="ts" x="584" y="60" text-anchor="middle" dominant-baseline="central">132 документа</text>
+
+      <g><rect class="n-row" x="20" y="102" width="110" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="75" y="130" text-anchor="middle" dominant-baseline="central">Обработка</text></g>
+      <rect class="n-on" x="148" y="102" width="162" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="229" y="122" text-anchor="middle" dominant-baseline="central">Верификатор</text><text class="ts" x="229" y="142" text-anchor="middle" dominant-baseline="central">правит 47 из 55</text>
+      <rect class="n-off" x="328" y="102" width="162" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="409" y="122" text-anchor="middle" dominant-baseline="central">Ручной перенос</text><text class="ts" x="409" y="142" text-anchor="middle" dominant-baseline="central">JSON в вызов MCP</text>
+      <rect class="n-off" x="508" y="102" width="152" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="584" y="122" text-anchor="middle" dominant-baseline="central">Сверка партии</text><text class="ts" x="584" y="142" text-anchor="middle" dominant-baseline="central">вне репозитория</text>
+
+      <g><rect class="n-row" x="20" y="184" width="110" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="75" y="212" text-anchor="middle" dominant-baseline="central">Память</text></g>
+      <rect class="n-on" x="148" y="184" width="162" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="229" y="204" text-anchor="middle" dominant-baseline="central">Стражи записи</text><text class="ts" x="229" y="224" text-anchor="middle" dominant-baseline="central">0 расхождений</text>
+      <rect class="n-off" x="328" y="184" width="162" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="409" y="204" text-anchor="middle" dominant-baseline="central">Ремонт dedup</text><text class="ts" x="409" y="224" text-anchor="middle" dominant-baseline="central">680 вызовов/мес</text>
+      <rect class="n-nil" x="508" y="184" width="152" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="584" y="204" text-anchor="middle" dominant-baseline="central">Поиск recall</text><text class="ts" x="584" y="224" text-anchor="middle" dominant-baseline="central">читались 37%</text>
+
+      <g><rect class="n-row" x="20" y="266" width="110" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="75" y="294" text-anchor="middle" dominant-baseline="central">Выходы</text></g>
+      <rect class="n-nil" x="148" y="266" width="162" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="229" y="286" text-anchor="middle" dominant-baseline="central">Справочники</text><text class="ts" x="229" y="306" text-anchor="middle" dominant-baseline="central">md и html врозь</text>
+      <rect class="n-off" x="328" y="266" width="162" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="409" y="286" text-anchor="middle" dominant-baseline="central">CLAUDE.md</text><text class="ts" x="409" y="306" text-anchor="middle" dominant-baseline="central">100 КБ в каждом</text>
+      <rect class="n-off" x="508" y="266" width="152" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="584" y="286" text-anchor="middle" dominant-baseline="central">HANDOFF.md</text><text class="ts" x="584" y="306" text-anchor="middle" dominant-baseline="central">177 КБ журнала</text>
+
+      <g><rect class="n-row" x="20" y="348" width="110" height="56" rx="6" stroke-width="0.8"/><text class="tt" x="75" y="376" text-anchor="middle" dominant-baseline="central">Не хватает</text></g>
+      <rect class="n-miss" x="148" y="348" width="162" height="56" rx="6" stroke-width="1"/><text class="tt" x="229" y="368" text-anchor="middle" dominant-baseline="central">Сборка ответа</text><text class="ts" x="229" y="388" text-anchor="middle" dominant-baseline="central">вопрос → память</text>
+      <rect class="n-miss" x="328" y="348" width="162" height="56" rx="6" stroke-width="1"/><text class="tt" x="409" y="368" text-anchor="middle" dominant-baseline="central">Сигнал пользы</text><text class="ts" x="409" y="388" text-anchor="middle" dominant-baseline="central">times_useful = 0</text>
+      <rect class="n-miss" x="508" y="348" width="152" height="56" rx="6" stroke-width="1"/><text class="tt" x="584" y="368" text-anchor="middle" dominant-baseline="central">Сущности</text><text class="ts" x="584" y="388" text-anchor="middle" dominant-baseline="central">ent: у 0 записей</text>
+
+      <rect class="n-on" x="148" y="424" width="12" height="12" rx="2" stroke-width="0.8"/><text class="ts" x="166" y="430" dominant-baseline="central">работало</text>
+      <rect class="n-off" x="248" y="424" width="12" height="12" rx="2" stroke-width="0.8"/><text class="ts" x="266" y="430" dominant-baseline="central">трение или лишнее</text>
+      <rect class="n-nil" x="410" y="424" width="12" height="12" rx="2" stroke-width="0.8"/><text class="ts" x="428" y="430" dominant-baseline="central">нейтрально</text>
+      <rect class="n-miss" x="520" y="424" width="12" height="12" rx="2" stroke-width="1"/><text class="ts" x="538" y="430" dominant-baseline="central">нет вовсе</text>
+    </svg>
+    <figcaption>Из 66 коммитов за месяц 45 касаются самой машины и 21 содержательной работы, по разметке заголовков. Разбор 10 материалов очереди 27.09 стоил около 2 млн токенов субагентов и дал 54 записи.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="eyebrow">Vestige</div>
+  <h2>Почему память работает как склад</h2>
+  <p class="lede read">Vestige обещает память, которая сама связывает, укрепляет и забывает. Каждый такой механизм питается одним из трёх: фоновой консолидацией, чтением записей или явным сигналом «пригодилось». Консолидацию мы выключили, читаем редко, сигналов не даём. В итоге остаются хранилище, гибридный поиск, погашение с откатом и календарь намерений.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Механизм</th><th>Что замерено 28.09</th><th>Причина простоя</th></tr></thead>
+    <tbody>
+      <tr><td class="what"><b>Склейка версий факта</b><span>гейтинг smart_ingest, таймлайн факта</span></td><td class="meas">Убрана совсем 29.09. На 188 проверенных новых фактах одиночный <span class="mono">smart</span> вклеил 183 в чужие записи и не создал ни одной; правильных склеек 6 из 187. Новая версия факта — отдельная запись, устаревшее гасится вручную, таймлайн соберут якоря. <a href="#smart">Справка ниже</a>.</td><td><span class="chip c-off">выключено: решено 29.09</span></td></tr>
+      <tr><td class="what"><b>Фоновая консолидация</b><span>кластеризация, связи, инсайты</span></td><td class="meas">Удалила 196 записей без журнала отката в августе. Стоят четыре замка в <span class="mono">.mcp.json</span>. 15 прогонов, найдено связей <span class="mono">0</span>, инсайтов 2, оба о совпадении тегов.</td><td><span class="chip c-off">выключено нами</span></td></tr>
+      <tr><td class="what"><b>Граф и ассоциации</b><span>chain, bridges, predict</span></td><td class="meas">Сеть активации пуста, в таблице связей <span class="mono">9</span> строк, все созданы 19.08 одним срабатыванием backfill, ни одна не активировалась. Создать связь вручную через MCP нельзя.</td><td><span class="chip c-part">нечем кормить</span></td></tr>
+      <tr><td class="what"><b>Укрепление и затухание</b><span>FSRS, promote</span></td><td class="meas">Отметок полезности <span class="mono">0</span>. Затухание пересчитывается только в консолидации и замерло 01.09 вместе с ней: у записей позже удержание 1,0, у старых — давность на 01.09. Встроенный gc стирает по давности насовсем, <span class="mono">protect</span> не спасает: на копии 893 из 3 245, из них 10 защищённых. Решено 29.09: сокращать своим механизмом по ценности — погашенные ротировать, слабые в холодный ярус; «не выдавались» признаком не считается. Непроверенные 53 записи проверены 29.09: 47 исправлено, 5 подтверждено, 1 опровергнуто, карантина в базе больше нет.</td><td><span class="chip c-off">gc запрещён: решено 29.09</span></td></tr>
+      <tr><td class="what"><b>Dream</b><span>переигрывание памяти, новые связи</span></td><td class="meas">На рабочей базе ни разу не запускался. На копии 28.09 связал между собой 50 записей: 26 со старыми метками и 24 новейшие. Нужна читателю примерно одна связь из одиннадцати, выдача поиска не изменилась. <a href="#dream">Справка ниже</a>.</td><td><span class="chip c-dead">проверено: шум</span></td></tr>
+      <tr><td class="what"><b>Рассуждение по памяти</b><span>recall reason, receipts</span></td><td class="meas">10 из 175 вызовов recall. Выбирает главную запись по релевантности, а не по доверию, поэтому его вывод мы запретили читать как ответ. Разборов выдачи не запрашивали.</td><td><span class="chip c-part">мешает, редко нужно</span></td></tr>
+      <tr><td class="what"><b>Обратный поиск причины</b><span>backfill</span></td><td class="meas">Ищет записи, похожие на сбой, и продвигает их причину. Автозапуск продвигал записи без спроса и выключен с 28.08.</td><td><span class="chip c-dead">не для нашей задачи</span></td></tr>
+      <tr><td class="what"><b>Композиции и исходы</b><span>graph label, bounty_mode</span></td><td class="meas">Словарь исходов взят из охоты за уязвимостями: submitted, needs_poc, bad_severity. 19 событий, исходов <span class="mono">0</span>.</td><td><span class="chip c-dead">не для нашей задачи</span></td></tr>
+      <tr><td class="what"><b>Коннекторы и код</b><span>source_sync, codebase</span></td><td class="meas">Коннекторы есть только к GitHub Issues и Redmine; codebase хранит паттерны кода. Структурный провенанс пишут только коннекторы, поэтому наш провенанс живёт строкой.</td><td><span class="chip c-dead">не для нашей задачи</span></td></tr>
+      <tr><td class="what"><b>Подавление</b><span>suppress</span></td><td class="meas">Каскадом ускоряет затухание соседей на 72 часа. Для простыней опасно: их соседи — восстановленные из них атомы.</td><td><span class="chip c-off">выключено нами</span></td></tr>
+      <tr><td class="what"><b>Погашение, защита, намерения</b><span>dedup supersede, protect, intention</span></td><td class="meas">375 погашенных записей с откатом, 48 активных намерений, ни одного просроченного.</td><td><span class="chip c-on">работает</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="causes">
+    <div class="cause"><span class="chip c-off">технически</span><h3>Мы выключили опасное</h3><p>Консолидация, пакетная склейка, автоматический backfill и подавление портили данные. Вместе с ними ушли и все механизмы, которые строят связи и таймлайны.</p></div>
+    <div class="cause"><span class="chip c-part">сценарий</span><h3>Память почти не читают</h3><p>175 вызовов recall в 26 сессиях, в основном проверка «было ли это» перед записью. Ответы и справочники собираются из файлов раунда, а не из памяти. Совместной активации взяться неоткуда.</p></div>
+    <div class="cause"><span class="chip c-dead">назначение</span><h3>Сделано для программиста</h3><p>Backfill ищет баги, исходы композиций описывают охоту за уязвимостями, коннекторы ведут в трекеры задач. Для исследовательских фактов эти эвристики не подходят.</p></div>
+  </div>
+
+  <h3 style="margin-top:34px">Что можно проверить, не рискуя базой</h3>
+  <ul class="plain">
+    <li><span class="done">сделано 28.09</span><b>Dream на копии базы.</b> Связи строит только внутри последних 50 записей, и лишь примерно каждая одиннадцатая из них полезна. <a href="#dream">Справка ниже</a>.</li>
+    <li><b>Promote при использовании.</b> Отмечать каждую запись, реально вошедшую в ответ, и через месяц посмотреть, меняет ли это выдачу.</li>
+    <li><span class="done">сделано 29.09</span><b>Одиночная склейка для обновлений.</b> Не работает: одиночный режим склеивает так же, как партия. <a href="#smart">Справка ниже</a>.</li>
+    <li><b>Альтернатива.</b> Если после проверок Vestige остаётся складом, честнее держать хранилище и поиск, а связи, сущности и таймлайны строить своим слоем или сменить движок. Запасной вариант в CLAUDE.md — Basic Memory.</li>
+  </ul>
+
+  <h3 id="dream" style="margin-top:34px">Справка: dream на копии базы</h3>
+  <p class="read" style="margin-top:10px">Проверен 28.09 на копии, на рабочей базе не запускался. Безопасен, но на нашей базе бесполезен.</p>
+  <dl class="find">
+    <dt>Что делает</dt>
+    <dd>Переигрывает 50 записей: сначала с метками бодрствования, затем новейшие. Повторные прогоны берут те же 50 новейших, к старому знанию он не тянется. Соединяет каждую пару (1 224 связи); сила связи равна косинусу эмбеддингов, тип выводится из общих тегов и времени записи.</dd>
+    <dt>Что это дало</dt>
+    <dd>Нужна читателю примерно каждая одиннадцатая связь (7 из 80 по слепой оценке). Выдача поиска не изменилась ни в одном из 15 запросов. Текст, теги и удержание записей не тронуты, но каждый прогон добавляет «инсайт» о наших служебных тегах.</dd>
+    <dt>Больший тест</dt>
+    <dd>Не нужен. Панель Vestige (<span class="mono">/api/dream</span>) запускает тот же цикл: те же 50 записей, все пары, поля фаз сна пустые. Порог в 50 записей не настраивается, а сами составляющие его связей — косинус, общие теги, время записи — уже измерены на всей базе.</dd>
+    <dt>Где продолжение</dt>
+    <dd>Почему его связи держатся на служебных тегах — в <a href="#tags">разделе о тегах</a>. Какой способ связи работает — в проверках <a href="#tree">на 200 парах</a> и <a href="#full">на всей базе</a>.</dd>
+  </dl>
+
+  <h3 id="smart" style="margin-top:34px">Справка: smart на копии базы</h3>
+  <p class="read" style="margin-top:10px">Проверен 29.09 на копии резервной базы от 25.09: через него прогнаны 188 фактов, записанных после неё и прошедших проверку как отдельные. По итогам <b>убран из процесса совсем</b>: каждая запись создаётся отдельно.</p>
+  <dl class="find">
+    <dt>Как решает</dt>
+    <dd>Находит ближайшую запись по сходству эмбеддингов и смотрит только на число: выше 0,92 выбрасывает новый текст, от 0,75 до 0,92 вклеивает его блоком в ближайшую запись, ниже 0,75 создаёт запись. Сущность и утверждение не сверяет, пороги зашиты в бинарник. У случайной пары наших записей сходство около 0,71, поэтому соседа выше 0,75 находит почти любой факт.</dd>
+    <dt>Что сделал</dt>
+    <dd>По одному: 183 вклеены, 3 объявлены заменой чужих записей, 2 выброшены, создано 0. Партией на первых 40 — то же: 38, 1, 1 и 0. 136 старых записей обросли вклейками, одна проглотила 8 фактов. Источник нового факта не сохранился ни в одной вклейке.</dd>
+    <dt>Сколько склеек верны</dt>
+    <dd>6 из 187 по слепой оценке (3%, интервал 1–7%); второй судья на двух партиях совпал в 54 оценках из 54. Верные — настоящие обновления: поправки по McDonald's, 10-Q Walmart, штраф DPC, статус урегулирования в CAT. Ниже сходства 0,85 верных 0 из 111, в полосе 0,90–0,92 — 3 из 9: порога, который отделил бы обновление от чужого факта, нет.</dd>
+    <dt>Что вместо него</dt>
+    <dd>Новая версия известного факта — отдельная запись с датой среза. Стала старая неверной — <span class="mono">plan_supersede</span>, продолжает её — обе остаются точками таймлайна. Подсказывать кандидатов в новые версии будет слой якорей: тот же якорь и высокое сходство.</dd>
+  </dl>
+</section>
+
+<section id="tags">
+  <div class="eyebrow">Разбор 28.09 · теги и связи между раундами</div>
+  <h2>Граф соединяет по служебным пометкам, а не по смыслу</h2>
+  <p class="lede read">Отчасти дело в наших тегах: в них лежит провенанс, и по правилу Vestige две трети всех пар базы «делят понятия» только из-за него. Но и сам граф устроен технически: записи он отбирает по свежести, тип связи определяет по совпадению тегов-строк и времени записи, силу — по косинусу. Под новые теги каждого раунда такой способ не работает. Правило, которое внутри раунда даёт 85% нужных связей, между раундами даёт 10%. Смысловые связи между раундами дают только общие документы и дела.</p>
+
+  <h3 style="margin-top:34px">Что это за теги</h3>
+  <p class="read" style="margin-top:10px">С 28.08 каждая запись несёт оси провенанса. Они описывают не предмет факта, а то, откуда он взят и насколько проверен. Оси лежат в тегах, потому что другого места нет: <span class="mono">smart_ingest</span> принимает только текст, теги, строку <span class="mono">source</span> и тип записи, а фильтровать выдачу recall умеет только по тегам. Vestige не отличает такие теги от предметных: для него всё это «понятия».</p>
+  <div class="tw"><table>
+    <thead><tr><th>Ось</th><th>Что означает</th><th>Самые частые значения</th><th>Есть у записей</th></tr></thead>
+    <tbody>
+      <tr><td class="what"><b class="mono">chan:</b></td><td class="meas">Дистанция до источника: сам документ, архивный снимок, пресса, пересказ</td><td class="meas">primary 74%, press 9%, inferred 7%</td><td class="meas">100%</td></tr>
+      <tr><td class="what"><b class="mono">cred:</b></td><td class="meas">Насколько утверждение подтверждено</td><td class="meas">primary-confirmed 74%, single 16%, inferred 7%</td><td class="meas">100%</td></tr>
+      <tr><td class="what"><b class="mono">num:</b></td><td class="meas">Откуда взялось число в записи</td><td class="meas">na 48%, sourced 22%, unsourced 20%, derived 8%</td><td class="meas">100%</td></tr>
+      <tr><td class="what"><b class="mono">gate:</b></td><td class="meas">Каким путём запись попала в базу</td><td class="meas">web 60%, feeds 37%, user 2%</td><td class="meas">99%</td></tr>
+      <tr><td class="what"><b class="mono">claim:</b></td><td class="meas">Нашёлся ли машинный идентификатор утверждения</td><td class="meas">no-resolver 5%, unresolved 4%</td><td class="meas">9%</td></tr>
+    </tbody>
+  </table></div>
+  <p class="read" style="margin-top:16px">В среднем у записи 4,1 осевого тега и 4,6 тематических. Один и тот же набор <span class="mono">chan:primary</span>, <span class="mono">cred:primary-confirmed</span>, <span class="mono">gate:web</span>, <span class="mono">num:na</span> стоит у 533 записей. Два случайно взятых факта оба несут <span class="mono">chan:primary</span> примерно в 55% случаев.</p>
+  <p class="read"><b>У <span class="mono">claim:</span> отсутствие тега значит три разные вещи:</b> идентификатор не нужен; идентификатор найден и лежит в слоте <span class="mono">id=</span>; никто не проверял. По разметке проекций идентификатор по смыслу нужен 1 152 записям (40%): у них есть судебное или регуляторное дело либо документ из SEC, EUR-Lex, Federal Register или судебного докета. У 835 из них есть <span class="mono">id=</span>, у 46 стоит только тег, у 74 и то и другое, что правило запрещает, а у 197 (17%) нет ни того, ни другого. Эти 197 — невидимый долг: по самой записи его не отличить от записи, которой идентификатор не нужен. Ещё 115 записей несут тег, хотя дела или такого документа разметка у них не нашла, так что граница «нужен ли идентификатор» проведена приблизительно.</p>
+  <p class="read">Поменять можно двумя способами. Первый — сделать ось обязательной, как <span class="mono">num:</span>, со значениями <span class="mono">resolved</span> (только вместе с <span class="mono">id=</span>), <span class="mono">unresolved</span>, <span class="mono">no-resolver</span> и <span class="mono">na</span>; тогда пропуск ловит линтер. Но старые теги через MCP не правятся, а смена конвенции по новому правилу — крупное изменение со спекой. Второй — перенести статус на якорь: идентификатор принадлежит делу или документу, а не каждой записи о нём. Номер adtech-дела находится один раз для якоря, на котором висят 99 записей, а записи без якоря с идентификатором видны списком. Второй способ не трогает старые записи и ложится в тот же слой связей.</p>
+
+  <h3 style="margin-top:34px">Как dream выбирает связь и как считали 399</h3>
+  <p class="read" style="margin-top:10px">Правила восстановлены по данным: в самом бинарнике Vestige пороги не видны.</p>
+  <dl class="find">
+    <dt>Есть ли связь</dt>
+    <dd>Косинус эмбеддингов не ниже 0,5. Единственная пара из 50 без связи имела косинус 0,49. В нашей базе этот порог проходят 99,96% всех пар: у случайной пары записей медианный косинус 0,71, и даже у худшего процента пар он 0,59.</dd>
+    <dt>Тип связи</dt>
+    <dd>Два и больше общих тега любого вида дают «общие понятия»: так размечены все 573 такие пары. Иначе записи, созданные в пределах примерно суток, получают «временную» связь, остальные — «дополняющую»: правило сходится на 645 парах из 650. Одна «семантическая» связь осталась необъяснённой.</dd>
+    <dt>Сила</dt>
+    <dd>Косинус тех же эмбеддингов, без поправок.</dd>
+    <dt>Как считали 399</dt>
+    <dd>Для каждой из 573 связей «общие понятия» взяли пересечение тегов двух записей. Тег без префикса (тема или партия) считали предметным. Если в пересечении нет ни одного предметного тега, связь держится только на осях. Таких связей 399. Общими в них были <span class="mono">cred:</span> (382 связи), <span class="mono">chan:</span> (372), <span class="mono">num:</span> (166) и <span class="mono">gate:</span> (145).</dd>
+    <dt>По всей базе</dt>
+    <dd>Из 4,1 млн пар живых записей два и больше общих тега у 66,4%, и у 86,6% из них общие только оси. По правилу dream две трети базы «делят понятия» из-за одинакового провенанса.</dd>
+  </dl>
+
+  <h3 style="margin-top:34px">«Временная» связь — это время записи, а не события</h3>
+  <p class="read" style="margin-top:10px">Она означает только то, что мы записали два факта в одни сутки. Решение суда 2025 года и сделка 2026 года, записанные в одну сессию, получат «временную» связь. Два решения по одному делу, записанные в разные месяцы, её не получат. Дата события у нас живёт только в тексте: поле <span class="mono">valid_from</span> не заполнено ни у одной записи. Точек на таймлайне событий Vestige не видит.</p>
+
+  <h3 style="margin-top:34px">Переживают ли теги границу раунда</h3>
+  <figure>
+    <svg viewBox="0 0 680 300" role="img" aria-labelledby="tg-t tg-d"><title id="tg-t">Общие теги у пар записей из разных дней</title><desc id="tg-d">Доля пар с двумя и больше общими тегами почти не зависит от смысловой близости, доля пар с общим тегом темы растёт только у почти одинаковых записей.</desc>
+      <rect class="bar" x="60" y="6" width="12" height="12" rx="2"/><text class="tl" x="78" y="12" dominant-baseline="central">два и больше общих тега — правило dream</text>
+      <rect class="bar2" x="370" y="6" width="12" height="12" rx="2"/><text class="tl" x="388" y="12" dominant-baseline="central">общий тег темы</text>
+      <line class="grid" x1="60" y1="230" x2="660" y2="230"/><line class="grid" x1="60" y1="180" x2="660" y2="180"/><line class="grid" x1="60" y1="130" x2="660" y2="130"/><line class="grid" x1="60" y1="80" x2="660" y2="80"/><line class="grid" x1="60" y1="30" x2="660" y2="30"/>
+      <text class="ts" x="52" y="230" text-anchor="end" dominant-baseline="central">0%</text><text class="ts" x="52" y="130" text-anchor="end" dominant-baseline="central">50%</text><text class="ts" x="52" y="30" text-anchor="end" dominant-baseline="central">100%</text>
+      <g><title>Косинус 0,70–0,75, 1 487 995 пар: два и больше общих тега 62,7%, общий тег темы 3,0%</title><rect class="bar" x="82" y="104.6" width="36" height="125.4" rx="2"/><rect class="bar2" x="122" y="224" width="36" height="6" rx="2"/><text class="tv" x="100" y="98" text-anchor="middle">63%</text><text class="tv" x="140" y="218" text-anchor="middle">3%</text></g>
+      <g><title>Косинус 0,75–0,80, 584 278 пар: два и больше общих тега 60,6%, общий тег темы 5,7%</title><rect class="bar" x="202" y="108.8" width="36" height="121.2" rx="2"/><rect class="bar2" x="242" y="218.6" width="36" height="11.4" rx="2"/><text class="tv" x="220" y="102" text-anchor="middle">61%</text><text class="tv" x="260" y="212" text-anchor="middle">6%</text></g>
+      <g><title>Косинус 0,80–0,85, 68 339 пар: два и больше общих тега 62,8%, общий тег темы 17,1%</title><rect class="bar" x="322" y="104.4" width="36" height="125.6" rx="2"/><rect class="bar2" x="362" y="195.8" width="36" height="34.2" rx="2"/><text class="tv" x="340" y="98" text-anchor="middle">63%</text><text class="tv" x="380" y="189" text-anchor="middle">17%</text></g>
+      <g><title>Косинус 0,85–0,90, 4 446 пар: два и больше общих тега 75,3%, общий тег темы 45,9%</title><rect class="bar" x="442" y="79.4" width="36" height="150.6" rx="2"/><rect class="bar2" x="482" y="138.2" width="36" height="91.8" rx="2"/><text class="tv" x="460" y="73" text-anchor="middle">75%</text><text class="tv" x="500" y="132" text-anchor="middle">46%</text></g>
+      <g><title>Косинус 0,90 и выше, 217 пар: два и больше общих тега 96,3%, общий тег темы 90,3%</title><rect class="bar" x="562" y="37.4" width="36" height="192.6" rx="2"/><rect class="bar2" x="602" y="49.4" width="36" height="180.6" rx="2"/><text class="tv" x="580" y="31" text-anchor="middle">96%</text><text class="tv" x="620" y="43" text-anchor="middle">90%</text></g>
+      <text class="tl" x="120" y="250" text-anchor="middle">0,70–0,75</text><text class="tl" x="240" y="250" text-anchor="middle">0,75–0,80</text><text class="tl" x="360" y="250" text-anchor="middle">0,80–0,85</text><text class="tl" x="480" y="250" text-anchor="middle">0,85–0,90</text><text class="tl" x="600" y="250" text-anchor="middle">0,90 и выше</text>
+      <text class="ts" x="120" y="268" text-anchor="middle">1,49 млн пар</text><text class="ts" x="240" y="268" text-anchor="middle">584 тыс.</text><text class="ts" x="360" y="268" text-anchor="middle">68 тыс.</text><text class="ts" x="480" y="268" text-anchor="middle">4 446</text><text class="ts" x="600" y="268" text-anchor="middle">217</text>
+      <text class="th" x="360" y="292" text-anchor="middle">КОСИНУС ПАРЫ ЗАПИСЕЙ, СДЕЛАННЫХ В РАЗНЫЕ ДНИ</text>
+    </svg>
+    <figcaption>Все пары живых записей из разных дней с косинусом от 0,70. «Два и больше общих тега» держатся около 62% при любой близости: это оси провенанса. Общий тег темы появляется только у почти одинаковых записей. У пар из одного дня общий тег темы при косинусе 0,80–0,85 встречается в 42% случаев, у пар из разных дней — в 17%.</figcaption>
+  </figure>
+  <dl class="find">
+    <dt>Каждый раунд придумывает свои теги</dt>
+    <dd>48% употреблений тематических тегов — теги, впервые появившиеся в тот же день. Даже в последних раундах так размечено 26–43%. Из 2 499 тематических тегов (без тегов партий) 1 184 поставлены один раз.</dd>
+    <dt>Один предмет, разное написание</dt>
+    <dd>33 пары тегов различаются только числом или написанием: <span class="mono">data-broker</span> и <span class="mono">data-brokers</span>, <span class="mono">fine</span> и <span class="mono">fines</span>, <span class="mono">ad-exchange</span> и <span class="mono">ad-exchanges</span>. Запись о 33Across из очереди 27.09 помечена <span class="mono">data-broker</span>, а вся партия CPPA 28.09 — <span class="mono">data-brokers</span>.</dd>
+    <dt>Совпадают только широкие</dt>
+    <dd>Внутри раунда общий тег узкий: медианная частота общего тега в парах правила — 9 записей на всю базу (<span class="mono">paramount</span>, <span class="mono">dsar-metrics</span>). Между раундами совпадают только широкие теги с медианой 77 записей: <span class="mono">google</span> (122), <span class="mono">meta</span> (190), <span class="mono">antitrust</span> (117), <span class="mono">programmatic</span> (129). Такой тег не говорит, что записи об одном.</dd>
+  </dl>
+
+  <h3 style="margin-top:34px">Что связывает раунды по смыслу</h3>
+  <figure>
+    <svg viewBox="0 0 680 246" role="img" aria-labelledby="cr-t cr-d"><title id="cr-t">Нужные связи между раундами по способу отбора</title><desc id="cr-d">Слепая оценка 80 пар записей из разных дней, по 20 на способ, и для сравнения то же тематическое правило внутри раунда.</desc>
+      <line class="grid" x1="316" y1="30" x2="316" y2="214"/><line class="grid" x1="438" y1="30" x2="438" y2="214"/><line class="grid" x1="560" y1="30" x2="560" y2="214"/>
+      <text class="th" x="0" y="22">МЕЖДУ РАУНДАМИ · 80 ПАР ИЗ РАЗНЫХ ДНЕЙ</text>
+      <g><title>Общий документ или дело: нужны 17 из 20 (85%)</title><text class="tl" x="0" y="48" dominant-baseline="central">общий документ или дело</text><rect class="track" x="316" y="41" width="244" height="14" rx="2"/><rect class="bar" x="316" y="41" width="207.4" height="14" rx="2"/><text class="tv" x="531" y="48" dominant-baseline="central">17 из 20 · 85%</text></g>
+      <g><title>Косинус от 0,85 без общего тега: нужны 4 из 20 (20%)</title><text class="tl" x="0" y="76" dominant-baseline="central">косинус ≥ 0,85, общего тега нет</text><rect class="track" x="316" y="69" width="244" height="14" rx="2"/><rect class="bar" x="316" y="69" width="48.8" height="14" rx="2"/><text class="tv" x="373" y="76" dominant-baseline="central">4 из 20 · 20%</text></g>
+      <g><title>Общий тег темы и косинус от 0,75: нужны 2 из 20 (10%)</title><text class="tl" x="0" y="104" dominant-baseline="central">общий тег темы и косинус ≥ 0,75</text><rect class="track" x="316" y="97" width="244" height="14" rx="2"/><rect class="bar" x="316" y="97" width="24.4" height="14" rx="2"/><text class="tv" x="349" y="104" dominant-baseline="central">2 из 20 · 10%</text></g>
+      <g><title>Общие только оси провенанса: нужна 0 из 20</title><text class="tl" x="0" y="132" dominant-baseline="central">общие только оси провенанса</text><rect class="track" x="316" y="125" width="244" height="14" rx="2"/><text class="tv" x="324" y="132" dominant-baseline="central">0 из 20</text></g>
+      <text class="th" x="0" y="172">ВНУТРИ РАУНДА · ДЛЯ СРАВНЕНИЯ</text>
+      <g><title>Внутри раунда: общий тег темы и косинус от 0,75, нужны 17 из 20 (85%)</title><text class="tl" x="0" y="198" dominant-baseline="central">общий тег темы и косинус ≥ 0,75</text><rect class="track" x="316" y="191" width="244" height="14" rx="2"/><rect class="bar" x="316" y="191" width="207.4" height="14" rx="2"/><text class="tv" x="531" y="198" dominant-baseline="central">17 из 20 · 85%</text></g>
+      <text class="ts" x="316" y="234" text-anchor="middle">0%</text><text class="ts" x="438" y="234" text-anchor="middle">50%</text><text class="ts" x="560" y="234" text-anchor="middle">100%</text>
+    </svg>
+    <figcaption>Доля пар, которые оба судьи хотели бы видеть в списке «связанное». «Общий документ или дело» — совпадение адреса документа или идентификатора в слотах <span class="mono">doc=</span>, <span class="mono">doc2=</span>, <span class="mono">id=</span> строки source. Судьи совпали во всех 80 ответах.</figcaption>
+  </figure>
+  <p class="read" style="margin-top:18px">По общему документу или делу связь нашлась в 17 парах из 20, и в 10 оценках из 40 судьи назвали её таймлайном: то же дело, та же сделка или та же метрика в другой момент. Три промаха пришлись на документы-контейнеры: квартальный отчёт Meta, в котором разные дела, дважды и регламент DMA целиком. Значит, ключ должен называть дело или место в документе, а не весь документ.</p>
+  <p class="read">Таких связей пока мало: 654 пары записей из разных дней, в них участвуют 433 записи из 2 870. Раунды редко возвращаются к тем же документам. Слот <span class="mono">id=</span> заполнен у 1 102 записей, а тег сущности <span class="mono">ent:</span> не стоит ни у одной, хотя реестр для него есть.</p>
+
+  <h3 style="margin-top:34px">Что из этого следует</h3>
+  <ul class="plain">
+    <li><b>Оси провенанса держать, но не отдавать механизмам, которые считают теги понятиями.</b> В своём слое связей теги с префиксом просто не учитываются.</li>
+    <li><b>Тематические теги связывают только внутри раунда.</b> Новые теги в каждом раунде — нормально, словарь и должен расти. В подсчёт связей тег должен входить через простую регулируемую процедуру: 200 самых частых тегов уже покрывают 94% записей, хвост может оставаться свободным. Дерево тем даёт плавную близость вместо да/нет, но это близость «одна тема», а такие связи судьи признали нужными в 5 голосах из 72. Дерево полезнее для сборки справочника и сужения поиска; плавная близость нужна в проекциях идентичности: сущность и её родитель, юрисдикция, дело и его документы, дата события.</li>
+    <li><b>Смысловые связи между раундами дают ключи идентичности:</b> документ с локатором, номер дела, сущность, дата события. Они не придумываются заново в каждом раунде и поэтому переживают его границу. Это главный кандидат для своего слоя связей, и он же даёт работу реестру сущностей из списка на удаление.</li>
+  </ul>
+</section>
+
+<section id="tree">
+  <div class="eyebrow">Проверка 28.09 · дерево тегов и проекции на 200 парах</div>
+  <h2>Плавная близость работает, когда теги разнесены по проекциям</h2>
+  <p class="lede read">Вопрос был такой: если каждый тег сделать листом дерева и мерить близость по дереву, а не совпадением да/нет, станут ли связи точнее? Станут, но выигрыш даёт не дерево тем, а разделение тегов по проекциям, прежде всего по сущностям. Ещё точнее проекции, извлечённые из самого текста записи.</p>
+
+  <dl class="find">
+    <dt>На чём проверяли</dt>
+    <dd>200 пар, которые судьи уже оценили: 80 связей dream, 40 пар из той же партии для проверки тематического правила и 80 пар из разных дней. Нужных 48, из них 23 между раундами.</dd>
+    <dt>Дерево тегов</dt>
+    <dd>Два субагента независимо разложили 479 тематических тегов этих записей по проекциям (тема, сущность, юрисдикция, дело, документ) и построили в каждой дерево. Близость двух тегов считается по глубине общего предка (мера Ву — Палмер), близость записей — как среднее лучших совпадений их тегов.</dd>
+    <dt>Проекции из текста</dt>
+    <dd>Четыре субагента извлекли из каждой записи сущности с родителем, юрисдикцию, дело, документ с местом в нём и дату события. Пятый свёл написание имён. Пар никто из них не видел.</dd>
+    <dt>Честность замера</dt>
+    <dd>Формулы и веса записаны в скрипт до получения разметки. Перед подсчётом неизменность скрипта проверена по хешу. Мера качества — AUC: вероятность, что нужная пара получит оценку выше ненужной.</dd>
+  </dl>
+
+  <figure>
+    <svg viewBox="0 0 680 318" role="img" aria-labelledby="au-t au-d"><title id="au-t">Качество мер близости</title><desc id="au-d">AUC шести мер на всех 200 парах и на 80 парах между раундами, с 95-процентными интервалами.</desc>
+<circle class="bar" cx="306" cy="12" r="5"/><text class="tl" x="316" y="12" dominant-baseline="central">все 200 пар</text>
+<circle class="bar2" cx="436" cy="12" r="5"/><text class="tl" x="446" y="12" dominant-baseline="central">80 пар между раундами</text>
+<line class="grid" x1="300.0" y1="36" x2="300.0" y2="276"/><text class="ts" x="300.0" y="292" text-anchor="middle">0,5</text>
+<line class="grid" x1="368.0" y1="36" x2="368.0" y2="276"/><text class="ts" x="368.0" y="292" text-anchor="middle">0,6</text>
+<line class="grid" x1="436.0" y1="36" x2="436.0" y2="276"/><text class="ts" x="436.0" y="292" text-anchor="middle">0,7</text>
+<line class="grid" x1="504.0" y1="36" x2="504.0" y2="276"/><text class="ts" x="504.0" y="292" text-anchor="middle">0,8</text>
+<line class="grid" x1="572.0" y1="36" x2="572.0" y2="276"/><text class="ts" x="572.0" y="292" text-anchor="middle">0,9</text>
+<line class="grid" x1="640.0" y1="36" x2="640.0" y2="276"/><text class="ts" x="640.0" y="292" text-anchor="middle">1,0</text>
+<text class="th" x="300.0" y="306">0,5 — СЛУЧАЙНОЕ УГАДЫВАНИЕ</text>
+<g><title>плоские теги, как сейчас: все пары 0,86 (0,79–0,93), между раундами 0,70 (0,56–0,82)</title>
+<text class="tl" x="0" y="52" dominant-baseline="central">плоские теги, как сейчас</text>
+<line class="whisk" x1="497.2" y1="46" x2="590.4" y2="46"/><circle class="bar" cx="544.8" cy="46" r="5"/>
+<line class="whisk" x1="338.1" y1="58" x2="521.0" y2="58"/><circle class="bar2" cx="434.6" cy="58" r="5"/></g>
+<g><title>косинус эмбеддингов: все пары 0,85 (0,79–0,90), между раундами 0,67 (0,53–0,79)</title>
+<text class="tl" x="0" y="92" dominant-baseline="central">косинус эмбеддингов</text>
+<line class="whisk" x1="495.8" y1="86" x2="572.0" y2="86"/><circle class="bar" cx="535.3" cy="86" r="5"/>
+<line class="whisk" x1="323.1" y1="98" x2="494.5" y2="98"/><circle class="bar2" cx="413.6" cy="98" r="5"/></g>
+<g><title>дерево только тем: все пары 0,80 (0,72–0,87), между раундами 0,65 (0,52–0,78)</title>
+<text class="tl" x="0" y="132" dominant-baseline="central">дерево только тем</text>
+<line class="whisk" x1="448.9" y1="126" x2="553.0" y2="126"/><circle class="bar" cx="503.3" cy="126" r="5"/>
+<line class="whisk" x1="310.2" y1="138" x2="492.4" y2="138"/><circle class="bar2" cx="404.7" cy="138" r="5"/></g>
+<g><title>дерево тегов по проекциям: все пары 0,92 (0,86–0,97), между раундами 0,78 (0,64–0,90)</title>
+<text class="tl" x="0" y="172" dominant-baseline="central">дерево тегов по проекциям</text>
+<line class="whisk" x1="544.1" y1="166" x2="617.6" y2="166"/><circle class="bar" cx="584.2" cy="166" r="5"/>
+<line class="whisk" x1="396.6" y1="178" x2="568.6" y2="178"/><circle class="bar2" cx="492.4" cy="178" r="5"/></g>
+<g><title>проекции из текста: все пары 0,95 (0,93–0,98), между раундами 0,93 (0,86–0,98)</title>
+<text class="tl" x="0" y="212" dominant-baseline="central">проекции из текста</text>
+<line class="whisk" x1="589.7" y1="206" x2="625.0" y2="206"/><circle class="bar" cx="609.4" cy="206" r="5"/>
+<line class="whisk" x1="543.4" y1="218" x2="625.7" y2="218"/><circle class="bar2" cx="591.0" cy="218" r="5"/></g>
+<g><title>общий документ в source: все пары 0,73 (0,66–0,80), между раундами 0,84 (0,75–0,93)</title>
+<text class="tl" x="0" y="252" dominant-baseline="central">общий документ в source</text>
+<line class="whisk" x1="409.5" y1="246" x2="503.3" y2="246"/><circle class="bar" cx="456.4" cy="246" r="5"/>
+<line class="whisk" x1="468.6" y1="258" x2="592.4" y2="258"/><circle class="bar2" cx="533.2" cy="258" r="5"/></g>
+</svg>
+    <figcaption>AUC шести мер с 95-процентными интервалами (бутстреп, 2 000 повторов). «Дерево тегов по проекциям» показано для первого сборщика; у второго 0,92 и 0,78, то есть так же.</figcaption>
+  </figure>
+
+  <dl class="find">
+    <dt>Дерево по проекциям лучше плоских тегов</dt>
+    <dd>По всем парам AUC 0,92 против 0,86, разница устойчива: от 0,02 до 0,11 по интервалу. Между раундами 0,78 против 0,70, разница на грани значимости: от 0 до 0,17.</dd>
+    <dt>Дерево одних тем ничего не даёт</dt>
+    <dd>С плоскими тегами оно не различимо: разница от −0,13 до +0,005. Выигрыш дерева идёт от проекции сущностей: между раундами сущности отдельно дают 0,77, темы 0,65. Это сходится с оценками судей: связь «одна тема» им не нужна.</dd>
+    <dt>Форма дерева почти не важна</dt>
+    <dd>Два сборщика поставили тег в одну проекцию в 95% случаев, а непосредственный родитель у них совпал только в 42%. Оценки при этом одинаковые: 0,918 и 0,920. Для тега, который входит в подсчёт, достаточно решить проекцию и дать одного разумного родителя.</dd>
+    <dt>Проекции из текста — лучший вариант</dt>
+    <dd>Между раундами AUC 0,93: лучше дерева тегов (разница от +0,006 до +0,31) и плоских тегов (от +0,09 до +0,38). На пороге 0,4 они отобрали 13 пар из 80, и все 13 нужные; всего нужных 23. Дерево тегов на пороге 0,5 отобрало 12 пар, нужных 11; плоские теги на пороге 0,2 — 11 пар, нужных 10.</dd>
+    <dt>Оговорки</dt>
+    <dd>Выборка не случайная: пары отбирали разными способами, и 20 пар между раундами взяты по общему документу, что подыгрывает мерам «общий документ» и «дата события». Нужных пар между раундами 23, интервалы широкие. Проекции извлекала модель по тем же текстам, что читали судьи, поэтому отчасти она повторяет их понятие «одно дело»; в работе извлечение шло бы так же, при записи.</dd>
+  </dl>
+
+  <h3 style="margin-top:34px">Что из этого следует</h3>
+  <ul class="plain">
+    <li><b>Процедура для тегов может быть лёгкой.</b> В подсчёт входят немногие теги, и для каждого нужно решить проекцию и одного родителя. Остальные остаются свободными.</li>
+    <li><b>Главное вложение — поля при записи.</b> Сущность с родителем, юрисдикция, дело, документ с местом в нём, дата события. Для этого задумывались <span class="mono">ent:</span> и <span class="mono">id=</span>.</li>
+    <li><b>На всей базе проекции работают как ранжирование, а не как порог.</b> Все связи выше порога нужны в 54% случаев, первые три связи записи — в 45 из 47. Разбор в <a href="#full">следующем разделе</a>.</li>
+  </ul>
+</section>
+
+<section id="full">
+  <div class="eyebrow">Проверка 28.09 · проекции на всей базе</div>
+  <h2>Проекции работают как ранжирование, а не как граф по порогу</h2>
+  <p class="lede read">На 200 парах проекции из текста были точнее всего. На всей базе всё, что выше порога, — наполовину мусор. Зато три лучшие связи у каждой записи почти всегда нужны. Шум дают большие дела и связи «одна сущность, одна юрисдикция».</p>
+
+  <div class="band mini" aria-label="Итоги проверки на всей базе">
+    <div class="tile"><div class="n">17 871</div><div class="l">связей с оценкой от 0,4 у 2 870 живых записей</div></div>
+    <div class="tile"><div class="n bad">54%</div><div class="l">из них нужны читателю; между разными днями — 39%</div></div>
+    <div class="tile"><div class="n ok">45 из 47</div><div class="l">первых трёх связей у 20 случайных записей нужны</div></div>
+    <div class="tile"><div class="n">39%</div><div class="l">записей не получили ни одной связи выше порога</div></div>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 680 418" role="img" aria-labelledby="fb-t fb-d"><title id="fb-t">Нужные связи на всей базе</title><desc id="fb-d">Доля связей, которые оба судьи хотели бы видеть, по полосам оценки, по проекции и для первых трёх связей записи.</desc>
+<line class="grid" x1="316" y1="30" x2="316" y2="390"/><line class="grid" x1="438" y1="30" x2="438" y2="390"/><line class="grid" x1="560" y1="30" x2="560" y2="390"/>
+<text class="th" x="0" y="22">ВСЕ СВЯЗИ ОТ 0,4 · СЛУЧАЙНАЯ ВЫБОРКА ПО ПОЛОСАМ</text>
+<g><title>один день, 0,40–0,50: нужны 13 из 20 (65%)</title><text class="tl" x="0" y="41" dominant-baseline="central">один день, 0,40–0,50</text><rect class="track" x="316" y="34" width="244" height="14" rx="2"/><rect class="bar" x="316" y="34" width="158.6" height="14" rx="2"/><text class="tv" x="482.6" y="41" dominant-baseline="central">13 из 20 · 65%</text></g>
+<g><title>один день, 0,50–0,65: нужны 17 из 20 (85%)</title><text class="tl" x="0" y="69" dominant-baseline="central">один день, 0,50–0,65</text><rect class="track" x="316" y="62" width="244" height="14" rx="2"/><rect class="bar" x="316" y="62" width="207.4" height="14" rx="2"/><text class="tv" x="531.4" y="69" dominant-baseline="central">17 из 20 · 85%</text></g>
+<g><title>один день, от 0,65: нужны 14 из 20 (70%)</title><text class="tl" x="0" y="97" dominant-baseline="central">один день, от 0,65</text><rect class="track" x="316" y="90" width="244" height="14" rx="2"/><rect class="bar" x="316" y="90" width="170.8" height="14" rx="2"/><text class="tv" x="494.8" y="97" dominant-baseline="central">14 из 20 · 70%</text></g>
+<g><title>разные дни, 0,40–0,50: нужны 2 из 20 (10%)</title><text class="tl" x="0" y="125" dominant-baseline="central">разные дни, 0,40–0,50</text><rect class="track" x="316" y="118" width="244" height="14" rx="2"/><rect class="bar" x="316" y="118" width="24.4" height="14" rx="2"/><text class="tv" x="348.4" y="125" dominant-baseline="central">2 из 20 · 10%</text></g>
+<g><title>разные дни, 0,50–0,65: нужны 5 из 20 (25%)</title><text class="tl" x="0" y="153" dominant-baseline="central">разные дни, 0,50–0,65</text><rect class="track" x="316" y="146" width="244" height="14" rx="2"/><rect class="bar" x="316" y="146" width="61.0" height="14" rx="2"/><text class="tv" x="385.0" y="153" dominant-baseline="central">5 из 20 · 25%</text></g>
+<g><title>разные дни, от 0,65: нужны 13 из 20 (65%)</title><text class="tl" x="0" y="181" dominant-baseline="central">разные дни, от 0,65</text><rect class="track" x="316" y="174" width="244" height="14" rx="2"/><rect class="bar" x="316" y="174" width="158.6" height="14" rx="2"/><text class="tv" x="482.6" y="181" dominant-baseline="central">13 из 20 · 65%</text></g>
+<text class="th" x="0" y="230">ПО ПРОЕКЦИИ, КОТОРАЯ ДАЛА СВЯЗЬ</text>
+<g><title>общий документ: нужны 46 из 52 (88%)</title><text class="tl" x="0" y="249" dominant-baseline="central">общий документ</text><rect class="track" x="316" y="242" width="244" height="14" rx="2"/><rect class="bar" x="316" y="242" width="215.8" height="14" rx="2"/><text class="tv" x="539.8" y="249" dominant-baseline="central">46 из 52 · 88%</text></g>
+<g><title>общее дело: нужны 52 из 82 (63%)</title><text class="tl" x="0" y="277" dominant-baseline="central">общее дело</text><rect class="track" x="316" y="270" width="244" height="14" rx="2"/><rect class="bar" x="316" y="270" width="154.7" height="14" rx="2"/><text class="tv" x="478.7" y="277" dominant-baseline="central">52 из 82 · 63%</text></g>
+<g><title>только сущность и юрисдикция: нужны 11 из 33 (33%)</title><text class="tl" x="0" y="305" dominant-baseline="central">только сущность и юрисдикция</text><rect class="track" x="316" y="298" width="244" height="14" rx="2"/><rect class="bar" x="316" y="298" width="81.3" height="14" rx="2"/><text class="tv" x="405.3" y="305" dominant-baseline="central">11 из 33 · 33%</text></g>
+<text class="th" x="0" y="354">ЧТО УВИДИТ ЧЕЛОВЕК</text>
+<g><title>первые три связи у 20 записей: нужны 45 из 47 (96%)</title><text class="tl" x="0" y="373" dominant-baseline="central">первые три связи у 20 записей</text><rect class="track" x="316" y="366" width="244" height="14" rx="2"/><rect class="bar" x="316" y="366" width="233.6" height="14" rx="2"/><text class="tv" x="557.6" y="373" dominant-baseline="central">45 из 47 · 96%</text></g>
+<text class="ts" x="316" y="408" text-anchor="middle">0%</text><text class="ts" x="438" y="408" text-anchor="middle">50%</text><text class="ts" x="560" y="408" text-anchor="middle">100%</text>
+</svg>
+    <figcaption>Доля связей, которые оба судьи хотели бы видеть; судьи совпали в 164 оценках из 167. В каждой полосе по 20 пар, интервалы широкие: у 13 из 20 это 43–82%. Первые три связи ранжированы по оценке, а при равной оценке по косинусу.</figcaption>
+  </figure>
+
+  <dl class="find">
+    <dt>Откуда мусор</dt>
+    <dd>Связи по общему документу нужны в 88% случаев, по общему делу — в 63%, по одной сущности с юрисдикцией — в 33%. Последних почти треть всех связей: это «Google в США». Общее дело проседает на больших делах: adtech-дело против Google занимает 99 записей, поисковое — 62, MDL 3047 — 36. Внутри них судьи отвергают пары вида «одно дело, несвязанные аспекты», например состав техкомитета и отклонённый Count III.</dd>
+    <dt>Воспроизводимость</dt>
+    <dd>Заново размеченная база дала на 167 из старых 200 пар (остальные касаются погашенных записей) AUC 0,957 и между раундами 0,949. В первый раз на всех 200 было 0,955 и 0,928.</dd>
+    <dt>Близость внутри якоря</dt>
+    <dd>Внутри одного дела уровень конкретного акта помогает слабо: пары с одним актом нужны в 15 из 20, с разными актами — в 26 из 40, без акта у одной из записей — в 11 из 22. Судьи отвергают и пары внутри одного акта, если записи о разных вопросах решения. Зато косинус, слабый по всей базе, внутри одного дела отделяет нужные пары хорошо: AUC 0,85 на 82 парах. Якорь выбирает окрестность, а ранжировать внутри неё надо по смыслу: по вопросу, о котором запись.</dd>
+    <dt>Что из этого следует</dt>
+    <dd>Показывать у записи три–пять лучших связей, а не всё выше порога. Связи «только сущность и юрисдикция» не строить. Для больших дел учитывать конкретный акт внутри дела и место в документе: поле <span class="mono">item</span> разметчики уже извлекают, а заранее зафиксированная формула его не использует.</dd>
+  </dl>
+
+  <h3 style="margin-top:34px">Кто остался без связей</h3>
+  <p class="read" style="margin-top:10px">Без единой связи выше порога остались 1 114 записей из 2 870. По-настоящему ни на что не опираются только 55 из них.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Что с записью</th><th>Записей</th><th>Что это значит</th></tr></thead>
+    <tbody>
+      <tr><td class="what"><b>Делит с другими только сущность</b><span>Google, Meta, FTC без общего дела или документа</span></td><td class="meas"><span class="mono">611</span></td><td class="meas">Такие связи нужны в трети случаев, порог отсёк их правильно. У 435 записей юрисдикция не определена, у 176 она другая.</td></tr>
+      <tr><td class="what"><b>Делит документ, но не дотягивает до порога</b><span>вес документа в формуле 0,2</span></td><td class="meas"><span class="mono">399</span></td><td class="meas">Артефакт весов: один общий документ до 0,4 не доводит, хотя это самый точный признак. У 245 из них документ общий всего с одной-двумя записями. Документы-контейнеры вроде GDPR и директивы 2009/136 нужно различать по месту в документе.</td></tr>
+      <tr><td class="what"><b>Все её документы, дела и сущности встречаются только в ней</b><span>с учётом родителей сущностей</span></td><td class="meas"><span class="mono">49</span></td><td class="meas">Первая точка: документ или событие, к которому пока никто не вернулся, например запуск Visual Search Ads у Pinterest. Бывает и иначе: четыре записи о французском налоге TSN висят поодиночке, потому что каждая ссылается на свою статью кодекса, а сам налог разметчики сущностью не считают. Такой записи не хватает якоря «норма».</td></tr>
+      <tr><td class="what"><b>Нет ни сущности, ни дела, ни документа</b></td><td class="meas"><span class="mono">55</span></td><td class="meas">В основном свои заметки, методы и решения о gid. Их естественная связь — с записями, из которых они выведены, а не по идентичности.</td></tr>
+    </tbody>
+  </table></div>
+  <p class="read" style="margin-top:16px">Общая причина — провенанс. Слот <span class="mono">doc=</span> с адресом есть у 40% записей без связей и у 81% связанных. Среди записей без связей 18% восстановлены после августовской консолидации, у которой источник был утерян; среди связанных таких 3%. В записях от 26.08 и 28.08 без связей остались 85% и 82%, и 199 из этих 331 — восстановленные. Дотянется ли граф до записи, прямо зависит от того, несёт ли она документ.</p>
+
+  <h3 style="margin-top:34px">Точка, которую пока не повесили</h3>
+  <p class="read" style="margin-top:10px">Предложение пользователя — представлять запись без связей как отдельную сущность. Проще всего это сделать на уровне якорей. Документ, дело, сущность и событие становятся явными узлами, запись вешается на них, а связь двух записей возникает через общий якорь. Тогда «неповешенная точка» — это якорь, на котором пока одна запись: он ждёт второй, а у живого процесса может нести дату проверки.</p>
+  <dl class="find">
+    <dt>Сколько записей повесится</dt>
+    <dd>2 069 записей (72%) делят с другими дело или документ — против 61% при попарных связях по порогу. Ещё 690 (24%) делят только сущность, 56 (2%) висят только на своих собственных якорях (здесь родители сущностей не учитываются, отсюда 56, а не 49), 55 (2%) якорей не имеют.</dd>
+    <dt>Сколько открытых точек</dt>
+    <dd>Якорей-документов 2 249, из них у 1 587 одна запись. Дел 399, из них одиночных 240. Сущностей 1 453, одиночных 824. Это и есть список точек, к которым база ещё не возвращалась.</dd>
+    <dt>Что это решает</dt>
+    <dd>Запись на своём документе повешена, даже когда формула не дотягивает до порога: это 399 записей из таблицы. Большое дело становится узлом, внутри которого записи сортируются по конкретному акту и месту в документе. А открытые точки становятся измеримым списком, а не невидимым хвостом.</dd>
+  </dl>
+</section>
+
+<section>
+  <div class="eyebrow">Кандидаты на удаление</div>
+  <h2>Что лишнее</h2>
+  <p class="lede read">В приоритете убрать. Для каждого кандидата указана цена содержания, что он дал и что теряем при удалении.</p>
+  <div class="tw"><table>
+    <thead><tr><th>Кандидат</th><th>Цена и отдача</th><th>Что теряем</th><th>Решение</th></tr></thead>
+    <tbody>
+      <tr><td class="what"><b>Фоновая дистилляция</b><span>distill.sh, очередь, prefetch, маркеры</span></td><td class="meas"><span class="mono">2 187</span> строк кода и четыре раунда проверок. За месяц 18 живых фактов, при этом сессии разобрали 1 041. Из 18 двенадцать — пересказ прессы с одним источником, одиннадцать ни разу не выдавались поиском, два сессии всё равно покрыли сами (штраф DPC Google и ремедии adtech-дела по первоисточнику). BROKEN три дня подряд означал только открытую сессию.</td><td class="meas">Автоматический разбор очереди без человека. Сборщик фидов можно оставить отдельно.</td><td class="dec">—</td></tr>
+      <tr><td class="what"><b>История в CLAUDE.md</b><span>правила вперемешку с инцидентами</span></td><td class="meas"><span class="mono">100 КБ</span> грузятся в каждую сессию и в каждого субагента воркфлоу. Один пункт про гейты весит 8,5 тыс. знаков.</td><td class="meas">Ничего, если история уйдёт в отдельный файл уроков.</td><td class="dec">—</td></tr>
+      <tr><td class="what"><b>HANDOFF как журнал</b><span>дописываемые разделы</span></td><td class="meas"><span class="mono">177 КБ</span>, текущее состояние в нём не найти.</td><td class="meas">Ничего, если разделить на страницу состояния и журнал.</td><td class="dec">—</td></tr>
+      <tr><td class="what"><b>Реестр сущностей</b><span>entities.csv, правило ent:</span></td><td class="meas">Тег <span class="mono">ent:</span> стоит у 0 записей. Страж проверяет тег, которого никто не ставит.</td><td class="meas">Задел на сбор фактов по юрлицу. Альтернатива удалению — автоматическая простановка.</td><td class="dec">—</td></tr>
+      <tr><td class="what"><b>Словарь тем</b><span>topics.json</span></td><td class="meas">2 508 разных тегов, 1 180 поставлены один раз. Словарь не соблюдается, линтер его намеренно не проверяет.</td><td class="meas">Декларацию родов тегов. Альтернатива — проверка при записи.</td><td class="dec">—</td></tr>
+      <tr><td class="what"><b>Ремонт вместо записи</b><span>ручной перенос фактов</span></td><td class="meas">Вызовов <span class="mono">dedup</span> в 2,5 раза больше, чем вызовов записи. Каждый факт проходит через контекст дважды и сверяется отдельным скриптом.</td><td class="meas">Это не модуль, а процесс; убирается переносом сборки и сверки партии в <span class="mono">gates/</span>.</td><td class="dec">—</td></tr>
+      <tr><td class="what"><b>Спека на каждый модуль</b><span>spec-driven</span></td><td class="meas">Четыре документа и правка конституции ради одного извлекателя PDF.</td><td class="meas">Строгий порядок для зависимостей. Его стоит оставить только для крупных изменений.</td><td class="dec"><span class="done">решено 28.09</span>Только для крупных: зависимость, смена контракта, новая подсистема, правка больше трёх файлов кода. Правило обновлено в скилле, CLAUDE.md и README.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section>
+  <div class="eyebrow">Эскиз на потом</div>
+  <h2>Что добавить после чистки</h2>
+  <p class="lede read">Порядок примерный, по отдаче к затратам. Первые два пункта снимают большую часть трения.</p>
+  <ol class="plain">
+    <li><b>Инструменты партии в репозитории.</b> Сборка записей из результатов воркфлоу, линтер, нарезка по 20, побайтная сверка, вывод MANIFEST.md из манифеста. Сейчас это одноразовые скрипты: в скратчпаде этой сессии их около 190.</li>
+    <li><b>Путь ответа.</b> Скилл «вопрос → узкие запросы к памяти → таблица доказательств с датой и доверием → пробелы → веб», с отметкой promote для каждого использованного факта. Это впервые даст сигнал полезности и честную метрику качества ответа.</li>
+    <li><b>Связи по идентичности.</b> Свой слой связей по адресу документа с локатором, номеру дела, сущности и дате события, без учёта осей провенанса. Между раундами такие связи нужны в 17 случаях из 20, треть из них складывается в таймлайн.</li>
+    <li><b>Холодный ярус и ротация погашенных.</b> Погашенные записи (428, 13% базы на 30.09 — вместе с 53 заменёнными при проверке) выгружаются целиком с цепочкой замен и стираются в активной базе; слабые (пресса, один источник, не выдавались) переносятся в ярус, который посещается реже. Ничего не теряется насовсем, встроенный gc не используется.</li>
+    <li><b>Устаревшие статусы.</b> Запись о статусе «на дату», у которой на том же якоре есть более новая версия, уходит из активного набора. Зависит от слоя якорей.</li>
+    <li><b>Дешёвая сортировка входа.</b> Перед дорогим исследованием с верификацией отсеивать пустые материалы: 2 из 10 материалов очереди оказались бренд-кампаниями без содержания.</li>
+    <li><b>Атомарность записей.</b> Медианная запись выросла с 354 до 550 знаков, доля длиннее 1 000 знаков — с 1% до 16%. Предупреждение линтера и разбор отдельной записью.</li>
+    <li><b>Таблицы отдельно от прозы.</b> Форма, найденная на реестре CPPA: CSV в архиве, скрипт анализа в <span class="mono">gates/</span>, факты со ссылкой на метод.</li>
+    <li><b>Стоимость раунда.</b> Считать токены на раунд рядом со временем, чтобы решения вроде «воркфлоу против ручного разбора» опирались на цену.</li>
+  </ol>
+</section>
+
+<section>
+  <div class="eyebrow">Для обсуждения</div>
+  <h2>Вопросы, которые решают порядок</h2>
+  <div class="q"><b>Фон: убрать или дать ему окно?</b><span>Убрать дистилляцию и разбирать очередь в сессии с дешёвой сортировкой, или оставить с ночным запуском и мерить успех по петле, а не по запуску агента.</span></div>
+  <div class="q"><b>Vestige: доучить, обойти или заменить?</b><span>Dream проверен на копии и ничего не даёт. Осталось проверить promote в работе. Если и он не поможет, держать Vestige как хранилище, а связи строить своим слоем. Внутри раунда их даёт общий тег темы с косинусом, между раундами — только общий документ или дело (17 нужных связей из 20). Либо сменить движок.</span></div>
+  <div class="q"><b>Реестр сущностей: автоматизировать или удалить?</b><span>Проставлять ent: по ключу нормализованного имени при записи или убрать правило и страж. Разбор тегов говорит в пользу первого: ключ сущности — один из немногих, что связывают раунды.</span></div>
+  <div class="q"><b>claim: обязательная ось или статус на якоре?</b><span><span class="done">склоняемся 28.09</span>Статус на якоре. Обязательная ось ловит пропуск при записи, но не лечит 197 старых записей без статуса. Статус на якоре лечит их разом и нужен слою связей, но появится только вместе с ним.</span></div>
+  <div class="q"><b>Сколько истории оставить в правилах?</b><span>Правила в CLAUDE.md до 10–15 КБ, инциденты и замеры в отдельном файле уроков со ссылками.</span></div>
+
+  <div class="src"><b>Откуда числа.</b> Прямые запросы к <span class="mono">data/vestige.db</span> в режиме только для чтения 28.09.2026: живые и погашенные записи, <span class="mono">times_retrieved</span>, <span class="mono">times_useful</span>, теги, длины, таблицы <span class="mono">memory_connections</span>, <span class="mono">consolidation_history</span>, <span class="mono">insights</span>, <span class="mono">composition_events</span>, <span class="mono">fsrs_cards</span>, трассы <span class="mono">agent_traces</span> за 30 дней. Вызовы recall и прочих инструментов — по стенограммам 26 сессий. Статус памяти — <span class="mono">memory_status health</span> и <span class="mono">graph associations</span>. Размеры файлов и кода — <span class="mono">wc</span>, коммиты — <span class="mono">git log</span> с 28.08.2026, разметка заголовков на машину и содержание — ручная. <b>Dream.</b> Две копии базы сняты <span class="mono">VACUUM INTO</span> в скратчпад сессии. На каждой поднят отдельный <span class="mono">vestige-mcp --data-dir &lt;копия&gt;</span> с теми же четырьмя замками, вызовы шли по JSON-RPC. На первой копии выполнены dream и 15 запросов, на второй те же запросы без dream. Состояние записей снималось до и после каждого шага. Оценка связей слепая: 80 пар, равномерно по рангу силы, и отдельно 40 отложенных пар; каждую пару независимо оценили два субагента без инструментов записи. Рабочая база не менялась. <b>Теги и раунды.</b> Все 4,1 млн пар из 2 870 живых записей копии: пересечения тегов по родам (оси с префиксом, темы, теги партий по <span class="mono">gates/topics.json</span> и суффиксу даты), косинус по сохранённым эмбеддингам, общие значения слотов <span class="mono">doc=</span>, <span class="mono">doc2=</span>, <span class="mono">id=</span> после снятия схемы, <span class="mono">www</span> и архивного префикса. Раунд — день создания записи. Слепая оценка: 80 пар из разных дней, по 20 от каждого способа отбора, по два судьи на пару. <b>Дерево и проекции.</b> Те же 200 оценённых пар и 197 записей; два дерева тегов и разметка проекций получены субагентами без доступа к парам и к оценкам; формулы в <span class="mono">score.py</span> зафиксированы до разметки и сверены по sha256; интервалы — бутстреп по нужным и ненужным парам отдельно. <b>Вся база.</b> Проекции 2 870 живых записей копии размечены тем же промптом двадцатью субагентами без доступа к парам; имена сведены сначала детерминированно (<span class="mono">gates/normalize.py</span> для сущностей, номер дела, casefold для документов), затем тремя субагентами по спискам имён; связи посчитаны той же функцией, что на 200 парах. Слепая оценка: 120 связей по шести полосам (оценка × один день или разные дни) и 47 связей из первых трёх у 20 случайных записей, по два судьи; общая доля нужных пересчитана по объёму полос. Около 3,4 млн токенов субагентов. <b>smart.</b> Копия резервной базы от 25.09.2026 18:30 в скратчпаде; 188 записей, созданных позже, отправлены через отдельный <span class="mono">vestige-mcp</span> одиночным <span class="mono">smart_ingest</span> без <span class="mono">forceCreate</span>, на второй копии — партиями по 20 с <span class="mono">batchMergePolicy=smart</span> (остановлено после 40). Пары «новый факт — запись, куда его вклеили» (187) оценены вслепую; в двух партиях из семи — вторым судьёй.</div>
+</section>
+</div>

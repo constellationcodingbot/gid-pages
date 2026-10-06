@@ -1,0 +1,1224 @@
+<title>Лестница исков</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#F1F4F7;
+  --surface:#FFFFFF;
+  --surface-2:#F7F9FB;
+  --ink:#141A23;
+  --ink-2:#4E5966;
+  --ink-3:#79838F;
+  --rule:#DCE2E9;
+  --rule-2:#EAEEF3;
+  --accent:#27406B;
+  --accent-soft:#E7ECF4;
+
+  --s-paid:#0F7350;
+  --s-accrued:#B87214;
+  --s-contested:#A32749;
+  --s-none:#6E4E9C;
+  --s-unver:#6B7480;
+
+  --s-paid-bg:#E4F0EA;
+  --s-accrued-bg:#F7EEDF;
+  --s-contested-bg:#F7E6EB;
+  --s-none-bg:#EEE9F5;
+  --s-unver-bg:#EDEFF2;
+
+  --fd:'Alegreya', Georgia, 'Times New Roman', serif;
+  --fb:'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fm:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --maxw:1180px;
+  --readw:68ch;
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1319;
+    --surface:#171C24;
+    --surface-2:#1D232C;
+    --ink:#E4E9F0;
+    --ink-2:#9BA6B5;
+    --ink-3:#6D7787;
+    --rule:#2A313C;
+    --rule-2:#222831;
+    --accent:#8FAFDD;
+    --accent-soft:#1B2534;
+
+    --s-paid:#2E9C72;
+    --s-accrued:#BF8A22;
+    --s-contested:#D95C7C;
+    --s-none:#9880CC;
+    --s-unver:#8A94A1;
+
+    --s-paid-bg:#12281F;
+    --s-accrued-bg:#2A2211;
+    --s-contested-bg:#2C1720;
+    --s-none-bg:#211C2E;
+    --s-unver-bg:#232830;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1319;
+  --surface:#171C24;
+  --surface-2:#1D232C;
+  --ink:#E4E9F0;
+  --ink-2:#9BA6B5;
+  --ink-3:#6D7787;
+  --rule:#2A313C;
+  --rule-2:#222831;
+  --accent:#8FAFDD;
+  --accent-soft:#1B2534;
+
+  --s-paid:#2E9C72;
+  --s-accrued:#BF8A22;
+  --s-contested:#D95C7C;
+  --s-none:#9880CC;
+
+  --s-paid-bg:#12281F;
+  --s-accrued-bg:#2A2211;
+  --s-contested-bg:#2C1720;
+  --s-none-bg:#211C2E;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--ground);
+  color:var(--ink);
+  font-family:var(--fb);
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+@media (max-width:620px){.wrap{padding:0 16px}}
+
+/* ─── шапка ─── */
+.masthead{
+  border-bottom:1px solid var(--rule);
+  background:var(--surface);
+  padding:56px 0 0;
+}
+.stamp{
+  font-family:var(--fm);
+  font-size:11px;
+  font-weight:500;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--ink-3);
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px 18px;
+  padding-bottom:26px;
+  border-bottom:1px solid var(--rule-2);
+}
+h1{
+  font-family:var(--fd);
+  font-weight:800;
+  font-size:clamp(2.6rem,7vw,4.6rem);
+  line-height:1.02;
+  letter-spacing:-.015em;
+  margin:32px 0 0;
+  text-wrap:balance;
+}
+.dek{
+  font-family:var(--fd);
+  font-size:clamp(1.12rem,2.1vw,1.42rem);
+  line-height:1.5;
+  color:var(--ink-2);
+  max-width:56ch;
+  margin:18px 0 0;
+}
+.masthead-foot{
+  display:flex;flex-wrap:wrap;gap:28px 42px;
+  padding:34px 0 30px;margin-top:32px;
+  border-top:1px solid var(--rule-2);
+}
+.kf{display:flex;flex-direction:column;gap:2px}
+.kf b{
+  font-family:var(--fm);font-weight:600;
+  font-size:1.5rem;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+.kf span{font-size:12.5px;color:var(--ink-3);letter-spacing:.02em}
+
+/* ─── общая типографика ─── */
+section{padding:64px 0}
+section + section{border-top:1px solid var(--rule)}
+.eyebrow{
+  font-family:var(--fm);font-size:11px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;
+  color:var(--accent);margin:0 0 14px;
+}
+h2{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(1.75rem,3.6vw,2.5rem);
+  line-height:1.12;letter-spacing:-.012em;
+  margin:0 0 16px;text-wrap:balance;
+}
+h3{
+  font-family:var(--fd);font-weight:700;
+  font-size:1.32rem;line-height:1.25;
+  margin:0 0 10px;text-wrap:balance;
+}
+p{margin:0 0 16px;max-width:var(--readw)}
+.lede{font-size:1.06rem;color:var(--ink-2)}
+a{color:var(--accent)}
+strong{font-weight:600}
+em{font-style:italic}
+
+/* ─── лестница ─── */
+.rungs{
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  gap:2px;margin:36px 0 10px;
+}
+@media (max-width:820px){.rungs{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:460px){.rungs{grid-template-columns:repeat(2,1fr)}}
+.rung{
+  background:var(--surface);
+  border:1px solid var(--rule);
+  padding:16px 14px 18px;
+  display:flex;flex-direction:column;gap:7px;
+}
+.rung .n{
+  font-family:var(--fm);font-size:11px;font-weight:600;
+  color:var(--ink-3);letter-spacing:.1em;
+}
+.rung .t{font-family:var(--fd);font-weight:700;font-size:1.06rem;line-height:1.2}
+.rung .d{font-size:12.5px;color:var(--ink-3);line-height:1.45}
+
+/* ─── легенда состояний ─── */
+.legend{
+  display:flex;flex-wrap:wrap;gap:10px 20px;
+  margin:0 0 26px;padding:14px 16px;
+  background:var(--surface);border:1px solid var(--rule);
+}
+.lg{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-2)}
+.sw{width:13px;height:13px;flex:0 0 13px;border-radius:2px}
+.sw.paid{background:var(--s-paid)}
+.sw.accrued{background:var(--s-accrued)}
+.sw.contested{background:var(--s-contested)}
+.sw.none{background:var(--s-none)}
+.sw.unver{background:var(--s-unver);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.42) 0 2px,transparent 2px 5px)}
+
+/* ─── чарт ─── */
+.chart{
+  background:var(--surface);border:1px solid var(--rule);
+  padding:26px 24px 20px;overflow-x:auto;
+}
+.chart-h{margin:0 0 4px;font-family:var(--fd);font-weight:700;font-size:1.28rem}
+.chart-sub{font-size:13px;color:var(--ink-3);margin:0 0 24px;max-width:70ch}
+.bars{display:flex;flex-direction:column;gap:11px;min-width:520px}
+.bar-row{display:grid;grid-template-columns:210px 1fr 96px;align-items:center;gap:14px}
+.bar-lab{font-size:13px;line-height:1.3;text-align:right;color:var(--ink-2)}
+.bar-lab b{display:block;color:var(--ink);font-weight:600}
+.bar-track{position:relative;height:22px;background:var(--rule-2);border-radius:2px}
+.bar-fill{
+  height:100%;border-radius:2px 4px 4px 2px;
+  position:relative;transition:filter .12s ease;
+}
+.bar-row:hover .bar-fill{filter:brightness(1.12)}
+.bar-fill.paid{background:var(--s-paid)}
+.bar-fill.accrued{background:var(--s-accrued)}
+.bar-fill.contested{background:var(--s-contested)}
+.bar-fill.none{background:var(--s-none)}
+.bar-fill.unver{background:var(--s-unver);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.38) 0 3px,transparent 3px 7px)}
+.bar-val{
+  font-family:var(--fm);font-size:13px;font-weight:500;
+  font-variant-numeric:tabular-nums;color:var(--ink);
+}
+.bar-row{position:relative}
+.tip{
+  position:absolute;left:224px;top:calc(100% + 4px);z-index:20;
+  background:var(--ink);color:var(--ground);
+  font-size:12.5px;line-height:1.45;padding:8px 11px;
+  max-width:360px;border-radius:3px;
+  opacity:0;visibility:hidden;transition:opacity .12s ease;
+  pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.22);
+}
+.bar-row:hover .tip,.bar-row:focus-within .tip{opacity:1;visibility:visible}
+.chart-note{font-size:12.5px;color:var(--ink-3);margin:22px 0 0;max-width:76ch}
+
+/* ─── дела ─── */
+.cases{display:flex;flex-direction:column;gap:0;margin-top:30px}
+.case{
+  display:grid;
+  grid-template-columns:minmax(0,1.55fr) minmax(0,1fr) 176px;
+  gap:22px;align-items:start;
+  padding:20px 0;border-top:1px solid var(--rule-2);
+}
+.case:first-child{border-top:1px solid var(--rule)}
+@media (max-width:900px){
+  .case{grid-template-columns:1fr;gap:12px}
+}
+.case-name{font-family:var(--fd);font-weight:700;font-size:1.1rem;line-height:1.25;margin:0 0 5px}
+.case-id{
+  font-family:var(--fm);font-size:11.5px;color:var(--ink-3);
+  line-height:1.5;word-break:break-word;
+}
+.case-out{font-size:13.5px;color:var(--ink-2);line-height:1.5}
+.case-out b{color:var(--ink);font-weight:600}
+.case-money{display:flex;flex-direction:column;gap:7px}
+.money-v{
+  font-family:var(--fm);font-weight:600;font-size:.98rem;
+  font-variant-numeric:tabular-nums;line-height:1.25;
+}
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:11.5px;font-weight:500;letter-spacing:.01em;
+  padding:3px 8px;border-radius:2px;width:fit-content;
+}
+.pill.paid{background:var(--s-paid-bg);color:var(--s-paid)}
+.pill.accrued{background:var(--s-accrued-bg);color:var(--s-accrued)}
+.pill.contested{background:var(--s-contested-bg);color:var(--s-contested)}
+.pill.none{background:var(--s-none-bg);color:var(--s-none)}
+.pill.unver{background:var(--s-unver-bg);color:var(--s-unver)}
+
+/* трек лестницы */
+.track{display:flex;gap:2px;margin-top:3px}
+.seg{
+  height:6px;flex:1;background:var(--rule-2);border-radius:1px;
+}
+.seg.on{background:var(--ink-3)}
+.seg.tip-paid{background:var(--s-paid)}
+.seg.tip-accrued{background:var(--s-accrued)}
+.seg.tip-contested{background:var(--s-contested)}
+.seg.tip-none{background:var(--s-none)}
+.seg.tip-unver{background:var(--s-unver);background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.42) 0 2px,transparent 2px 5px)}
+.track-lab{font-family:var(--fm);font-size:10.5px;color:var(--ink-3);letter-spacing:.05em;margin-top:5px}
+
+/* ─── механизмы ─── */
+.mech{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:30px;
+}
+.mx{background:var(--surface);padding:20px 19px 22px;display:flex;flex-direction:column;gap:8px}
+.mx .n{font-family:var(--fm);font-size:11px;font-weight:600;color:var(--accent);letter-spacing:.1em}
+.mx .t{font-family:var(--fd);font-weight:700;font-size:1.07rem;line-height:1.22}
+.mx .b{font-size:13.5px;color:var(--ink-2);line-height:1.52}
+.mx code{font-family:var(--fm);font-size:12px;background:var(--surface-2);padding:1px 4px;border-radius:2px}
+
+/* ─── врезка ─── */
+.pull{
+  border-left:3px solid var(--accent);
+  padding:4px 0 4px 22px;margin:34px 0;
+  max-width:62ch;
+}
+.pull p{
+  font-family:var(--fd);font-size:1.28rem;line-height:1.42;
+  color:var(--ink);margin:0;
+}
+.pull cite{
+  display:block;font-family:var(--fm);font-style:normal;
+  font-size:11.5px;color:var(--ink-3);margin-top:12px;letter-spacing:.03em;
+}
+
+/* ─── провенанс ─── */
+.prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:22px;margin-top:28px}
+.pv{display:flex;flex-direction:column;gap:4px}
+.pv b{font-family:var(--fm);font-size:1.32rem;font-weight:600;font-variant-numeric:tabular-nums}
+.pv span{font-size:12.5px;color:var(--ink-3);line-height:1.45}
+.gaps{margin:22px 0 0;padding:0;list-style:none;max-width:var(--readw)}
+.gaps li{
+  padding:9px 0 9px 20px;border-top:1px solid var(--rule-2);
+  font-size:14px;color:var(--ink-2);position:relative;line-height:1.5;
+}
+.gaps li::before{
+  content:'—';position:absolute;left:0;color:var(--ink-3);
+}
+.gaps li b{color:var(--ink);font-weight:600}
+
+footer{
+  border-top:1px solid var(--rule);background:var(--surface);
+  padding:34px 0 46px;font-size:12.5px;color:var(--ink-3);
+}
+footer p{max-width:78ch;margin:0 0 8px}
+footer code{font-family:var(--fm);font-size:11.5px}
+
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="masthead">
+  <div class="wrap">
+    <div class="stamp">
+      <span>gid · раунды litigation-15y, litigation-gaps, ревизит adtech-remedies и календарь 16.09</span>
+      <span>343 записи в памяти</span>
+      <span>состояние на 03.09.2026 · adtech Минюста и Австралия — на 16.09.2026</span>
+      <span>Google · Meta · 2010–2026</span>
+    </div>
+    <h1>Лестница исков</h1>
+    <p class="dek">Пятнадцать лет судов против Google и Meta на одной шкале: подано — решено — назначена сумма — обжаловано — уплачено — закрыто. Почти ни одно крупное дело не проходит все шесть ступеней. Во второй редакции карты дела, которые прежде были списком пробелов в конце страницы, стоят в общих таблицах: короткая лестница — тоже результат, и он читается только рядом с длинными.</p>
+    <div class="masthead-foot">
+      <div class="kf"><b>6</b><span>ступеней лестницы</span></div>
+      <div class="kf"><b>8 из 44</b><span>дел на этой странице<br>прошли её целиком</span></div>
+      <div class="kf"><b>4</b><span>канала, которыми вообще<br>подтверждается «уплачено»</span></div>
+      <div class="kf"><b>2</b><span>дела, где документ получателя<br>говорит, что деньги дошли</span></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Как читать</p>
+    <h2>Шесть ступеней, на которых дело может застрять</h2>
+    <p class="lede">Пресса считает иски по объявленным суммам. Документы считают иначе: сумма — это четвёртая ступень из шести, и между ней и деньгами на счёте лежат ещё две, каждая из которых регулярно обрывает лестницу. Порядок здесь не украшение — он и есть содержание: ступень, до которой дело дошло, отвечает на вопрос «чем кончилось» точнее любого заголовка.</p>
+
+    <div class="rungs">
+      <div class="rung"><span class="n">01</span><span class="t">Подано</span><span class="d">Жалоба в суде или решение о возбуждении дела регулятором</span></div>
+      <div class="rung"><span class="n">02</span><span class="t">Решение</span><span class="d">Ответственность установлена — вердикт, мнение суда, решение комиссии</span></div>
+      <div class="rung"><span class="n">03</span><span class="t">Сумма</span><span class="d">Названа денежная санкция или утверждено урегулирование</span></div>
+      <div class="rung"><span class="n">04</span><span class="t">Апелляция</span><span class="d">Подана жалоба — сумма перестаёт быть окончательной</span></div>
+      <div class="rung"><span class="n">05</span><span class="t">Уплачено</span><span class="d">Деньги вышли из компании: кассовый платёж, эскроу, транш</span></div>
+      <div class="rung"><span class="n">06</span><span class="t">Закрыто</span><span class="d">Производство прекращено, обжалование исчерпано</span></div>
+    </div>
+
+    <div class="pull">
+      <p>«Решение ЕК окончательно. В июле 2026 мы произвели денежный платёж 5,2 млрд долларов в счёт штрафа плюс набежавшие проценты».</p>
+      <cite>Alphabet, форма 10-Q за II квартал 2026 — дело Android, восемь лет от решения Комиссии до денег</cite>
+    </div>
+
+    <p>Восемь лет — это не аномалия, а норма для европейской ветки. Штраф по делу Shopping Комиссия наложила в июне 2017-го, а деньгами Alphabet заплатила только в III квартале 2024 года, проиграв Суду ЕС. Штраф по AdSense на €1,5 млрд не был уплачен никогда: в сентябре 2024-го Общий суд отменил решение Комиссии целиком, а сама Комиссия подала апелляцию, которая на 01.09.2026 не разрешена. Три исхода — уплачено, уплачено через семь лет, отменено — и все три начинались одинаково: с пресс-релиза о миллиардном штрафе.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Главный результат второй редакции</p>
+    <h2>Кто вообще может подтвердить, что деньги ушли</h2>
+    <p class="lede">Второй раунд шёл целиком за ступенью «уплачено» — за той самой, которой в карте не хватало. Он принёс шесть подтверждённых платежей на несколько десятков денежных позиций, и по дороге выяснилось, почему их так мало: подтвердить эту ступень способны ровно четыре канала, и три из них не федеральные. Дело не доходит до «уплачено» не потому, что деньги не ушли, а потому, что о них некому сообщить.</p>
+
+    <div class="mech">
+      <div class="mx"><span class="n">01</span><span class="t">Финансовый документ получателя</span><span class="b">Бюджет штата или отчёт cy pres-получателя. Нью-Йорк подтвердил свои $34 млн по делу YouTube не словами Google, а обновлением бюджетного плана: платёж прошёл в октябре 2019 года, $28 млн зачислены в General Fund. EPIC написал прямо: «received disbursement of its award in the amount of $1,006,582.88 on December 7, 2022».</span></div>
+      <div class="mx"><span class="n">02</span><span class="t">Отчёт администратора класса суду</span><span class="b">Самое сильное свидетельство во всём материале — акционерное дело Alphabet: разослано чеков на $271 111 078,07, обналичено $267 740 912,41, то есть 105 958 чеков из 110 852. Не «фонд создан», а «люди получили деньги», с точностью до цента и до чека.</span></div>
+      <div class="mx"><span class="n">03</span><span class="t">Собственная страница регулятора</span><span class="b">Сработало ровно один раз: SEC пишет, что Fair Fund «consists of the $100 million collected from Facebook». Оговорка: приказ суда о создании фонда подан самой же Комиссией как proposed order — это одно первоисточниковое подтверждение, а не два независимых.</span></div>
+      <div class="mx"><span class="n">04</span><span class="t">Филинг эмитента — но только при существенности</span><span class="b">Alphabet раскрывает платёж на $5,2 млрд и молчит о $136 млн и $22,5 млн: этих сумм нет в EDGAR вовсе. Отчётность эмитента работает каналом только выше порога существенности, а обе федеральные санкции США против Google лежат ниже него.</span></div>
+    </div>
+
+    <p>Отсюда следствие, которое меняет чтение всей карты. <b>Отсутствие подтверждения об уплате федерального штрафа США или Франции — свойство канала, а не пробел сбора.</b> Федеральный General Fund пер-кейсовой разбивки не публикует; французское казначейство тоже, и CNIL сама пишет, что «ne perçoit pas le montant des amendes» — деньги взыскивает Trésor public, пофамильного реестра нет. Такие позиции на этой странице несут отдельный статус — <span class="pill unver">Уплата неподтверждаема</span> — и это не то же самое, что «не уплачено».</p>
+
+    <p>Второй класс, который нельзя записывать в «не уплачено»: дела, где денежной ступени <b>не существует по построению</b>. Деривативные урегулирования Alphabet — это обязательство потратить, а не заплатить: §1.4(b) соглашения 2020 года требует «cause to be spent a total of $310 million over the course of up to 10 years», получатель — собственная программа компании. <i>Brown</i> — класс по правилу 23(b)(2), где деньги не присуждаются в принципе. Пользовательский класс в <i>Klein</i> Meta выиграла. Австралийское обязательство принято «without any admission of liability». Производства ЕК по DSA стоят на предварительных выводах. Считать их в одной колонке с неуплаченными штрафами — врать в обратную сторону.</p>
+
+    <div class="pull">
+      <p>Между окончательным утверждением урегулирования Street View 18 марта 2020 года и днём, когда деньги дошли до получателя, — 2 года 9 месяцев.</p>
+      <cite>Единственное дело во всём материале, где известны обе даты. Между ними: апелляция возражавшего, мнение Девятого округа 27.12.2021, отказ Верховного суда в certiorari 03.10.2022</cite>
+    </div>
+
+    <p>И финальная честность о пропорции. Из примерно четырёх десятков денежных позиций на этой странице ступень «уплачено» подтверждена у девяти, а «деньги дошли до конечного получателя, и это сказал сам получатель» — у двух: Street View и акционерный класс Alphabet. <i>Ellis</i> подтверждён на уровне рассылки чеков, но сколько из них предъявлено к оплате, неизвестно. Шесть лет спустя после уплаты $100 млн по делу SEC против Facebook деньги до инвесторов не дошли: тринадцатый отчёт агента распределения от октября 2025 года описывает разбор примерно 217 000 ответов на уведомления о дефектах претензий.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Деньги</p>
+    <h2>Что уплачено, что только начислено, что оспаривается</h2>
+    <p class="lede">Ниже — все суммы, которые первоисточники называют в долларах. Санкции в евро, рупиях, лирах и вонах в шкалу не сведены намеренно: курс на дату решения, на дату платежа и на дату отчётности — три разных числа, и раунд не приводит их к одному без метода.</p>
+
+    <div class="legend">
+      <span class="lg"><i class="sw paid"></i>Уплачено — деньги подтверждённо ушли</span>
+      <span class="lg"><i class="sw accrued"></i>Начислено или в рассрочке</span>
+      <span class="lg"><i class="sw contested"></i>Присуждено и оспаривается</span>
+      <span class="lg"><i class="sw none"></i>Денежной ступени нет по построению</span>
+      <span class="lg"><i class="sw unver"></i>Уплата неподтверждаема каналом</span>
+    </div>
+
+    <div class="chart">
+      <p class="chart-h">Денежные позиции против Google и Meta, млрд долларов</p>
+      <p class="chart-sub">Каждая полоса — отдельное дело или урегулирование. Цвет — состояние денег на 01.09.2026, а не размер санкции.</p>
+      <div class="bars" id="bars"></div>
+      <p class="chart-note"><b>Чего в шкале нет по построению.</b> Дела, где денежной санкции не назначено вовсе — поисковое, Epic, FTC против Meta, Oracle, Klein, Brown, — не могут быть полосой: шкала показывает судьбу денег там, где деньги названы, а не долю дел, закончившихся деньгами. Не включены и суммы, для которых первоисточник не даёт долларовой величины, потому что он её не даёт: €1,2 млрд DPC за трансферы данных (исполнение приостановлено Высоким судом Ирландии), €797,72 млн по Facebook Marketplace (обжаловано, T-66/25), €890 млн двумя решениями по DMA против Google от 23.07.2026 (в отчётности не начислены), €200 млн по DMA против Meta (обжаловано, T-435/25), €325 млн CNIL против Google, €50 млн CNIL против Google по делу 2019 года, €465,2 млн idealo и ~€107 млн Producto, ~€542 млн по испанскому делу AMI, ₹1 337,76 крора CCI по Android, A$50 млн австралийской программы выплат. 220 млн долларов Нигерии показаны как единственная не-евровая позиция с долларовым номиналом в самом приказе.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Google · антитраст США</p>
+    <h2>Три дела, ноль штрафов</h2>
+    <p class="lede">Главный вывод по американскому антитрасту: проигрыш в суде и денежная санкция здесь — разные вещи. Ни поисковое дело, ни adtech-дело Минюста, ни дело Epic не назначили Google ни одного доллара штрафа или убытков. Ревизит 03.09.2026 это подтвердил на свежем материале: приказ о ремедиях по adtech-делу отказал в дивестиции и не содержит ни штрафа, ни возмещения — ноль вхождений символа «$» на двух страницах. Мотивировка, раскрытая 16.09.2026, сняла и денежную меру среди ремедий: эскроу и изъятие доходов суд в итоговый акт не включил, сославшись на формулу из поискового дела «lack of specifics is fatal». Вопрос денег при этом закрыт не полностью: возмещение судебных расходов и гонораров истцы должны просить отдельным ходатайством.</p>
+
+    <div class="cases">
+      <div class="case">
+        <div>
+          <p class="case-name">Поиск: США и штаты против Google</p>
+          <p class="case-id">D.D.C. № 1:20-cv-03010-APM · Colorado № 1:20-cv-03715-APM · судья Amit P. Mehta · подано 20.10.2020 · 747 F. Supp. 3d 1 (D.D.C. 2024)</p>
+        </div>
+        <div class="case-out">Ответственность 05.08.2024 по секции 2 Sherman Act. Ремедийное мнение ECF 1436 (230 с.) <b>отказало в дивестиции Chrome</b> и в запрете платежей за дефолт. Final Judgment ECF 1462 от 05.12.2025 — 35 страниц поведенческих запретов, обязанность делиться данными и синдицировать выдачу; срок шесть лет. Обжаловали обе стороны, тремя номерами в D.C. Cir.: 26-5023 — Google (единственная из трёх охватывает и колорадское дело), 26-5047 — США и 13 штатов, 26-5049 — 37 штатов и территорий. Обе февральские жалобы формально на решение по 20-3010; дела ведутся согласованно.</div>
+        <div class="case-money">
+          <span class="money-v">Санкции нет</span>
+          <span class="pill none">Денег не будет</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg tip-none"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">дошло до 3 из 6</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Adtech: Минюст против Google</p>
+          <p class="case-id">E.D. Va. № 1:23-cv-00108-LMB-JFA · судья Leonie M. Brinkema · 778 F. Supp. 3d 797 (E.D. Va. 2025)</p>
+        </div>
+        <div class="case-out">17.04.2025 — смешанное решение: инструменты рекламодателя и сделки DoubleClick/AdMeld признаны законными, издательские инструменты — нет. <b>02.09.2026 вынесен приказ о ремедиях ECF 1857: во всех трёх структурных мерах ОТКАЗАНО</b> — «the divestiture of AdX, the open-sourcing of DFP’s final auction logic, and the contingent divestiture of DFP Remainder, be and are REJECTED». Мотивировка ECF 1858 раскрыта <b>16.09.2026 целиком, без редакций</b> (ECF 1860, после совместного уведомления сторон ECF 1859). Структурные меры суд назвал «neither realistic nor needed»; вместо них — большинство предложенных сторонами поведенческих мер с поправками суда, в том числе: запрет увязывать DFP с AdX и возвращать First Look и Last Look, снятие Unified Pricing Rules в DFP для всех непрямых сделок (по расчёту эксперта истцов, одно это снизит комиссию AdX с 20% до примерно 16,6%; метод в решении не описан), интеграции AdX и DFP с Prebid, а AdX — ещё и с чужими рекламными серверами издателей, данные издателям только по open-web display, документация финального аукциона DFP вместо открытого кода, меры по AdWords без DV360. Монитор с техническим комитетом из трёх человек за счёт Google. Срок — 6 лет (истцы просили 15), вступление в силу через 60 дней после внесения (работа по назначению монитора и созданию комитета — сразу), действие по всему миру. <b>Эскроу из 50% «net revenues» AdX и DFP (выручка за вычетом переменных затрат) и изъятие доходов в итоговый акт не включены</b>: истцы не связали 50% с выводом о завышенной комиссии AdX, изъятие выручки DFP не опирается ни на один вывод суда, а распределение денег между издателями не указано. Сам довод Google, что Закон Шермана изъятия доходов не допускает, суд в сноске 40 отверг. Итогового акта нет: совместный проект стороны должны подать к 02.10.2026, на 16.09.2026 в докете его нет. Денежное требование США закрыто ещё в 2024-м чеком на $2 289 751.</div>
+        <div class="case-money">
+          <span class="money-v">$2 289 751</span>
+          <span class="pill paid">Уплачено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg"></i><i class="seg tip-paid"></i><i class="seg"></i></div>
+          <span class="track-lab">мотивировка раскрыта, проект итогового акта — к 02.10.2026</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Adtech: штаты против Google</p>
+          <p class="case-id">E.D. Tex. № 4:20-cv-00957-SDJ · судья Sean D. Jordan · подано 16.12.2020 · 17 истцов</p>
+        </div>
+        <div class="case-out">Дважды меняло суд: перенос в MDL 3010 в 2021-м, возврат в Техас в 2023-м. 18.06.2025 — меморандум на 188 страниц, частично снявший суд присяжных. 17.07.2025 суд отменил процесс, назначенный на 11.08.2025, и <b>приостановил все сроки и слушания до внесения итогового решения по виргинскому делу</b>; через неделю после его внесения стороны подают совместное уведомление. Мотивировка ремедий в Вирджинии раскрыта 16.09.2026, но итоговое решение там не внесено — к 02.10.2026 подаётся только его проект, — поэтому техасское дело остаётся приостановленным: в докете после приказа только процедурные записи (RECAP на 24.07.2026). Гражданские штрафы заявлены, но не присуждены.</div>
+        <div class="case-money">
+          <span class="money-v">Не присуждено</span>
+          <span class="pill none">Денег не будет</span>
+          <div class="track"><i class="seg on"></i><i class="seg tip-none"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">дошло до 2 из 6</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Epic Games против Google</p>
+          <p class="case-id">N.D. Cal. № 3:20-cv-05671-JD · MDL № 3:21-md-02981-JD · судья James Donato · подано 13.08.2020</p>
+        </div>
+        <div class="case-out">Единогласный вердикт присяжных 11.12.2023 — все одиннадцать вопросов «YES». Постоянный запрет 07.10.2024, оставлен в силе Девятым округом 31.07.2025. Петиция о certiorari <b>прекращена по соглашению сторон 09.03.2026</b>, а не отклонена. Убытков не присуждалось: в форме вердикта нет ни одного вопроса о их размере.</div>
+        <div class="case-money">
+          <span class="money-v">Убытков нет</span>
+          <span class="pill none">Денег не будет</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg"></i><i class="seg on"></i><i class="seg"></i><i class="seg tip-none"></i></div>
+          <span class="track-lab">запрет исполняется до 01.11.2027</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Play Store: 50 штатов и потребители</p>
+          <p class="case-id">N.D. Cal. № 3:21-cv-05227-JD · parens patriae по 15 U.S.C. § 15c</p>
+        </div>
+        <div class="case-out">$700 млн тремя платежами: $1 млн и $629 млн в потребительский эскроу, $70 млн — суверенным требованиям штатов. Деньги внесены эскроу-агенту в мае 2024, но <b>приказ о порядке уведомления вышел только 20.11.2025</b> — почти через два года после подачи ходатайства. Итоговый акт — 18.08.2026.</div>
+        <div class="case-money">
+          <span class="money-v">$700 млн</span>
+          <span class="pill paid">Уплачено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-paid"></i></div>
+          <span class="track-lab">все шесть ступеней</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Oracle против Google</p>
+          <p class="case-id">N.D. Cal. № 3:10-cv-03561-WHA · SCOTUS № 18-956 · Fed. Cir. № 2017-1118, 2017-1202</p>
+        </div>
+        <div class="case-out">Десять лет спора об API Java. 05.04.2021 Верховный суд голосами 6:2 признал копирование ~11 500 строк добросовестным использованием. Суда о размере убытков <b>так и не состоялось</b>, Федеральный округ подтвердил решение в пользу Google, мандат внесён 23.06.2021.</div>
+        <div class="case-money">
+          <span class="money-v">$0</span>
+          <span class="pill none">Денег не будет</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg"></i><i class="seg on"></i><i class="seg"></i><i class="seg tip-none"></i></div>
+          <span class="track-lab">закрыто, ноль</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Google · приватность, штаты и акционеры</p>
+    <h2>Здесь и только здесь деньги доходят до людей</h2>
+    <p class="lede">Эти шесть лестниц в первой редакции карты стояли списком пробелов в конце страницы. Их отсутствие искажало главный вывод: именно они — единственный класс дел, где ступень «уплачено» вообще достижима, потому что у частного иска и у иска штата есть получатель, умеющий отчитаться о полученных деньгах. У федерального штрафа такого получателя нет.</p>
+
+    <div class="cases">
+      <div class="case">
+        <div>
+          <p class="case-name">Street View: перехват Wi-Fi</p>
+          <p class="case-id">N.D. Cal. MDL № 3:10-md-02184-CRB · судья Charles R. Breyer · подано 17.08.2010 · 611 F. Supp. 3d 872 (N.D. Cal. 2020) · 9th Cir. № 20-15616</p>
+        </div>
+        <div class="case-out">Двенадцать лет от подачи до денег. Окончательное утверждение 18.03.2020 (ECF 211), апелляция возражавшего разрешена Девятым округом 27.12.2021, в certiorari отказано 03.10.2022. Чистый фонд $9 000 375 поделён поровну между девятью cy pres-получателями. <b>EPIC подтвердил получение $1 006 582,88 07.12.2022</b> — на $6 541 больше расчётной доли, и разница в документах не объяснена.</div>
+        <div class="case-money">
+          <span class="money-v">$13 млн фонд</span>
+          <span class="pill paid">Уплачено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-paid"></i></div>
+          <span class="track-lab">все шесть, подтверждено получателем</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Акционерный класс Alphabet</p>
+          <p class="case-id">N.D. Cal. № 3:18-cv-06245-TLT · держатели акций 23.04.2018–30.04.2019 · утверждено 30.09.2024, решение 08.10.2024</p>
+        </div>
+        <div class="case-out">Дело выросло из раскрытия уязвимости Google+, но по существу — securities class. Из фонда $350 млн оплачены $66,5 млн гонорара, $1 540 059,57 издержек и $4 082 655,26 администрирования. В июле 2025 разослано <b>$271 111 078,07</b>, на 14.10.2025 обналичено <b>$267 740 912,41</b> — 105 958 чеков из 110 852. Надзор суда продолжается минимум до февраля 2027.</div>
+        <div class="case-money">
+          <span class="money-v">$350 млн</span>
+          <span class="pill paid">Уплачено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-paid"></i></div>
+          <span class="track-lab">98,76% разосланного обналичено</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Rodriguez против Google</p>
+          <p class="case-id">N.D. Cal. № 3:20-cv-04688-RS · Web &amp; App Activity · вердикт 03.09.2025 · окончательное решение 02.03.2026</p>
+        </div>
+        <div class="case-out">Вердикт присяжных <b>смешанный</b>: $425 651 947 по калифорнийскому деликту вторжения в частную жизнь, но по CDAFA выиграла Google. К дате решения сумма выросла до $440 345 685,40 — проценты 7% годовых, $81 631,88 в день, ровно 180 дней. Пост-триальные ходатайства отклонены 28.08.2026 (ECF 1009; тем же днём ECF 1010 присудил гонорары класс-каунсел). <b>21.09.2026 Google подала апелляцию</b> (ECF 1017) на окончательное решение и на ECF 1009 — 9th Cir. № 26-6237, вступительная записка Google к 14.12.2026. Отдельно Gregory R. Bronner обжаловал приказ о гонорарах ECF 1010 (ECF 1021); его процессуальный статус и номер апелляции на 01.10.2026 не установлены. Спор об издержках продолжается: секретарь начислил Google $152 654, Google оспаривает (состояние на 01.10.2026).</div>
+        <div class="case-money">
+          <span class="money-v">$440 345 685,40</span>
+          <span class="pill contested">Присуждено и оспаривается</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-contested"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">апелляция подана 21.09.2026 · 9th Cir. № 26-6237</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Ellis против Google: гендерный разрыв в оплате</p>
+          <p class="case-id">Superior Court of California, San Francisco, № CGC-17-561299 · Department 613 · судья Andrew Y.S. Cheng · утверждено 25.10.2022</p>
+        </div>
+        <div class="case-out">$118 млн — валовой фонд; к распределению между участницами класса предназначено около $86 млн после вычета до $29,5 млн гонорара (25%), $1 млн штрафов PAGA, до $1,5 млн расходов, $135 000 администрирования и до $225 000 четырём именным истицам. Администратор JND проставил «Settlement Distribution Date — MAILED January 26, 2023», срок действия чеков истёк 25.07.2023. <b>Сколько чеков предъявлено к оплате, неизвестно.</b></div>
+        <div class="case-money">
+          <span class="money-v">$118 млн</span>
+          <span class="pill paid">Уплачено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-paid"></i><i class="seg"></i></div>
+          <span class="track-lab">подтверждено на уровне рассылки чеков</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">YouTube и COPPA: два штрафа в одном приказе</p>
+          <p class="case-id">D.D.C. № 1:19-cv-02642-BAH · FTC и штат Нью-Йорк · подано 04.09.2019 · приказ 10.09.2019 · дело прекращено 04.11.2019</p>
+        </div>
+        <div class="case-out">«Около $170 млн» — это две суммы разной правовой природы. $136 млн в пользу FTC как civil penalty: деньги на момент подписания уже лежали на эскроу-счёте адвокатов Google, срок платежа 30 дней, но <b>подтверждения уплаты нет ни в докете, ни в EDGAR, ни в финансовом отчёте FTC за 2020 год</b>, где слово YouTube не встречается ни разу. $34 млн Нью-Йорку как «damages, restitution, or other compensation» — уплачены в октябре 2019, $28 млн зачислены в General Fund, и это подтверждает бюджетный документ штата.</div>
+        <div class="case-money">
+          <span class="money-v">$136 млн + $34 млн</span>
+          <span class="pill unver">Половина неподтверждаема</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg"></i><i class="seg tip-unver"></i><i class="seg"></i></div>
+          <span class="track-lab">штат отчитался, федеральная касса — нет</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Деривативы Alphabet 2020 и 2025</p>
+          <p class="case-id">Santa Clara № 19CV341522 (в одном филинге ошибочно как 19CV343086) · Del. Ch. C.A. № 2019-0355-SG · второе урегулирование — решение 22.10.2025</p>
+        </div>
+        <div class="case-out">Ни одно из двух не порождает платежа. Соглашение 2020 года: «Alphabet shall cause to be spent a total of $310 million over the course of up to 10 years» — деньги идут в собственную программу Workplace Initiative, расходование контролирует сама компания, отчитывается её Chief Diversity Officer. Урегулирование 2025 года на $500 млн устроено так же: десять лет трат на комплаенс, на 01.09.2026 подтверждено лишь создание комитета совета директоров. Наличными платят только страховщики D&amp;O — гонорары $37,4 млн.</div>
+        <div class="case-money">
+          <span class="money-v">$310 млн + $500 млн</span>
+          <span class="pill none">Денежной ступени нет</span>
+          <div class="track"><i class="seg on"></i><i class="seg"></i><i class="seg on"></i><i class="seg"></i><i class="seg tip-none"></i><i class="seg"></i></div>
+          <span class="track-lab">обязательство тратить, получатель — сама компания</span>
+        </div>
+      </div>
+
+    </div>
+
+    <p style="margin-top:34px">Отдельной строкой — <b>пять штатных приватностных урегулирований Google</b>, включая техасские $1,375 млрд от 31.10.2025: ни по одному не получено подтверждения перевода денег. Здесь пробел действительно на нашей стороне, а не на стороне канала. Искать надо в реестрах судов штатов на предмет satisfaction of judgment (22-2-01103-3 SEA, CV2020-006219, 49D01-2201-PL-002399, 2022-CA-000330 B, 22-01-88230-D) и в бюджетной отчётности штатов-получателей — этого раунд не делал.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Google · Европа и мир</p>
+    <h2>Единственная ветка, где деньги доходят</h2>
+    <p class="lede">Из пяти крупных европейских санкций против Google две уплачены деньгами, одна отменена целиком, одна закрыта банковскими гарантиями, одна даже не начислена. Это самая полная лестница во всём материале — и одновременно самая медленная. Рядом с ней во второй редакции стоят четыре ветки, которых прежде не было: два немецких follow-on-решения крупнее шведского, старейший европейский штраф по GDPR, канадское дело о дивестиции и два свежих производства Комиссии против поиска.</p>
+
+    <div class="cases">
+      <div class="case">
+        <div>
+          <p class="case-name">Android · AT.40099</p>
+          <p class="case-id">C(2018) 4761 final от 18.07.2018 · T-604/18 · C-738/22 P</p>
+        </div>
+        <div class="case-out">EUR 4 342 865 000 → Общий суд 14.09.2022 снизил до EUR 4 125 000 000 (на 5,02%) → Суд ЕС 02.07.2026 отклонил апелляцию: «Dismisses the appeal». <b>Уплачено в июле 2026</b> — $5,2 млрд с процентами, больше первоначального долларового начисления $5,1 млрд, хотя штраф в евро уменьшился.</div>
+        <div class="case-money">
+          <span class="money-v">$5,2 млрд</span>
+          <span class="pill paid">Уплачено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-paid"></i></div>
+          <span class="track-lab">восемь лет, все шесть ступеней</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Shopping · AT.39740</p>
+          <p class="case-id">C(2017) 4444 final от 27.06.2017 · T-612/17 · C-48/22 P</p>
+        </div>
+        <div class="case-out">EUR 2 424 495 000. Общий суд 10.11.2021 отменил статью 1 только в части 13 национальных рынков и штраф не снизил; Суд ЕС Большой палатой 10.09.2024 отклонил апелляцию. Alphabet: «In the third quarter of 2024, we made a cash payment of $3.0 billion for the fine».</div>
+        <div class="case-money">
+          <span class="money-v">$3,0 млрд</span>
+          <span class="pill paid">Уплачено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-paid"></i></div>
+          <span class="track-lab">семь лет, все шесть ступеней</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">AdSense for Search · AT.40411</p>
+          <p class="case-id">C(2019) 2173 final от 20.03.2019 · T-334/19 · C-826/24 P</p>
+        </div>
+        <div class="case-out">EUR 1 494 459 000. 18.09.2024 Общий суд <b>отменил решение целиком</b>. Деньги никогда не платились — стояли банковские гарантии. При этом начисление $1,7 млрд Alphabet не сторнировала, а Комиссия 03.12.2024 подала апелляцию в Суд ЕС, не разрешённую на 01.09.2026.</div>
+        <div class="case-money">
+          <span class="money-v">€1,49 млрд<br>отменено</span>
+          <span class="pill none">Денег не будет</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-none"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">решение аннулировано</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Adtech · AT.40670</p>
+          <p class="case-id">решение от 05.09.2025, ст. 2 · EUR 2 954 291 000 · T-794/25</p>
+        </div>
+        <div class="case-out">Единое продолжаемое нарушение из двух — Buy-side с 01.01.2014 и Sell-side. Базовая сумма увеличена <b>на 60% за рецидив</b> со ссылкой на решения 2017 и 2018 годов, смягчающих обстоятельств не найдено. Alphabet начислила $3,5 млрд, а в IV квартале 2025 внесла банковские гарантии вместо денег. Обжаловано 20.11.2025.</div>
+        <div class="case-money">
+          <span class="money-v">$3,5 млрд<br>начислено</span>
+          <span class="pill accrued">Начислено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-accrued"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">гарантии вместо платежа</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">DMA: самопреференцирование и антистиринг</p>
+          <p class="case-id">два решения от 23.07.2026 · IP/26/1670</p>
+        </div>
+        <div class="case-out">EUR 460 млн за самопреференцирование в Search и EUR 430 млн за ограничения увода разработчиков в Play. Ходовая цифра «€890 млн» — <b>сумма двух штрафов, а не единая санкция</b>. В отчётности Alphabet не начислены: 10-Q подана в тот же день и описывает производства ещё на стадии предварительных выводов марта 2025.</div>
+        <div class="case-money">
+          <span class="money-v">€890 млн</span>
+          <span class="pill accrued">Не начислено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg tip-accrued"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">апелляционный срок идёт</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">PriceRunner (Klarna) против Google</p>
+          <p class="case-id">Стокгольмский патентный и рыночный суд · июль 2026</p>
+        </div>
+        <div class="case-out">Частный follow-on-иск после дела Shopping. Присуждено «approximately $2.1 billion (awarded in multiple currencies)» основного долга плюс проценты и издержки. Alphabet признала сумму во II квартале 2026 и подала апелляцию. В 10-Q иск приведён как <b>пример</b>, не как первый и не как крупнейший.</div>
+        <div class="case-money">
+          <span class="money-v">~$2,1 млрд</span>
+          <span class="pill contested">Оспаривается</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-contested"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">решение не окончательное</span>
+        </div>
+      </div>
+      <div class="case">
+        <div>
+          <p class="case-name">idealo и Producto: ЛГ Берлин II</p>
+          <p class="case-id">Landgericht Berlin II · 16 O 195/19 Kart (2) и 16 O 275/24 · follow-on от дела Shopping · решения объявлены 13–14.11.2025</p>
+        </div>
+        <div class="case-out">Крупнее и раньше шведского PriceRunner, но невидимо: по иску ценового агрегатора idealo присуждено <b>374 094 751,88 € основного долга и 91 126 641,82 € процентов</b> — «около 465 млн» в заголовках это сумма двух компонент, а не строка резолютивной части. По иску Producto (Testberichte.de) три независимых источника дают «gut 107 Millionen», heise — 103,7 млн, и базу счёта не объясняет никто. Решение опубликовано в базе судебной практики Берлина, но пресс-служба берлинских судов о нём не сообщала: в индексе 2025 года 42 релиза и ноль упоминаний Google. В отчётности Alphabet слов Idealo, Germany и Berlin нет вовсе.</div>
+        <div class="case-money">
+          <span class="money-v">≈€465,2 млн + ≈€107 млн</span>
+          <span class="pill contested">Присуждено и оспаривается</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-contested"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">обе стороны заявили об апелляции в Kammergericht</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">CNIL: первый крупный штраф по GDPR</p>
+          <p class="case-id">Délibération № SAN-2019-001 от 21.01.2019 · Conseil d'État № 430810 · ECLI:FR:CECHR:2020:430810.20200619</p>
+        </div>
+        <div class="case-out">€50 млн — «au vu du montant maximum encouru établi sur la base de 4% du chiffre d'affaires», но арифметики в решении нет, и Conseil d'État прямо снял с коллегии обязанность её приводить (п. 26). Жалоба Google отклонена 19.06.2020, сумма признана соразмерной. Уплата <b>не подтверждается и не подтвердится</b>: CNIL сама пишет, что «ne perçoit pas le montant des amendes» — взыскивает Trésor public, пофамильного реестра нет, в отчёте Счётной палаты за 2020 год ни CNIL, ни Google не упомянуты. В анонимизированной редакции на Légifrance ответчик значится как «la société x»: анонимизация через два года заложена в самом решении.</div>
+        <div class="case-money">
+          <span class="money-v">€50 млн</span>
+          <span class="pill unver">Уплата неподтверждаема</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-unver"></i><i class="seg"></i></div>
+          <span class="track-lab">апелляция исчерпана, касса молчит</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Канада: Бюро по конкуренции против Google</p>
+          <p class="case-id">Competition Tribunal № CT-2024-010 · подано 28.11.2024 · ст. 79 Закона о конкуренции · Justice Andrew D. Little</p>
+        </div>
+        <div class="case-out">Требование — <b>дивестиция DFP и AdX</b> плюс административный штраф. Исходная формула («трёхкратная выгода либо 3% мировой валовой выручки») 08.07.2025 заменена на «in such an amount as the Tribunal decides is appropriate»: до правки Google оценивала свою экспозицию в 90+ млрд канадских долларов, и Трибунал назвал эту оценку «hypothetical and unreliable». Конституционный вызов Google отклонён 03.03.2026 (2026 Comp Trib 10), апелляция подана в Федеральный апелляционный суд 13.03.2026. Слушание по ответственности — январь–март 2027. В отчётности Alphabet слов Competition Bureau нет.</div>
+        <div class="case-money">
+          <span class="money-v">Не присуждено</span>
+          <span class="pill none">Денег пока нет</span>
+          <div class="track"><i class="seg on"></i><i class="seg"></i><i class="seg"></i><i class="seg tip-none"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">дело разбито на ответственность и ремедии</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Комиссия против поиска: два новых производства</p>
+          <p class="case-id">DMA, site reputation abuse — IP/25/2675 от 13.11.2025 · антитраст AT.40983 — IP/25/2964 от 09.12.2025</p>
+        </div>
+        <div class="case-out">Первое проверяет, применяет ли Google «fair, reasonable and non-discriminatory conditions of access to publishers' websites», второе — использование контента издателей и YouTube для обучения ИИ по ст. 102 TFEU. Комиссия обещала уложиться в 12 месяцев. Google уже подстроилась: 28.08.2026 в блоге Search Central — «Following discussion with the European Commission, we are adjusting our enforcement approach within the EEA». Ни одно из двух в отчётности Alphabet не раскрыто. Штраф €890 млн от 23.07.2026 к ним отношения не имеет — он по двум делам, открытым в марте 2024 года.</div>
+        <div class="case-money">
+          <span class="money-v">Санкции нет</span>
+          <span class="pill none">Денежной ступени пока нет</span>
+          <div class="track"><i class="seg on"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">номер дела DMA публично не назван</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Meta · США</p>
+    <h2>Антитраст проигран регулятором, приватность оплачена</h2>
+    <p class="lede">У Meta лестница устроена зеркально к Google: главное антимонопольное дело компания выиграла, а самые крупные подтверждённые платежи прошли по приватности — и прошли до конца, вплоть до сумм на человека.</p>
+
+    <div class="cases">
+      <div class="case">
+        <div>
+          <p class="case-name">FTC против Meta</p>
+          <p class="case-id">D.D.C. № 1:20-cv-03590 · судья James E. Boasberg · подано 09.12.2020 · апелляция D.C. Cir. № 26-5028</p>
+        </div>
+        <div class="case-out">Первая жалоба отклонена 28.06.2021, вторая пережила motion to dismiss 11.01.2022. 18.11.2025 <b>решение в пользу Meta</b>: разделения Instagram и WhatsApp не будет. Основание — не оправдание поглощений, а провал по рынку: «including TikTok alone defeats the FTC's case». Апелляция FTC подана 20.01.2026, брифинг идёт.</div>
+        <div class="case-money">
+          <span class="money-v">Иск отклонён</span>
+          <span class="pill none">Денег не будет</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg"></i><i class="seg tip-none"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">апелляция не решена</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Приватность: США против Facebook</p>
+          <p class="case-id">D.D.C. № 1:19-cv-02184 · Stipulated Order ECF 4-1 · FTC Docket C-4365</p>
+        </div>
+        <div class="case-out">Гражданское взыскание $5 млрд по секции 5(l) FTC Act, а не административный приказ: жалобу подал Минюст по поручению Комиссии голосованием 3–2. Утверждено 23.04.2020, уплачено в апреле 2020. Но дело <b>формально закрыто и при этом живо</b>: FTC пытается изменить приказ с 2023 года, D.C. Circuit реверсировал отказ в 2025-м, брифинг завершён в мае 2026; слушание по возобновлённому ходатайству Meta (ECF 74) назначено на 22.10.2026.</div>
+        <div class="case-money">
+          <span class="money-v">$5,0 млрд</span>
+          <span class="pill paid">Уплачено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-paid"></i></div>
+          <span class="track-lab">уплачено, спор о приказе идёт</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Cambridge Analytica: класс пользователей</p>
+          <p class="case-id">N.D. Cal. № 3:18-md-02843-VC · судья Vince Chhabria</p>
+        </div>
+        <div class="case-out">$725 млн, окончательное утверждение 10.10.2023, финальность — 14.05.2025 после трёх апелляций возражающих. Фонд с процентами вырос до $793,5 млн; <b>доставлено $466,0 млн</b> 15,65 млн платежами, средняя выплата $29,43. Из 28,65 млн заявок 8,3 млн отклонены по индикаторам фрода.</div>
+        <div class="case-money">
+          <span class="money-v">$725 млн</span>
+          <span class="pill paid">Уплачено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-paid"></i><i class="seg"></i></div>
+          <span class="track-lab">второе распределение идёт</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">BIPA: биометрия в Иллинойсе</p>
+          <p class="case-id">N.D. Cal. № 3:15-cv-03747-JD · судья James Donato</p>
+        </div>
+        <div class="case-out">$650 млн — «By any measure … a landmark result». Единственная лестница во всём материале, где известна сумма на человека: администратор получил из эскроу $549 981 996,58 и выпустил платежи 1 384 659 членам класса — <b>«Each approved claim was awarded $397»</b>. Гонорар суд снизил до $97,5 млн.</div>
+        <div class="case-money">
+          <span class="money-v">$650 млн</span>
+          <span class="pill paid">Уплачено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-paid"></i></div>
+          <span class="track-lab">$397 на человека</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Техас против Meta: биометрия</p>
+          <p class="case-id">Cause No. 22-0121, 71-й судебный округ, округ Харрисон, Техас</p>
+        </div>
+        <div class="case-out">«The total sum of $1,400,000,000.00» по §II.A — рассрочка на пять лет: $500 млн в 30 дней, из них <b>$225 млн внешним юристам штата</b>, и четыре транша по $225 млн в 2025–2028 годах. Потолок в §II.B не абсолютный: §II.C добавляет сверх суммы проценты за просрочку. Компенсаций потребителям не предусмотрено.</div>
+        <div class="case-money">
+          <span class="money-v">$1,4 млрд</span>
+          <span class="pill accrued">В рассрочке</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-accrued"></i><i class="seg"></i></div>
+          <span class="track-lab">последний транш в 2028</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Вред подросткам: MDL и суды штатов</p>
+          <p class="case-id">N.D. Cal. № 4:22-md-03047-YGR · JCCP № 5255 · First Judicial District Court, Нью-Мексико</p>
+        </div>
+        <div class="case-out">До федерального consent judgment от 26.08.2026 Meta проиграла два процесса в судах штатов: 25.03.2026 присяжные в Калифорнии присудили $6 млн, распределив 70% на Meta и 30% на YouTube; 24.03.2026 присяжные Нью-Мексико наложили гражданский штраф <b>$375 млн</b>, а штат требует ещё $953 млн на устранение вреда. Само федеральное дело генпрокуроров (4:23-cv-05448) успело дойти до присяжных: процесс шёл с 12.08.2026 и был урегулирован consent judgment 26.08.2026 до вердикта. Процессы-ориентиры школьных округов в MDL: в шапке CMO 37 (ECF 3534) стоит «Bellwether Trials: February 3, 2027»; по проекту графика сторон (ECF 3541, судом пока не утверждён) 03.02.2027 — отбор присяжных, 08.02.2027 — начало процесса.</div>
+        <div class="case-money">
+          <span class="money-v">$375 млн + $4,2 млн</span>
+          <span class="pill contested">Оспаривается</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg tip-contested"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">вердикты, не судебные акты</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Жилищная реклама: HUD и Минюст</p>
+          <p class="case-id">S.D.N.Y. № 1:22-cv-05187 · судья John G. Koeltl</p>
+        </div>
+        <div class="case-out">Денежная часть — <b>$115 054</b>, максимальный гражданский штраф по Fair Housing Act. Содержание не в деньгах: Meta построила Variance Reduction System, снижающую расхождение аудиторий по полу и оценочной расе, и пять раз отчиталась перед независимым рецензентом Guidehouse. Срок соглашения истёк 27.06.2026.</div>
+        <div class="case-money">
+          <span class="money-v">$115 054</span>
+          <span class="pill paid">Уплачено</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-paid"></i></div>
+          <span class="track-lab">срок истёк 27.06.2026</span>
+        </div>
+      </div>
+      <div class="case">
+        <div>
+          <p class="case-name">SEC против Facebook</p>
+          <p class="case-id">N.D. Cal. № 3:19-cv-04241-JD · судья James Donato · подано 24.07.2019 · прекращено 22.08.2019</p>
+        </div>
+        <div class="case-out">Отдельный от FTC инструмент по тем же событиям Cambridge Analytica, и самый короткий: 29 дней от жалобы до прекращения. Ответственность не устанавливалась — ECF 6 озаглавлен «CONSENT OF DEFENDANT FACEBOOK, INC. TO ENTRY OF FINAL JUDGMENT», право на апелляцию отказано в самом акте. $100 млн уплачены; приказ ECF 14 от 17.08.2020 создал из них Fair Fund по §308(a) Sarbanes-Oxley. <b>За шесть лет деньги до инвесторов не дошли:</b> тринадцатый отчёт агента распределения от 16.10.2025 описывает разбор около 217 000 ответов на уведомления о дефектах претензий.</div>
+        <div class="case-money">
+          <span class="money-v">$100 млн</span>
+          <span class="pill paid">Уплачено, но не роздано</span>
+          <div class="track"><i class="seg on"></i><i class="seg"></i><i class="seg on"></i><i class="seg"></i><i class="seg on"></i><i class="seg tip-paid"></i></div>
+          <span class="track-lab">фонд создан в 2020-м, распределение идёт</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Нью-Мексико против Meta: дети</p>
+          <p class="case-id">1st Jud. Dist. Ct., Santa Fe County № D-101-CV-2023-02838 · Chief Judge Bryan Biedscheid · подано 05.12.2023 · итоговый акт 06.08.2026</p>
+        </div>
+        <div class="case-out">Процесс в две фазы: присяжные (02.02–24.03.2026) и судья (04–22.05.2026). Вердикт $375 млн собран по формуле, напечатанной в акте: 75 000 нарушений Unfair Practices Act × максимальные $5 000. Отдельно суд обязал внести <b>$567 млн в фонд абатемента</b>, разложенный таблицей по категориям. Число «$942 млн» из заголовка пресс-релиза генпрокурора в акте не встречается ни разу — это сложение двух позиций, и в теле того же релиза оно названо «total financial exposure». 19.08.2026 Meta просила разрешить внести залог $1,8 млрд, чтобы остановить взыскание.</div>
+        <div class="case-money">
+          <span class="money-v">$375 млн + $567 млн</span>
+          <span class="pill contested">Присуждено и оспаривается</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-contested"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">срок на апелляцию истекает около 05.09.2026</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Нью-Мексико против Meta: приватность и модерация</p>
+          <p class="case-id">Второе, самостоятельное производство · D-101-CV-2021-00132 (номер из досудебного приказа суда; машинного резолвера нет — CourtListener суды штатов не покрывает) · процесс идёт с 08.09.2026</p>
+        </div>
+        <div class="case-out">Раскрыто только ответчиком и в другом разделе отчётности — «Privacy and Related Matters», тогда как детское дело описано в «Youth-Related Actions». Самостоятельность подтверждается историей филингов: эта строка стоит в приватностном разделе как минимум с III квартала 2024 года. Штат, по пересказу Meta, «intend to seek up to $62.85 billion in penalties» — заявленное намерение истца, метод расчёта нигде не описан.</div>
+        <div class="case-money">
+          <span class="money-v">до $62,85 млрд заявлено</span>
+          <span class="pill none">Требование, а не присуждённое</span>
+          <div class="track"><i class="seg tip-none"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">процесс начался 08.09.2026, приказ обещает окончание к 02.10.2026 — исход не проверялся (срез 25.09.2026)</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Округ Колумбия против Facebook</p>
+          <p class="case-id">Superior Court № 2018-CA-008715-B · апелляция D.C. Ct. App. № 23-CV-0550 · решение 31.07.2025</p>
+        </div>
+        <div class="case-out">Апелляционный суд отменил решение в пользу Meta по <b>двум</b> основаниям, и первое — материально-правовое: «CPPA claims based on unintentional misrepresentations need only be proved by a preponderance of the evidence». Второе процедурное — исключение единственного эксперта округа без анализа по Motorola. Meta в 10-Q описывает отмену как состоявшуюся «on procedural grounds»; словосочетания «procedural ground» в мнении нет ни разу. Отдельно от этого дела идёт мандамус 26-OA-0001 — он происходит из другого иска округа, № 2023-CAB-006550.</div>
+        <div class="case-money">
+          <span class="money-v">Не присуждено</span>
+          <span class="pill none">Возвращено в первую инстанцию</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg"></i><i class="seg on"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">дело возобновлено спустя семь лет после подачи</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Klein и Affilious против Meta</p>
+          <p class="case-id">N.D. Cal. № 3:20-cv-08570-JD · судья James Donato · два разных иска в одном докете</p>
+        </div>
+        <div class="case-out">Пользовательский класс не сертифицирован (Dkt. 905 от 24.01.2025), затем 29.09.2025 вынесен summary judgment в пользу Meta: «The grant of summary judgment terminates the user case». Апелляция в Девятый округ № 25-6858, брифинг завершён 15.07.2026. Рекламодательский класс жив: ходатайство Meta о summary judgment висит с 30.12.2024, сертификация не разрешена, а 01.09.2026 суд <b>отказал Meta в исключении эксперта класса</b> д-ра Williams по FRE 702.</div>
+        <div class="case-money">
+          <span class="money-v">Не присуждено</span>
+          <span class="pill none">Денежной ступени нет</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg"></i><i class="seg on"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">пользователи проиграли, рекламодатели ждут</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Meta против FTC</p>
+          <p class="case-id">D.D.C. № 1:23-cv-03562 · судья Randolph D. Moss · подано 29.11.2023 · апелляция D.C. Cir. № 24-5054</p>
+        </div>
+        <div class="case-out">Зеркальное дело: не к Meta, а от неё — конституционный вызов структуре FTC, отдельный от спора о самом consent order. Предмет неденежный по построению («28:2201 Declaratory Judgment»). Предварительный запрет отклонён 14.03.2024, дело дважды приостановлено — 16.04.2024 в ожидании SEC v. Jarkesy и 29.06.2025 по ходатайству самой Meta. Апелляция с 30.04.2024 в abeyance, и после решения Верховного суда по Jarkesy из неё не вышла: триггер переставлен на решение окружного суда. Следующий статус-репорт — через 30 дней после решения по ходатайству Meta в деле 1:19-cv-02184 (слушание 22.10.2026) или 07.12.2026, что раньше.</div>
+        <div class="case-money">
+          <span class="money-v">Требования неденежные</span>
+          <span class="pill none">Денежной ступени нет</span>
+          <div class="track"><i class="seg on"></i><i class="seg"></i><i class="seg"></i><i class="seg on"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">обе инстанции в приостановке</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Калифорния против Meta</p>
+          <p class="case-id">Superior Court of California, County of San Francisco · номер машинным резолвером не найден · соглашение декабрь 2025, утверждено март 2026</p>
+        </div>
+        <div class="case-out">Первоисточник подтверждает факт, но <b>не сумму</b>: 10-Q говорит лишь «we entered into a settlement agreement with California… approved by the court in California in March 2026», денежной величины в нём нет. Единственный источник числа $50 млн — The San Francisco Standard от 19.12.2025. Пресс-релиза генпрокурора Калифорнии нет: проверены 390 релизов подряд, сплошной охват с 11.11.2025 по 03.06.2026, включая оба названных дня.</div>
+        <div class="case-money">
+          <span class="money-v">$50 млн по прессе</span>
+          <span class="pill unver">Сумма и уплата неподтверждаемы</span>
+          <div class="track"><i class="seg on"></i><i class="seg"></i><i class="seg on"></i><i class="seg"></i><i class="seg tip-unver"></i><i class="seg"></i></div>
+          <span class="track-lab">утверждено судом, документа нет</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Meta · Европа и мир</p>
+    <h2>Пять штрафов DPC, ни одного подтверждённого платежа</h2>
+    <p class="lede">Ирландский регулятор наложил на Meta больше €2,3 млрд шестью решениями за четыре года. Ни по одному из них в материале нет подтверждения уплаты, а крупнейшее — €1,2 млрд за трансферы данных — прямо приостановлено судом.</p>
+
+    <div class="cases">
+      <div class="case">
+        <div>
+          <p class="case-name">DPC: трансферы данных в США</p>
+          <p class="case-id">решение от 12.05.2023 · ст. 46(1) GDPR</p>
+        </div>
+        <div class="case-out">€1,2 млрд плюс приказ приостановить будущие трансферы. Формулировка Meta побайтно одинакова в 10-K за 2025 год и 10-Q за II квартал 2026: решение <b>«currently subject to a stay from the Irish High Court»</b>.</div>
+        <div class="case-money">
+          <span class="money-v">€1,2 млрд</span>
+          <span class="pill contested">Оспаривается</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-contested"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">исполнение приостановлено</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">DPC: остальные пять решений</p>
+          <p class="case-id">405 · 265 · 251 · 210+180 · 91 млн евро · WhatsApp 225 млн евро</p>
+        </div>
+        <div class="case-out">Данные детей в Instagram (405 млн, 2022), Data Scraping (265 млн, 2022), утечка токенов (251 млн, 2024), правовое основание рекламы в Facebook и Instagram (210 и 180 млн, 31.12.2022), пароли открытым текстом (91 млн, 2024), прозрачность WhatsApp (225 млн, 2021). Три из них DPC <b>был обязан увеличить</b> обязательным решением EDPB.</div>
+        <div class="case-money">
+          <span class="money-v">€1,377 млрд</span>
+          <span class="pill contested">Уплата не подтверждена</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg tip-contested"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">ни одного факта платежа</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Facebook Marketplace · AT.40684</p>
+          <p class="case-id">C(2024) 8053 final от 14.11.2024 · T-66/25</p>
+        </div>
+        <div class="case-out">EUR 797,72 млн за привязку Marketplace к соцсети. База штрафа — оборот самого Marketplace, а совокупный оборот Meta учтён дополнительно «to ensure sufficient deterrence». Обжаловано 28.01.2025. В тот же день 23.04.2025 Комиссия <b>сняла с Marketplace статус core platform service по DMA</b>: у сервиса оказалось менее 10 000 бизнес-пользователей.</div>
+        <div class="case-money">
+          <span class="money-v">€797,72 млн</span>
+          <span class="pill contested">Оспаривается</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-contested"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">T-66/25 не рассмотрено</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Нигерия: FCCPC против WhatsApp и Meta</p>
+          <p class="case-id">Final Order от 18.07.2024 · Трибунал CCPT, 25.04.2025</p>
+        </div>
+        <div class="case-out">$220 000 000 штрафа и $35 000 расходов на расследование, оба платежа в 60 дней. Трибунал 25.04.2025 в основном поддержал Комиссию, но отменил Order 7. Уплата не подтверждена, а <b>в отчётности Meta для SEC слово «Nigeria» не встречается ни разу</b> — ни в 10-K за 2025 год, ни в 10-Q за II квартал 2026.</div>
+        <div class="case-money">
+          <span class="money-v">$220 млн</span>
+          <span class="pill contested">Оспаривается</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-contested"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">вне отчётности эмитента</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="pull">
+      <p>Одно и то же поведение получает разную цену в зависимости от того, кто считает: базой штрафа может быть оборот одного сервиса, оборот всей группы или средняя дневная выручка за прошлый год.</p>
+      <cite>Сравнение баз в AT.40684, ст. 31(1) DMA и ст. 17 турецкого закона № 4054</cite>
+      <div class="case">
+        <div>
+          <p class="case-name">Испания, Франция: иски медиакомпаний</p>
+          <p class="case-id">AMI v. Meta Ireland · Juzgado de lo Mercantil nº 15 de Madrid · решение 19.11.2025 · UTECA (подано 24.10.2024) · Amaury и др. (Франция, 29.04.2025)</p>
+        </div>
+        <div class="case-out">87 испанских издателей выиграли по недобросовестной конкуренции и <b>проиграли по злоупотреблению доминированием</b> — суд удовлетворил только первое требование. Дальше расхождение: Meta в 10-Q называет «approximately EUR €542 million», собственный релиз истца — 479 млн плюс 2,57 млн Europa Press плюс 13 563 евро Radio Blanca, то есть €481 583 563. Подстроки «542» в релизе AMI нет, разницу в €60,4 млн не объясняет никто. Ещё две ветки на ступени «подано»: десять испанских вещателей (суд октябрь 2026) и 67+34 французские медиакомпании (2027).</div>
+        <div class="case-money">
+          <span class="money-v">≈€542 млн</span>
+          <span class="pill contested">Присуждено и оспаривается</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg on"></i><i class="seg tip-contested"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">апелляция подана, номер дела не резолвится</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Lovdahl Gormsen против Meta</p>
+          <p class="case-id">Competition Appeal Tribunal № 1433/7/7/22 · зарегистрировано 14.02.2022 · CPO 02.05.2024 · суд 02.10.2028</p>
+        </div>
+        <div class="case-out">Со второй попытки: в первом акте ([2023] CAT 10) Трибунал отказал, класс сертифицирован только [2024] CAT 11 от 15.02.2024. Класс — «approximately 45 million members». <b>Размера требования в документах CAT нет вовсе</b>: официальное уведомление просит «damages… to be assessed on an aggregate basis» и не содержит ни одного символа £; пресса называет £2,3 млрд, £3 млрд и £2,1 млрд в разных изданиях. Единственные суммы в фунтах внутри самого акта — «worked example» о финансировании, про который суд сам пишет, что условия с тех пор изменились.</div>
+        <div class="case-money">
+          <span class="money-v">Сумма не названа</span>
+          <span class="pill none">До денег шесть лет</span>
+          <div class="track"><i class="seg on"></i><i class="seg on"></i><i class="seg"></i><i class="seg on"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">суд назначен на октябрь 2028, 10 недель</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">DSA: два производства Комиссии против Meta</p>
+          <p class="case-id">IP/24/2373 от 30.04.2024 (выборы, реклама, Notice-and-Action) · IP/24/2664 от 16.05.2024 (несовершеннолетние)</p>
+        </div>
+        <div class="case-out">Предварительные выводы вынесены трижды — 24.10.2025 по транспарентности, 29.04.2026 по недопуску детей младше 13 лет, 10.07.2026 по аддиктивному дизайну; третья ветка про «rabbit hole»-эффекты рекомендателей выводов пока не имеет. Денежных решений <b>нет ни одного</b>, хотя штрафной механизм DSA к 01.09.2026 применялся уже трижды: X — €120 млн, Temu — €200 млн, AliExpress — €550 млн. Частая подмена: €200 млн, которые Meta заплатила 23.04.2025, — это Digital Markets Act, а не DSA.</div>
+        <div class="case-money">
+          <span class="money-v">Санкции нет</span>
+          <span class="pill none">Денежной ступени пока нет</span>
+          <div class="track"><i class="seg on"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i><i class="seg"></i></div>
+          <span class="track-lab">потолок по DSA — 6% мирового оборота</span>
+        </div>
+      </div>
+
+      <div class="case">
+        <div>
+          <p class="case-name">Австралия: OAIC против Meta</p>
+          <p class="case-id">Federal Court of Australia № NSD 246 of 2020 · подано 09.03.2020 · enforceable undertaking принято 17.12.2024</p>
+        </div>
+        <div class="case-out">Дело закрыто не решением, а обязательством по §114 Regulatory Powers Act — «without any admission of liability», и п. 8.3 прямо говорит, что принятие обязательства не является выводом о нарушении. Масштаб по самому документу: 53 австралийца установили приложение, у 311 074 их данные могли быть запрошены как у друзей. A$50 млн Meta перечислила администратору — но подтверждает это <b>сам администратор KPMG, которого Meta назначает и оплачивает</b>; OAIC факт перечисления не подтверждает. <b>Первый раунд выплат, по заявлению того же администратора, проведён 02.09.2026</b> — тем, кто подал реквизиты не позднее 20.08.2026. О проведённых выплатах OAIC не публиковал ничего: его последний материал о программе — призыв зарегистрироваться от 12.12.2025, где регулятор пишет, что в администрировании роли не играет. Публично не раскрыты ни сумма выплаты, ни число получателей, ни общий итог — свою сумму заявитель узнаёт от администратора лично. Обязательство требует лишь, чтобы администратор сообщил Meta, а Meta Уполномоченному число заявителей и общую сумму к распределению; публиковать их оно не обязывает. Второй раунд, последняя попытка выплаты, запланирован на октябрь 2026. Программа должна завершиться к 17.12.2026, если Уполномоченный и Meta не согласуют более долгий срок.</div>
+        <div class="case-money">
+          <span class="money-v">A$50 млн</span>
+          <span class="pill accrued">Деньги в пути к людям</span>
+          <div class="track"><i class="seg on"></i><i class="seg"></i><i class="seg on"></i><i class="seg"></i><i class="seg tip-accrued"></i><i class="seg"></i></div>
+          <span class="track-lab">обязательство прекратится с концом программы</span>
+        </div>
+      </div>
+
+    </div>
+
+    <p style="margin-top:34px"><b>Соседний периметр, который легко спутать с исками.</b> Крупнейшие открытые денежные позиции Meta — не судебные, а налоговые. По делу <i>Facebook, Inc. &amp; Subsidiaries v. Commissioner</i> (US Tax Court № 21959-16, 164 T.C. No. 9) мнение вынесено 22.05.2025 и оценило переданную интеллектуальную собственность в $7,79 млрд — на $1,48 млрд выше заявленного, — но само решение не вынесено, и до него не открывается ни сумма налога, ни право на апелляцию. Отдельно в сентябре 2025 года IRS выставила Notice of Deficiency на <b>$15,89 млрд</b> за 2017–2019 годы по той же сделке трансфертного ценообразования; Meta оспорила его в декабре 2025. Резерв под неопределённые налоговые позиции — $18,74 млрд на 30.06.2026 против $16,45 млрд полугодом ранее, — но это агрегат по всем юрисдикциям, и приравнивать его к экспозиции по делам IRS нельзя.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Метод</p>
+    <h2>Семь механизмов, из-за которых сумма из прессы не равна уплаченному</h2>
+    <p class="lede">Это не список оговорок, а рабочий чек-лист: каждый механизм встретился в материале хотя бы дважды, и каждый в одиночку способен превратить миллиардный заголовок в ноль на счёте.</p>
+
+    <div class="mech">
+      <div class="mx"><span class="n">01</span><span class="t">Суд снизил сумму</span><span class="b">Android: EUR 4 342 865 000 → EUR 4 125 000 000 по резолютивной части T-604/18. Солидарная ответственность Alphabet упала сильнее самого штрафа — на EUR 401 060 105.</span></div>
+      <div class="mx"><span class="n">02</span><span class="t">Решение отменено целиком</span><span class="b">AdSense: решение ЕК C(2019) 2173 final аннулировано Общим судом. Деньги никогда не платились — стояли банковские гарантии. Начисление $1,7 млрд при этом не сторнировано.</span></div>
+      <div class="mx"><span class="n">03</span><span class="t">Начислено — не значит уплачено</span><span class="b">Adtech-штраф начислен $3,5 млрд в III квартале 2025, а в IV квартале вместо денег внесены банковские гарантии. В отчёте о прибылях это выглядит одинаково.</span></div>
+      <div class="mx"><span class="n">04</span><span class="t">Курс и проценты</span><span class="b">Уплаченные по Android $5,2 млрд превысили чистое начисление $4,854 млрд — при том, что штраф в евро уменьшился. Кассовый платёж включает проценты и переоценку из других периодов.</span></div>
+      <div class="mx"><span class="n">05</span><span class="t">Разные периметры счётчиков</span><span class="b">У Alphabet строка <code>Accrued fines and settlements</code> — $17 356 млн на 30.06.2026. У Meta <code>Legal-related accruals</code> — $6 867 млн, но в её периметр входят и гонорары юристов. Складывать нельзя.</span></div>
+      <div class="mx"><span class="n">06</span><span class="t">Урегулирования — не штрафы</span><span class="b">$700 млн по Play Store и согласительный платёж ₹20,24 крора по ст. 48A индийского закона — не санкции. Но австралийские A$55 млн сюда не относятся: там суд наложил penalty.</span></div>
+      <div class="mx"><span class="n">07</span><span class="t">Частные follow-on-иски</span><span class="b">Не штрафы, но те же деньги и то же основание: ~$2,1 млрд по иску PriceRunner присуждены после дела Shopping и начислены во II квартале 2026.</span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Границы</p>
+    <h2>Что осталось открытым и когда протухнет</h2>
+    <p class="lede">В первой редакции здесь стоял список из 22 пробелов, отделённый от «настоящих» дел. Отделение было ошибкой: пробелы оказались смещены в одну сторону — среди них непропорционально много дел закрытых и оплаченных, — и, вынесенные в конец, они искажали главный вывод страницы. Теперь они стоят в общих таблицах выше. Здесь остаётся только то, что действительно не закрыто, и главное — <b>когда каждое из этих утверждений перестанет быть верным</b>.</p>
+
+    <ul class="gaps">
+      <li><b>Не тронут авторско-правовой блок Meta</b> — <i>Kadrey v. Meta</i> и девять новых исков с ноября 2025 года. Второй раунд ушёл в ступень «уплачено» и до них не дошёл; консолидированного MDL по ним нет, каждое дело резолвится отдельно.</li>
+      <li><b>CNIL SAN-2021-024</b> — €150 млн за куки, декабрь 2021. Собран только штраф 2019 года.</li>
+      <li><b>Тексты немецких решений</b> по idealo и Producto доступны только через платные juris и beck-online; расхождение 103,7 против «gut 107» млн неразрешимо без них.</li>
+      <li><b>Восемь нерезолвленных реквизитов</b>, появившихся в этом раунде: номер второго дела Нью-Мексико, номер и сумма калифорнийского урегулирования, номер отказа Верховного суда по Street View, номер производства ЕК по DMA, номер канадской апелляции, номер испанского производства AMI, два докета US Tax Court и дата Notice of Discontinuance по австралийскому делу — без последней не датируется 60-дневный срок платежа.</li>
+      <li><b>Отрицание тухнет быстрее утверждения.</b> Не меньше пятнадцати записей партии — это «апелляции нет», «решения нет», «в отчётности не упоминается» <i>на 02.09.2026</i>. Каждая заведена в память с датой следующей проверки.</li>
+    </ul>
+
+    <h3 style="margin-top:44px">Календарь протухания</h3>
+    <div class="mech" style="margin-top:18px">
+      <div class="mx"><span class="n">02.10.2026</span><span class="t">Итоговый акт E.D. Va.</span><span class="b">Срок совместного проекта Final Judgment по adtech-делу Минюста; спорные положения подаются в двух вариантах с пометкой, чей вариант, а решает по ним суд. Из проекта станет видно, договорились ли стороны, кто предлагает кандидатов в мониторы, о конкретных запретах на дискриминацию и о сроках там, где срок Google длиннее срока истцов. После внесения акта — 60 дней до вступления в силу, кроме работы по назначению монитора, которая начинается сразу. «Внедрение за 15 месяцев» в решении — цифра из заключительной речи Google, расчёта нет. От внесения акта зависит и приостановленное техасское дело штатов.</span></div>
+      <div class="mx"><span class="n">05.10.2026</span><span class="t">Нью-Мексико, оба дела</span><span class="b">Дата 08.09.2026 из прежней редакции этого календаря наступила, и обе её половины разрешились. Процесс по приватностному делу D-101-CV-2021-00132 начался отбором присяжных 08.09.2026, вступительные заявления — 09.09; досудебный приказ от 20.08.2026 отводит на процесс срок «will conclude by October 2, 2026». По первому делу (D-101-CV-2023-02838) тридцатидневный срок на апелляцию сместился: 04.09.2026 Meta подала больше десятка пост-судебных ходатайств — изменить почти все содержательные выводы либо назначить новый процесс, — и отдельно просит приостановить исполнение акта на $942 млн до апелляции. Проверять 05.10.2026: вердикт по приватностному делу и судьба ходатайств; апелляции по первому делу до их разрешения не будет.</span></div>
+      <div class="mx"><span class="n">09.10.2026</span><span class="t">Австралия, срок платёжной формы</span><span class="b">Для австралийских счетов и не подавших форму — 08.10.2026, «11.59PM AEST», хотя с 04.10 в Виктории, ACT, Тасмании и большей части Нового Южного Уэльса действует летнее AEDT, и по местному времени это 00:59 09.10. Для зарубежных счетов, где первый перевод не прошёл, — 26.10.2026. Второй раунд запланирован на «Mid-October» и «Mid to late October 2026», поэтому итоги смотреть не раньше начала ноября. Публиковать итоговые числа обязательство не требует — их отсутствие не будет означать, что денег не было.</span></div>
+      <div class="mx"><span class="n">20.10.2026</span><span class="t">Fair Fund по делу SEC</span><span class="b">Отчёты агента распределения идут поквартально; следующий около 16.10.2026. Шесть лет после уплаты деньги до инвесторов не дошли — и это единственный счётчик в материале, который обновляется каждые три месяца.</span></div>
+      <div class="mx"><span class="n">23.10.2026</span><span class="t">США против Facebook: слушание</span><span class="b">22.10.2026 судья Kelly слушает возобновлённое ходатайство Meta (ECF 74) — препятствует ли решение D.C. Circuit 2025 года административному производству FTC об изменении приказа о приватности. От решения зависит и приостановленное дело Meta против FTC: следующий статус-репорт там — через 30 дней после него или 07.12.2026.</span></div>
+      <div class="mx"><span class="n">30.10.2026</span><span class="t">Отчётность за III квартал</span><span class="b">10-Q Alphabet — единственный публичный канал по Rodriguez, Техасу и idealo. 10-Q Meta закроет вопрос об акте Нью-Мексико и о калифорнийском урегулировании: прошлый вышел 30.07.2026, до акта.</span></div>
+      <div class="mx"><span class="n">01.11.2026</span><span class="t">Brown и Техас</span><span class="b">Соглашение в <i>Brown</i> не утверждено с 08.11.2024, и в покрытии RECAP есть дыра на записях 1164–1177 — приказ мог попасть именно в неё. Годовщина техасского соглашения на $1,375 млрд — 31.10.2026.</span></div>
+      <div class="mx"><span class="n">15.11.2026</span><span class="t">DMA против поиска</span><span class="b">Комиссия обещала завершить производство от 13.11.2025 в течение 12 месяцев. К той же дате, вероятно, всплывёт и номер дела.</span></div>
+      <div class="mx"><span class="n">01.12.2026</span><span class="t">Четыре апелляции</span><span class="b">Kammergericht по idealo и Producto, Федеральный апелляционный суд Канады, Девятый округ по <i>Klein</i>, решение US Tax Court по расчёту 2010 года — до него не открывается ни сумма, ни апелляция.</span></div>
+      <div class="mx"><span class="n">15.12.2026</span><span class="t">Апелляция по Rodriguez</span><span class="b">Апелляция Google подана 21.09.2026, 9th Cir. № 26-6237; вступительная записка — до 14.12.2026, ответные записки истцов — до 13.01.2027. Отдельная апелляция члена класса на приказ о гонорарах (ECF 1021) — номер в Девятом округе ещё не установлен.</span></div>
+    </div>
+
+    <h3 style="margin-top:44px">Провенанс двух партий</h3>
+    <p style="max-width:var(--readw);margin-top:10px">Вторая партия размечалась тем же способом, что первая, — при открытом первоисточнике, — поэтому цифры сравнимы напрямую. Обе прошли программную сверку дословности с верифицированным текстом и сверку тегов провенанса со слотами внутри источника.</p>
+    <div class="prov">
+      <div class="pv"><b>89,4%</b><span>записей второй партии от первоисточника (<code>chan:primary</code>) против 86,4% в первой и 69,3% на базовой линии памяти</span></div>
+      <div class="pv"><b>19,9%</b><span>чисел неизвестного происхождения (<code>num:unsourced</code>) против 8,7% в первой партии — раунд шёл за цифрами, которых первоисточник не объясняет</span></div>
+      <div class="pv"><b>85,1%</b><span>подтверждено первоисточником (<code>cred:primary-confirmed</code>) против 81,0% в первой партии</span></div>
+      <div class="pv"><b>31</b><span>записей с явной пометкой, что машинного резолвера у дела нет или идентификатор не найден</span></div>
+    </div>
+    <p style="max-width:var(--readw);margin-top:22px;color:var(--ink-3);font-size:14px">Рост доли <code>num:unsourced</code> вдвое — не деградация, а свойство предмета. Первая партия собирала суммы из судебных актов, где они выводятся; вторая гналась за тем, откуда эти суммы взялись, и раз за разом упиралась в документ, который число называет и не объясняет: «$100 000 000» в согласованном решении, «50 (cinquante) millions d'euros» без арифметики, «approximately EUR €542 million» в филинге ответчика.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Собрано агентом gid из первоисточников: докеты и документы RECAP/CourtListener, страницы дел Antitrust Division Минюста США, решения и пресс-релизы Еврокомиссии, CELLAR и EUR-Lex, филинги SEC EDGAR, релизы FTC, DPC, CNIL, AGCM, ACCC, CCI, FCCPC и PIPC. Каждое утверждение о судебном деле, филинге SEC или акте ЕС несёт машинный идентификатор; там, где резолвера не существует или он не нашёл дело, стоит явная пометка.</p>
+    <p>325 живых записей: 184 с тегом <code>litigation-15y</code> и 141 с тегом <code>litigation-gaps</code>. Каждая прошла программную сверку дословности с верифицированным текстом и сверку тегов провенанса со слотами источника. Во второй партии адверсариальная проверка исправила или опровергла 115 утверждений из 141 — это не редактура, а основной источник ценности раунда: она поймала, что «$170 млн» по COPPA не существует как одна сумма, что вердикт по <i>Rodriguez</i> был смешанным, а урегулирование Alphabet на $500 млн — федеральное и 2025 года, а не штатное и 2024-го. Состояние дел — на 02.09.2026. Календарная проверка 16.09.2026 обновила два дела: adtech-дело Минюста по раскрытой мотивировке ECF 1858 и приказам о её раскрытии (31 из 117 записей с тегом <code>calendar-0916</code>, все сверены побайтно; текст на странице дополнительно сверен с первоисточниками 17.09.2026) и австралийскую программу выплат Meta. Локальные копии ключевых актов — в <code>docs/sources/litigation/</code>.</p>
+  </div>
+</footer>
+
+<script>
+const DATA = [
+  {n:'Android',            s:'ЕК · AT.40099',              v:5.2,    lab:'5,2 млрд',  st:'paid',      t:'Уплачено деньгами в июле 2026 — $5,2 млрд с процентами, через восемь лет после решения Комиссии и сразу после отказа Суда ЕС по делу C-738/22 P.'},
+  {n:'Приватность FTC',    s:'Meta · D.D.C. 1:19-cv-02184',v:5.0,    lab:'5,0 млрд',  st:'paid',      t:'Гражданское взыскание по секции 5(l) FTC Act. Уплачено в апреле 2020 при вступлении в силу изменённого consent order.'},
+  {n:'Adtech',             s:'ЕК · AT.40670',              v:3.5,    lab:'3,5 млрд',  st:'accrued',   t:'Начислено $3,5 млрд в III квартале 2025. В IV квартале внесены банковские гарантии вместо денег; решение обжаловано 20.11.2025 (T-794/25).'},
+  {n:'Shopping',           s:'ЕК · AT.39740',              v:3.0,    lab:'3,0 млрд',  st:'paid',      t:'Уплачено в III квартале 2024 — через семь лет после решения Комиссии и сразу после отказа Большой палаты Суда ЕС.'},
+  {n:'PriceRunner',        s:'Стокгольм · follow-on',      v:2.1,    lab:'2,1 млрд',  st:'contested', t:'«Approximately $2.1 billion (awarded in multiple currencies)». Признано во II квартале 2026, подана апелляция — решение не окончательное.'},
+  {n:'AdSense for Search', s:'ЕК · AT.40411',              v:1.7,    lab:'1,7 млрд',  st:'none',      t:'Начисление $1,7 млрд под штраф €1,49 млрд. Решение Комиссии отменено Общим судом целиком 18.09.2024; деньги не платились никогда.'},
+  {n:'Техас · биометрия',  s:'Meta · Cause 22-0121',       v:1.4,    lab:'1,4 млрд',  st:'accrued',   t:'Рассрочка на пять лет: $500 млн в первые 30 дней и четыре транша по $225 млн в 2025–2028 годах. Из первого транша $225 млн идут внешним юристам штата.'},
+  {n:'Техас · приватность',s:'Google · соглашение',        v:1.375,  lab:'1,375 млрд',st:'accrued',   t:'$1,375 млрд, а не $1,4 млрд: «settlement in principle» 09.05.2025, подписано 31.10.2025. Текст соглашения не опубликован, исполнение не проверено.'},
+  {n:'Cambridge Analytica',s:'Meta · MDL 2843',            v:0.725,  lab:'725 млн',   st:'paid',      t:'Фонд с процентами $793,5 млн, доставлено $466,0 млн 15,65 млн платежами. Средняя выплата $29,43, медиана $32,45. Второе распределение утверждено 06.05.2026.'},
+  {n:'Play Store',         s:'Google · 50 штатов',         v:0.700,  lab:'700 млн',   st:'paid',      t:'$1 млн + $629 млн в потребительский эскроу и $70 млн суверенным требованиям штатов. Внесено эскроу-агенту в мае 2024, итоговый акт 18.08.2026.'},
+  {n:'BIPA · Иллинойс',    s:'Meta · N.D. Cal.',           v:0.650,  lab:'650 млн',   st:'paid',      t:'Выпущено платежей 1 384 659 членам класса на $549 709 623 — «Each approved claim was awarded $397». Единственная лестница с известной суммой на человека.'},
+  {n:'Нью-Мексико · фонд', s:'Meta · D-101-CV-2023-02838', v:0.567,  lab:'567 млн',   st:'contested', t:'Фонд абатемента публичной неудобицы по акту от 06.08.2026, разложенный таблицей: лечение $420 млн, скрининг $90 млн, профилактика $33 млн, маршрутизация $15 млн, оценка программы $9 млн. Строка «Total: $567,000,000.00» напечатана в самом акте.'},
+  {n:'Дериватив 2025',     s:'Alphabet · комплаенс',       v:0.500,  lab:'500 млн',   st:'none',      t:'Не платёж, а обязательство тратить на собственную программу комплаенса в течение десяти лет; получатель — сама компания. Решение 22.10.2025, на 01.09.2026 подтверждено только создание комитета совета директоров.'},
+  {n:'Rodriguez',          s:'Google · N.D. Cal. 3:20-cv-04688',v:0.4403,lab:'440,3 млн',st:'contested',t:'$440 345 685,40 на дату окончательного решения 02.03.2026: вердикт $425 651 947 плюс проценты по 7% годовых, $81 631,88 в день за 180 дней. Пост-триальные ходатайства отклонены 28.08.2026; вердикт был смешанным — по CDAFA выиграла Google.'},
+  {n:'Геолокация',         s:'Google · 40 штатов',         v:0.3915, lab:'391,5 млн', st:'paid',      t:'Административный Assurance of Voluntary Compliance, а не судебное решение. Уплата в 30 дней после EFFECTIVE DATE 14 декабря 2022 года.'},
+  {n:'Нью-Мексико · вердикт',s:'Meta · присяжные',         v:0.375,  lab:'375 млн',   st:'contested', t:'75 000 нарушений Unfair Practices Act × максимальные $5 000 = $375 000 000; метод напечатан в судебном акте. 19.08.2026 Meta просила разрешить внести залог $1,8 млрд, чтобы остановить взыскание, — прямое указание, что деньги не уплачены.'},
+  {n:'Акционерный класс',  s:'Alphabet · 3:18-cv-06245',   v:0.350,  lab:'350 млн',   st:'paid',      t:'Единственная позиция, где известно, сколько денег дошло до людей: разослано $271 111 078,07, обналичено $267 740 912,41 по 105 958 чекам из 110 852. Из фонда до того оплачены $66,5 млн гонорара и $4,08 млн администрирования.'},
+  {n:'Дериватив 2020',     s:'Alphabet · 19CV341522',      v:0.310,  lab:'310 млн',   st:'none',      t:'«Alphabet shall cause to be spent a total of $310 million over the course of up to 10 years» на собственную программу Workplace Initiative. Ни истцы, ни акционеры получателями не являются; расходование контролирует сама компания.'},
+  {n:'Нигерия',            s:'Meta · FCCPC',               v:0.220,  lab:'220 млн',   st:'contested', t:'$220 млн штрафа и $35 000 расходов по Final Order от 18.07.2024. Трибунал в основном поддержал Комиссию 25.04.2025; уплата не подтверждена.'},
+  {n:'Дериватив Делавэра', s:'Meta · C.A. 2018-0307',      v:0.190,  lab:'190 млн',   st:'accrued',   t:'$190 000 000 наличными плюс управленческие реформы. Деньги идут КОМПАНИИ: «Individual Meta stockholders will not receive any direct payment».'},
+  {n:'COPPA · FTC',        s:'Google · D.D.C. 1:19-cv-02642',v:0.136,lab:'136 млн',   st:'unver',     t:'Гражданский штраф в пользу FTC по приказу от 10.09.2019; деньги на момент подписания уже лежали на эскроу-счёте адвокатов Google, срок платежа — 30 дней. Уплата не подтверждается ничем: ни докетом, ни EDGAR, ни финансовым отчётом FTC за 2020 год, где слово YouTube не встречается.'},
+  {n:'Ellis · гендерный разрыв',s:'Google · CGC-17-561299',v:0.118,  lab:'118 млн',   st:'paid',      t:'Валовой фонд $118 млн, к распределению около $86 млн: до $29,5 млн гонорара, $1 млн штрафов PAGA, до $1,5 млн расходов, до $225 000 именным истицам. Чеки разосланы 26.01.2023, срок действия истёк 25.07.2023; сколько предъявлено к оплате — неизвестно.'},
+  {n:'SEC против Facebook',s:'N.D. Cal. 3:19-cv-04241',    v:0.100,  lab:'100 млн',   st:'paid',      t:'Уплачено: приказ суда от 17.08.2020 создаёт Fair Fund «for the $100 million in civil penalties collected». Но за шесть лет деньги до инвесторов не дошли — тринадцатый отчёт агента распределения от 16.10.2025 описывает разбор около 217 000 ответов на уведомления о дефектах претензий.'},
+  {n:'Калифорния',         s:'Google · 23CV422424',        v:0.093,  lab:'93 млн',    st:'paid',      t:'$93 млн отдельно от коалиции 40 штатов. Окончательное решение подписано судьёй Pennypacker и принято клерком 18.09.2023.'},
+  {n:'Класс разработчиков',s:'Google · N.D. Cal.',         v:0.090,  lab:'90 млн',    st:'paid',      t:'Невозвратный фонд $90 млн, распределяемый pro rata без заявлений о выплате, более 47 000 участников. Утверждено 11.01.2024.'},
+  {n:'COPPA · Нью-Йорк',   s:'Google · тот же приказ',     v:0.034,  lab:'34 млн',    st:'paid',      t:'Вторая половина «штрафа около $170 млн» — и правовая природа у неё другая: не civil penalty, а «damages, restitution, or other compensation to its residents». Уплачено в октябре 2019, $28 млн зачислены в General Fund штата — подтверждено бюджетным документом Нью-Йорка, а не компанией.'},
+  {n:'Обход Safari',       s:'Google · FTC, 2012',         v:0.0225, lab:'22,5 млн',  st:'unver',     t:'Рекордный на тот момент штраф FTC. Уплата не подтверждена: полнотекстовый поиск EDGAR по Google Inc. (CIK 0001288776) отдаёт только материалы IPO 2004 года — суммы этого порядка эмитент не раскрывает как несущественные.'},
+  {n:'Street View · cy pres',s:'Google · MDL 3:10-md-02184',v:0.013, lab:'13 млн',    st:'paid',      t:'Единственная лестница, где деньги подтвердил ПОЛУЧАТЕЛЬ: EPIC пишет «received disbursement of its award in the amount of $1,006,582.88 on December 7, 2022». Фонд $13 млн делился поровну на девять организаций после вычета $3,0 млн гонорара и $750 000 расходов.'},
+  {n:'Мультиштатный AVC',  s:'Google · 37 штатов, 2013',   v:0.007,  lab:'7 млн',     st:'unver',     t:'Уплата не подтверждена, и хуже: у обеих публичных копий соглашения нет подписных страниц, поэтому Effective Date не устанавливается, а с ней и 30-дневный срок платежа. 39 юрисдикций поштучно не проверялись.'},
+];
+
+const RU = {paid:'Уплачено', accrued:'Начислено или в рассрочке', contested:'Присуждено и оспаривается', none:'Денежной ступени нет по построению', unver:'Уплата неподтверждаема каналом'};
+const max = Math.max(...DATA.map(d => d.v));
+
+document.getElementById('bars').innerHTML = DATA.map(d => `
+  <div class="bar-row" tabindex="0">
+    <span class="bar-lab"><b>${d.n}</b>${d.s}</span>
+    <span class="bar-track"><span class="bar-fill ${d.st}" style="width:${Math.max(d.v / max * 100, 1.2)}%"></span></span>
+    <span class="bar-val">$${d.lab}</span>
+    <span class="tip"><b>${RU[d.st]}.</b> ${d.t}</span>
+  </div>`).join('');
+</script>

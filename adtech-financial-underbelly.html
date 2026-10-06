@@ -1,0 +1,470 @@
+<title>Финансовая изнанка adtech</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --mark:#B4540A; --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1040px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.1rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.38rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:72ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:40px}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:78ch; margin:6px 0 16px; font-size:.92rem}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.85em; background:var(--chip-bg); padding:1px 5px; border-radius:3px}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:74ch}
+  .bars{display:grid; gap:10px}
+  .brow{display:grid; grid-template-columns:minmax(140px,220px) 1fr 128px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:17px; position:relative}
+  .bar{height:17px; border-radius:2px 4px 4px 2px; background:var(--c)}
+  .dtrack{background:var(--track); border-radius:3px; height:17px; position:relative}
+  .dzero{position:absolute; left:26.2%; top:-4px; bottom:-4px; width:1px; background:var(--faint)}
+  .dpos{position:absolute; left:26.2%; height:17px; background:var(--c); border-radius:2px 4px 4px 2px}
+  .dneg{position:absolute; right:73.8%; height:17px; background:var(--c); border-radius:4px 2px 2px 4px}
+  .pair{display:grid; gap:4px}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:440px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .legend{display:flex; flex-wrap:wrap; gap:14px; margin:0 0 14px; font-size:.79rem; color:var(--muted)}
+  .legend span{display:inline-flex; align-items:center; gap:6px}
+  .swatch{width:11px; height:11px; border-radius:2px; background:var(--c); display:inline-block}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:82ch}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:80ch}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:800px}
+  th{text-align:left; font-size:.71rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
+  td{padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.85rem}
+  tr:last-child td{border-bottom:none}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:800px){ .cons{grid-template-columns:1fr} .brow{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px; border-top:3px solid var(--cc,var(--accent))}
+  .box h3{margin:0 0 8px}
+  .box ul,.box ol{margin:0; padding-left:19px}
+  .box li{margin-bottom:7px; font-size:.88rem}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:82ch}
+</style>
+<main>
+  <h1>Финансовая изнанка adtech</h1>
+  <p class="lede">Разрыв между «показ доставлен» и «деньги дошли» финансируют не финтехи. Его финансируют балансы самих посредников — и, через оговорку о последовательной ответственности, паблишеры. Специализированный слой, который громче всех обещает этот разрыв закрыть, на порядок меньше одной строки в отчётности The Trade Desk.</p>
+  <p class="meta">Ресёрч gid · 26.08.2026 · пять срезов, адверсариальная верификация: 22 правки. Первоисточники — 10-K и 10-Q, формы 990, Companies House, судебные документы, тексты договоров из экзибитов SEC</p>
+
+  <div class="eyebrow">01 · Главное</div>
+  <h2>Финансовых слоёв четыре, и они несопоставимы</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 306" role="img" aria-label="Четыре финансовых слоя вокруг рекламных денег и их порядки величин">
+      <g font-size="11.5">
+        <rect x="0" y="0" width="940" height="66" rx="6" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="16" y="24" fill="var(--s1)" font-size="12.5" font-weight="600">СЛОЙ 1 · FLOAT — остатки чужих денег. Крупнейший и самый дешёвый.</text>
+        <text x="16" y="43" fill="var(--muted)">Кредиторка Omnicom на 31.12.2025 — $20 659,5 млн при выручке $17 271,9 млн (медиа-обязательства брутто, выручка нетто). Оговорка: это уже</text>
+        <text x="16" y="59" fill="var(--muted)">объединённая Omnicom+IPG, из них $7,1 млрд принято от IPG; на 31.12.2024 сопоставимая кредиторка была $12,5 млрд.</text>
+
+        <rect x="0" y="78" width="940" height="60" rx="6" fill="var(--card)" stroke="var(--line)"/>
+        <text x="16" y="102" fill="var(--ink)" font-size="12.5" font-weight="600">СЛОЙ 2 · ДОХОД ОТ FLOAT — $602–616 млн у четырёх холдингов за 2024.</text>
+        <text x="16" y="121" fill="var(--muted)">Схлопывается вместе со ставками: Omnicom $106,7 → $96,9 млн, Publicis €174 → €123 млн, WPP £123 → £62 млн. По сопоставимому периметру</text>
+        <text x="16" y="134" fill="var(--mark)">из трёх компаний — примерно $465 млн в 2024 против ~$330 млн в 2025: минус треть за год.</text>
+
+        <rect x="0" y="150" width="940" height="60" rx="6" fill="var(--card)" stroke="var(--line)"/>
+        <text x="16" y="174" fill="var(--ink)" font-size="12.5" font-weight="600">СЛОЙ 3 · СПЕЦИАЛИЗИРОВАННОЕ КРЕДИТОВАНИЕ ДЕБИТОРКИ — самый обсуждаемый и самый маленький.</text>
+        <text x="16" y="193" fill="var(--muted)">Совокупная ёмкость $0,3–1,0 млрд коммитментов: SLR Business Credit $920,4 млн обязательств / $535,2 млн выбрано (все вертикали, 188 заёмщиков);</text>
+        <text x="16" y="206" fill="var(--muted)">Revving — анонсированные £100 млн; OAREX — две линии по $50 млн. Доход слоя при ставках 9,35–12,75% — десятки миллионов в год.</text>
+
+        <rect x="0" y="222" width="940" height="82" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="246" fill="var(--mark)" font-size="12.5" font-weight="600">СЛОЙ 4 · ДОЛГ ПОД ВЫКУП ИНФРАСТРУКТУРЫ — новый и самый быстрорастущий.</text>
+        <text x="16" y="265" fill="var(--muted)">$1,0 млрд term loan + $150 млн револьвер под IAS и ~$1,8 млрд committed debt под DoubleVerify — почти $3 млрд нового приобретательского долга</text>
+        <text x="16" y="278" fill="var(--muted)">на измерительный слой за 14 месяцев. Ставки нигде не раскрыты; при уровнях, которые Nielsen платит на рынке (9,5–10,375%), годовые проценты</text>
+        <text x="16" y="296" fill="var(--ink)" font-weight="600">составят $270–310 млн — сопоставимо со всем процентным доходом холдингов от float. Это вывод, а не раскрытие.</text>
+      </g>
+    </svg>
+    <figcaption>Считать эти слои вместе бессмысленно — зарабатывают в них разные люди, и единицы измерения разные (остатки против годовых потоков против ёмкости коммитментов).</figcaption>
+  </figure>
+
+  <div class="eyebrow">02 · Кто финансирует разрыв</div>
+  <h2>Крупнейший кредитор экосистемы — не финтех, а собственный капитал The Trade Desk</h2>
+  <div class="viz">
+    <h3>Чистая позиция «дебиторка минус кредиторка», 31.12.2025, млн $</h3>
+    <p class="sub">Положительное значение — компания кредитует цепочку из своих средств. Отрицательное — она фондируется контрагентами.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">The Trade Desk<em>DSP</em></div>
+        <div class="dtrack"><div class="dzero"></div><div class="dpos" style="width:73.8%; --c:var(--s1)"></div></div>
+        <div class="bval">+762,5</div>
+        <div class="tip">AR $3 770,2 млн против AP $3 007,7 млн (2024: +$699,1 млн). Компания признаёт это прямо: «we generally pay our accounts payable on shorter cycles than we collect on our accounts receivables». Одна эта позиция больше всей специализированной индустрии кредитования вместе взятой.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Taboola<em>нативная сеть</em></div>
+        <div class="dtrack"><div class="dzero"></div><div class="dpos" style="width:2.9%; --c:var(--s4)"></div></div>
+        <div class="bval">+29,5</div>
+        <div class="tip">Единственный публичный посредник, который прямо раскрывает использование кредитного страхования: «we try to reduce the credit exposures of our accounts receivable by credit limits and credit insurance for many of our customers» (10-K FY2022–FY2025).</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Criteo<em>commerce media</em></div>
+        <div class="dtrack"><div class="dzero"></div><div class="dpos" style="width:1.6%; --c:var(--s4)"></div></div>
+        <div class="bval">+16,1</div>
+        <div class="tip">У Criteo резерв 4,3% — на порядок выше рынка, потому что счета выставляются рекламодателям напрямую. В 2025 списан полный резерв $5,9 млн по одному обанкротившемуся американскому ритейлеру: для commerce-media риск — дефолт ритейлера, а не посредника.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">PubMatic<em>SSP</em></div>
+        <div class="dtrack"><div class="dzero"></div><div class="dpos" style="width:1.4%; --c:var(--s4)"></div></div>
+        <div class="bval">+14,6</div>
+        <div class="tip">При этом в 2023 и 2024 процентный доход PubMatic превышал операционную прибыль в 4,3 и 2,2 раза — компания зарабатывала на остатках больше, чем на основной деятельности.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Magnite<em>SSP</em></div>
+        <div class="dtrack"><div class="dzero"></div><div class="dneg" style="width:26.2%; --c:var(--mark)"></div></div>
+        <div class="bval">−270,1</div>
+        <div class="tip">Magnite держит $1 572,1 млн Accounts payable—seller против $15,0 млн собственной торговой кредиторки — деньги продавцов в 105 раз больше своих, в одной строке на лице баланса; разбивка есть только в Note 10. Слово «restricted cash» в 10-K не встречается ни разу.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Валовая дебиторка шести публичных посредников на 31.12.2025 — $6 715,1 млн, но она почти вся зеркалится кредиторкой: финансируется только нетто-позиция, около $636 млн по шестёрке. Сопоставлять ёмкость финтехов с $6,7 млрд — завышать контраст втрое-вдесятеро. Оговорка: у всех, кроме Magnite, строка AP смешивает supply-payable и обычную торговую кредиторку, поэтому нетто — оценка.</p>
+  </div>
+  <p class="note"><b>Инверсия читается прямо: DSP кредитует цепочку, SSP сидит на float.</b> И собственные кредитные линии adtech идут не на оборотку, а на M&amp;A — Magnite $365 млн Term Loan B (SOFR+300), PubMatic $110 млн невыбран, Criteo RCF €407 млн, TTD револьвер $450 млн (с 14.04.2026 — $750 млн до 2031), Teads $637,5 млн нот под 10,000%. Ни одна из пятёрки не финансирует долгом оборотный капитал.</p>
+
+  <div class="viz">
+    <h3>Наблюдаемая цена медиа-дебиторки, all-in годовых</h3>
+    <p class="sub">Из 10-K SLR Investment Corp. — единственного публичного BDC внутри сегмента, то есть первоисточник, а не вендорский маркетинг.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">DeepIntent<em>DSP, health</em></div>
+        <div class="track"><div class="bar" style="width:73%; --c:var(--s1)"></div></div>
+        <div class="bval">9,35 %</div>
+        <div class="tip">P+185 при флоре 5,25%; вторая позиция P+135 / 8,10%.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">33Across<em>SSP</em></div>
+        <div class="track"><div class="bar" style="width:82%; --c:var(--s1)"></div></div>
+        <div class="bval">10,50 %</div>
+        <div class="tip">P+200, флор 8,50%; выдан 01/2024, погашение 10/2025. Вторая позиция P+232 / 10,82%.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Sightly<em>видео-платформа</em></div>
+        <div class="track"><div class="bar" style="width:90%; --c:var(--s2)"></div></div>
+        <div class="bval">11,50 %</div>
+        <div class="tip">P+475.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">BDG Media (Bustle)<em>паблишер</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--mark)"></div></div>
+        <div class="bval">12,00–12,75 %</div>
+        <div class="tip">P+525, флор 5,50%. Самая дорогая позиция сегмента — и это паблишер, то есть конец цепочки платит больше всех.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Единственный полностью раскрытый набор условий в публичной adtech-отчётности — Inuvo / SLR Digital Finance: $10 млн коммитмент, выборка до 90% eligible AR, Prime+1,0% с флором 7%, monthly service fee 0,15%, annual facility fee 0,80%, плюс minimum-utilization и 1% early termination. Номинально 9,55% на 31.12.2025. В пересчёте на срок счёта: 9,55% × 60/365 × 0,9 = <b>1,41% от номинала за 60 дней</b> — обычный факторинг, adtech не дороже других отраслей для тех, кто линию вообще получил. Терминологическая поправка верификатора: это ABL-кредит, а не факторинг — дебиторка остаётся на балансе заёмщика.</p>
+  </div>
+
+  <div class="eyebrow">03 · Разрыв заявленного и наблюдаемого</div>
+  <h2>Слой, продающий прозрачность паблишерам, непрозрачнее своих клиентов</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 250" role="img" aria-label="Revving: заявленные цифры против наблюдаемой отчётности">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">REVVING LIMITED (England &amp; Wales, №12735446)</text>
+
+        <rect x="0" y="26" width="455" height="120" rx="6" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="16" y="50" fill="var(--s1)" font-size="12.5" font-weight="600">ЗАЯВЛЕНО ПУБЛИЧНО</text>
+        <text x="16" y="72" fill="var(--muted)">£107 млн раунда (13.02.2025), лид DWS</text>
+        <text x="16" y="92" fill="var(--muted)">«до £1,8 млрд выдач за три года»</text>
+        <text x="16" y="112" fill="var(--muted)">«эффект £8,6 млрд для экономики»</text>
+        <text x="16" y="134" fill="var(--mark)" font-weight="600">Обе цифры — арифметика, а не прогноз</text>
+
+        <rect x="485" y="26" width="455" height="120" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="501" y="50" fill="var(--mark)" font-size="12.5" font-weight="600">НАБЛЮДАЕМО В РЕЕСТРЕ (FY2024)</text>
+        <text x="501" y="72" fill="var(--muted)">micro-entity по FRS 105, без аудита (s.477)</text>
+        <text x="501" y="92" fill="var(--muted)">чистые активы £413 691 (2023: £848 546)</text>
+        <text x="501" y="112" fill="var(--muted)">creditors &gt;1 года £3 523 014 против £114 226</text>
+        <text x="501" y="134" fill="var(--ink)" font-weight="600">среднее число сотрудников — 2</text>
+
+        <rect x="0" y="158" width="940" height="42" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="178" fill="var(--ink)" font-size="12" font-weight="600">Декодирование: £1,8 млрд = £100 млн × 6 оборотов в год (60-дневный цикл) × 3 года. £8,6 млрд = 4,8 (мультипликатор IAB) × £1,8 млрд.</text>
+        <text x="16" y="194" fill="var(--muted)" font-size="12">Ни одной фактической цифры выдач Revving не публиковал. Обе публичные цифры — производные размера facility.</text>
+
+        <rect x="0" y="210" width="940" height="40" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="16" y="230" fill="var(--muted)" font-size="12">Fixed + floating charge с negative pledge в пользу Alter Domus Trustees (UK) Ltd создан 19.11.2024 — за шесть недель до отчётной даты. Сумма обеспечения</text>
+        <text x="16" y="244" fill="var(--muted)" font-size="12">в реестре НЕ раскрыта: связка «charge = £100 млн от DWS» — вывод, а не раскрытие. Invoice finance для UK limited companies — вне периметра FCA.</text>
+      </g>
+    </svg>
+    <figcaption>Портфель требований на этом балансе не сидит: связка Alter Domus как security trustee плюс Sidley Austin — типовая warehouse-структура с отдельным SPV, возможно вне UK-реестра. Проверить нельзя: отчётность за FY2025 подлежит подаче к 30.09.2026, на 26.08.2026 не подана, и в micro-формате она в любом случае покажет только балансовые итоги, а не утилизацию facility. Это единственная точка во всём специализированном слое, где раскрытие принудительно.</figcaption>
+  </figure>
+
+  <div class="eyebrow">04 · Float</div>
+  <h2>Размер измерим без оценок — компании публикуют его сами, но не называют</h2>
+  <div class="viz">
+    <h3>Средняя позиция за год против отчётной на 31 декабря</h3>
+    <p class="legend"><span><i class="swatch" style="--c:var(--s1)"></i>средняя за 12 месяцев</span><span><i class="swatch" style="--c:var(--s2)"></i>балансовая на отчётную дату</span></p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">WPP · 31.12.2025<em>adjusted net debt, £ млн</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:97%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:62%; --c:var(--s2)"></div></div>
+        </div>
+        <div class="bval">3 404 / 2 167</div>
+        <div class="tip">За 2024: £3 506 против £1 742 млн. Разрыв £1,2–1,8 млрд. Оговорка: определение метрики изменено (включены деривативы), прошлые годы re-presented — с более ранними публикациями WPP напрямую не сравнивать.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Publicis · 31.12.2025<em>net debt, € млн</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:28%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:16%; --c:var(--s4)"></div></div>
+        </div>
+        <div class="bval">−971 / +548</div>
+        <div class="tip">LTM average net debt −€971 млн при чистой ДЕНЕЖНОЙ позиции +€548 млн: разрыв около €1,5 млрд. Зелёная полоса — положительная позиция, то есть на отчётную дату компания выглядит как чистый кредитор, а в среднем по году — как чистый должник.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Существенная поправка верификатора: <b>ни одна из двух компаний не декомпозирует разрыв на клиентский float</b> — он отражает сезонность оборотного капитала целиком. Omnicom, IPG, TTD и Magnite такой метрики не публикуют вовсе, так что экстраполировать на отрасль нельзя. Но сезонность подтверждается независимо: Omnicom прямо пишет «Our working capital cycle typically peaks during the second quarter», и касса на 30.06.2026 — $3 336,2 млн против $6 881,1 млн на 31.12.2025. <b>Отчётная дата 31 декабря — пик float, а не норма.</b></p>
+  </div>
+
+  <div class="viz">
+    <h3>PubMatic: процентный доход против операционной прибыли, млн $</h3>
+    <p class="sub">Два года подряд остатки чужих денег приносили больше, чем основная деятельность.</p>
+    <p class="legend"><span><i class="swatch" style="--c:var(--s1)"></i>процентный доход</span><span><i class="swatch" style="--c:var(--s4)"></i>операционная прибыль</span><span><i class="swatch" style="--c:var(--mark)"></i>операционный убыток</span></p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">2023<em>payable to publishers $366,0 млн</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:100%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:23%; --c:var(--s4)"></div></div>
+        </div>
+        <div class="bval">8,8 / 2,0</div>
+        <div class="tip">Процентный доход больше операционной прибыли в 4,3 раза.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">2024<em>payable to publishers $319,5 млн</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:97%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:44%; --c:var(--s4)"></div></div>
+        </div>
+        <div class="bval">8,5 / 3,9</div>
+        <div class="tip">В 2,2 раза. Конструкция держалась на ставках, а не на бизнесе.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">2025<em>конструкция развалилась</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:63%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:100%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="bval">5,5 / −17,3</div>
+        <div class="tip">Процентный доход упал до $5,5 млн, и одновременно появился операционный убыток $17,3 млн.</div>
+      </div>
+    </div>
+    <p class="vizfoot">У холдингов та же механика в большем масштабе: процентный доход Omnicom вырос с $27,3 млн (2021) до $106,7 млн (2023) при том, что касса за тот же период <i>упала</i> с $5,3 до $4,4 млрд — чистый эффект ставки на неизменной подушке чужих денег. У IPG отношение процентного дохода к кэшу за 2024 — 6,9%, заметно выше долларовых ставок; объяснение компании — «higher average international cash balances», то есть часть float размещается в высокоставочных валютах. Нигде количественно не раскрытый источник дохода.</p>
+  </div>
+
+  <figure class="diagram">
+    <svg viewBox="0 0 940 236" role="img" aria-label="Юридическая асимметрия: агент для учёта, принципал-должник для банкротства">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">ПОЧЕМУ СЕГРЕГАЦИИ НЕТ — АСИММЕТРИЯ, КОТОРУЮ НИГДЕ НЕ ФОРМУЛИРУЮТ</text>
+
+        <rect x="0" y="26" width="455" height="86" rx="6" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="16" y="50" fill="var(--s1)" font-size="12.5" font-weight="600">ДЛЯ ASC 606 SSP — АГЕНТ</text>
+        <text x="16" y="72" fill="var(--muted)">PubMatic: «we do not act as the principal… because we</text>
+        <text x="16" y="88" fill="var(--muted)">do not control the advertising inventory and do not set</text>
+        <text x="16" y="104" fill="var(--muted)">the price». Выручка признаётся нетто.</text>
+
+        <rect x="485" y="26" width="455" height="86" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="501" y="50" fill="var(--mark)" font-size="12.5" font-weight="600">ДЛЯ ДОГОВОРА И БАНКРОТСТВА — ПРИНЦИПАЛ</text>
+        <text x="501" y="72" fill="var(--muted)">Тот же поток оформлен принципал-к-принципалу,</text>
+        <text x="501" y="88" fill="var(--muted)">и деньги паблишера становятся обычной</text>
+        <text x="501" y="104" fill="var(--muted)">НЕОБЕСПЕЧЕННОЙ торговой кредиторкой.</text>
+
+        <rect x="0" y="124" width="940" height="46" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="146" fill="var(--ink)" font-size="12.5" font-weight="600">Из-за этого зазора не срабатывает ни один существующий режим защиты чужих денег:</text>
+        <text x="16" y="164" fill="var(--muted)" font-size="12">FCA CASS 5 запускается от квалификации денег как client money (statutory trust возникает в момент ПОЛУЧЕНИЯ, а не сегрегации) · эскроу титульных агентств США — от прямого статутного траста · исключение commercial agent в PSD2 (ст. 3(b)) неприменимо, если агент действует за обе стороны.</text>
+
+        <rect x="0" y="182" width="940" height="54" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="204" fill="var(--mark)" font-size="12.5" font-weight="600">В adtech не выполнено ни одно из трёх условий, и никто никогда не пытался их выполнить.</text>
+        <text x="16" y="224" fill="var(--muted)" font-size="12">Последняя иллюзия защищённости: TTD по Loan and Security Agreement заложила практически все активы, включая дебиторку, внутри которой лежат деньги паблишеров. На 31.12.2025 линия невыбрана — залог обеспечивает лимит, но приоритет банка над торговыми кредиторами в залоговой массе уже установлен.</text>
+      </g>
+    </svg>
+    <figcaption>Отдельная деталь: <b>IAB General Terms and Conditions от 12.12.2025 — первое за 15 лет капитальное переписывание контрактного каркаса — не ввели ни трастов, ни эскроу, ни единой нормы о payment liability.</b> Вопреки распространённому пересказу, sequential liability там не кодифицирована: словосочетание не встречается ни в General Terms v1.1, ни в Direct Buy Addendum v1.0, ни в Order-Specific Terms v1.0, а §5(k) прямо отсылает вопрос к Specific Terms. У отрасли был момент, когда мутуализацию риска можно было записать в стандарт бесплатно, и она осознанно оставила вопрос двусторонним.</figcaption>
+  </figure>
+
+  <div class="eyebrow">05 · Как реализуется риск</div>
+  <h2>Убыток едет вниз со стабильной ставкой 60–80%</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Компания</th><th>Концентрация дебиторки</th><th>Резерв</th><th>Что это значит</th></tr></thead>
+      <tbody>
+        <tr><td><b>Magnite</b></td><td>два покупателя — 40% и 12% от $1 302,0 млн; крупнейшая single-name экспозиция ~$520,8 млн. Один продавец даёт 27% кредиторки</td><td><b>0,31%</b></td><td>Отношение экспозиции к резерву — 130×. Оговорка: база валовая (дебиторка по gross billings, выручка $714,0 млн), чистая экономическая экспозиция примерно вчетверо меньше</td></tr>
+        <tr><td><b>PubMatic</b></td><td>три покупателя — 24%, 16% и 14%</td><td><b>0,28%</b></td><td>Провизия и списания за 2025 — <b>ноль</b></td></tr>
+        <tr><td><b>The Trade Desk</b></td><td>два холдинга — 30% Gross Billings в 2025. Концентрация дебиторки за год упала с 42% (три клиента) до 30% (два)</td><td><b>0,32%</b></td><td>Единственный, кто раскрывает метод: «Industry-specific default rates are applied to receivables subject to sequential liability». Формулировка стоит с 2020 года, источник ставок не раскрыт, полнотекстовый EDGAR подтверждает — больше её не использует никто</td></tr>
+        <tr><td><b>Criteo</b></td><td>$582,1 млн, счета выставляются рекламодателям напрямую</td><td><b>4,3%</b></td><td>Исключение, подтверждающее правило: в 2025 списан полный резерв $5,9 млн по одному обанкротившемуся американскому ритейлеру. Для commerce-media риск — дефолт ритейлера, а не посредника</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Совпадение резервов 0,28–0,32% у трёх структурно разных бизнесов — лучшее доказательство того, что кредитный риск не моделируется, а отслеживается по просрочке.</b></p>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 200" role="img" aria-label="Распределение убытка по цепи на примере дефолта MediaMath 2023">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">ДЕФОЛТ MEDIAMATH, 2023 — ЕДИНСТВЕННЫЙ СЛУЧАЙ, ГДЕ РАСПРЕДЕЛЕНИЕ УБЫТКА ИЗМЕРЕНО</text>
+
+        <text x="0" y="42" fill="var(--ink)" font-size="12" font-weight="600">Magnite · провизия $20,1 млн</text>
+        <rect x="0" y="52" width="710" height="24" rx="3" fill="var(--mark)"/>
+        <rect x="710" y="52" width="230" height="24" rx="3" fill="var(--s1)"/>
+        <text x="18" y="69" fill="var(--paper)" font-size="12" font-weight="600">77% переложено вниз на паблишеров — $15,4 млн</text>
+        <text x="726" y="69" fill="var(--paper)" font-size="12" font-weight="600">23% на себя — $4,7 млн</text>
+
+        <text x="0" y="106" fill="var(--ink)" font-size="12" font-weight="600">PubMatic · валовое требование $14,5 млн</text>
+        <rect x="0" y="116" width="573" height="24" rx="3" fill="var(--mark)"/>
+        <rect x="573" y="116" width="367" height="24" rx="3" fill="var(--s1)"/>
+        <text x="18" y="133" fill="var(--paper)" font-size="12" font-weight="600">61% клоубэком паблишерам — $8,8 млн</text>
+        <text x="589" y="133" fill="var(--paper)" font-size="12" font-weight="600">39% собственный убыток — $5,7 млн</text>
+
+        <rect x="0" y="156" width="940" height="44" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="16" y="176" fill="var(--ink)" font-size="12" font-weight="600">Recovery ≈ 0, и это структурно.</text>
+        <text x="170" y="176" fill="var(--muted)" font-size="12">Обеспеченный кредитор — Goldman Sachs, SSP стояли необеспеченными. Активы куплены Infillion за $22 млн — около 2%</text>
+        <text x="16" y="192" fill="var(--muted)" font-size="12">от пиковой оценки в $1 млрд. 24.04.2024 суд подписал структурное прекращение дела (dismissal, а не план): механизма распределения в пользу необеспеченных не создавалось.</text>
+      </g>
+    </svg>
+    <figcaption>Клоубэк не исчез — он расслоился на три режима, и все три наблюдаемы в текущей отчётности. У Magnite это рабочий инструмент возврата: строка contra seller payables даёт $2,2 млн (31.12.2025) и $1,9 млн (31.12.2024). У PubMatic — товар: клоубэк сохранён в MSA от 05.09.2025, а отказ от него продаётся отдельно. У Direct Digital Holdings — предмет бухгалтерского обмена: отсутствие sequential liability использовано как довод за статус principal по ASC 606 и валовое признание выручки, и компания, сделавшая этот выбор, оказалась в going concern.</figcaption>
+  </figure>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Payment Protection Plan — не страхование</h3>
+      <ul>
+        <li>Дословно (pubmatic.com/legal/program-descriptions, Section 6): PPP «requires PubMatic to make any Publisher Payment(s)… regardless of whether PubMatic has collected gross revenue from any applicable Demand Partner(s)» и «prohibits PubMatic from relying on sequential payment liability or bad debt terms»</li>
+        <li>Нет страховщика, страхового интереса третьего лица, резервов, регулятора, co-insurance и per-buyer лимитов. Это <b>отказ автора оговорки от собственной оговорки</b></li>
+        <li>Тариф ~3% берётся не у PubMatic, а из Digiday от 07.05.2020; база начисления нигде не раскрыта. В отчётности продукта не существует: полнотекстовый поиск EDGAR по CIK PubMatic даёт <b>ноль совпадений «payment protection» за всю историю филингов</b></li>
+        <li>Главное следствие: снять клоубэк PubMatic может только PubMatic — <b>конкурентного рынка на этот товар не существует в принципе</b>, и правильный бенчмарк не 0,2% Allianz Trade, а «сколько монополист берёт за отказ от условия, которое сам же и ввёл»</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s2)">
+      <h3>Что опровергла проверка</h3>
+      <ul>
+        <li><b>«SSP не авансируют с собственного баланса» — неверно</b>, и опровергается теми же 10-K. PubMatic: «in some cases, we are required to pay publishers for digital ad impressions delivered even if we are unable to collect from the buyer». Magnite: «we may be required or elect to pay sellers for impressions delivered before we have collected». SSP не продают продукт авансирования — они несут его молча</li>
+        <li><b>«В adtech-отчётности нет раскрытий защиты платежей» — неверно.</b> Taboola в 10-K за FY2022–FY2025 прямо раскрывает credit insurance и кредитные лимиты. Верно другое: раскрытий <i>с цифрами</i> — суммой покрытия, премией, лимитами — нет ни у кого</li>
+        <li><b>Волна страховок — реакция на Sizmek (2019), а не на MediaMath.</b> Ключевая статья AdExchanger датирована 04.03.2020; фактическую покупку тогда подтвердил только TripleLift, PubMatic отказался («It sounds good. We haven't found it to be a practical solution in reality»). Сам инструмент фигурирует в adtech-кредитных соглашениях с 2014 года. Три точки за семь лет — это паттерн, а не событие</li>
+        <li><b>Кредиторы генерируют спрос слабее, чем казалось:</b> в соглашении PubMatic с SVB (2017) credit insurance — <b>один из четырёх</b> альтернативных путей попадания иностранной дебиторки в borrowing base, а не требование</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Риск переехал вверх по цепи.</b> Teads — крупный покупатель инвентаря с рейтингами Caa2 / CCC+ / CCC+ (S&amp;P понизил дважды, прогнозируя adjusted leverage ~26× в 2026 и называя реструктуризацию «увеличивающе вероятной»). Справедливая стоимость его нот в собственной отчётности: 78,0 от номинала на 30.06.2025 → <b>39,7 на 31.12.2025</b> → ~48,5 на 30.06.2026. Операционный поток за 6 месяцев 2026 — минус $25,7 млн. Плюс Direct Digital Holdings в going concern с $0,7 млн кэша: SSP, публично отказавшийся от клоубэков, сам стал кредитным риском для своих паблишеров. Главный операционный урок при этом даёт EMX — он <b>перестал платить паблишерам ещё летом 2022</b>, и к подаче половина уже отключилась: сигнал — просрочка, а не банкротство, а «страховка» отрасли — не право требования, а скорость отключения.</p>
+
+  <div class="eyebrow">06 · Капитал</div>
+  <h2>Уход с публичного рынка — четыре разных механизма, а не один</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Сделка</th><th>Покупатель</th><th>Цена и мультипликаторы</th><th>Статус на 26.08.2026</th></tr></thead>
+      <tbody>
+        <tr><td><b>Integral Ad Science</b></td><td>Novacap (PE)</td><td>$10,30/акц., EV ~$1,9 млрд — 8,76× EBITDA, 3,1× выручки. Финансирование: до $857,8 млн equity + $1,0 млрд term loan + $150 млн револьвер, ~46/54</td><td><b>Закрыта 23.12.2025.</b> Form 15-12G 02.01.2026</td></tr>
+        <tr><td><b>DoubleVerify</b></td><td>Neptune BidCo US (Nielsen; Elliott/Brookfield)</td><td>$13,60/акц., EV ~$2,15 млрд — 8,75× adj EBITDA, но <b>15,2× post-SBC</b> ($141,4 млн). Финансирование: $200 млн equity от аффилиатов Elliott + ~$1,8 млрд committed debt</td><td>Только <b>подписана 06.08.2026.</b> Голосования и HSR нет, закрытие к Q1 2027, outside date 06.05.2027</td></tr>
+        <tr><td><b>LiveRamp</b></td><td>Publicis (стратег, кэш)</td><td>$38,50/акц., equity $2,546 млрд, EV $2,167 млрд. <b>Долгового финансирования нет вообще</b></td><td>Подписана 16.05.2026, не закрыта</td></tr>
+        <tr><td><b>System1</b></td><td>— <b>не выкуп, кредиторский переворот</b></td><td>$150 млн term loan SOFR+500 до 2031, 39 250 префов Series A (~$40,1 млн), кэш $31,4 млн</td><td>Закрыто 23.07.2026; компания <b>осталась публичной</b></td></tr>
+        <tr><td><b>XLMedia</b></td><td>— <b>не выкуп, ликвидация</b></td><td>Активы проданы (Gambling.com $41 млн, Sportradar $21 млн), возврат £14 млн</td><td>AIM Rule 15 cash shell с 13.11.2024, торги приостановлены 14.05.2025</td></tr>
+        <tr><td><b>Nexxen</b></td><td>— <b>не уход, консолидация листинга</b></td><td>—</td><td>Выход с AIM, единственный листинг Nasdaq с 18.02.2025</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Асимметрия break-up fees выдаёт цену финансового риска:</b> IAS $52,5 млн против $100 млн (1:1,9), DV $60 млн против $144 млн (1:2,4), LiveRamp $32,35 млн симметрично (1:1). Реверсивная комиссия покупателя есть плата за риск незакрытия — у стратега с кэшем её нет.</p>
+  <div class="cons">
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Тезис «PE забирает дисконт» на собственных данных не выживает</h3>
+      <ul>
+        <li>Сопоставимое сравнение CY2026E <b>pre-SBC</b>: медиана Jefferies 7,2× (данные на 22.09.2025) → медиана Evercore 7,0× (15.05.2026) — <b>почти плоско, а не обвал с 8,1 до 7,0</b>. Первая версия сравнивала разные форвардные годы и разные корзины</li>
+        <li>DV покупают за 8,8× pre-SBC против рыночных 7,0× — узкий арбитраж. Но за <b>15,2× post-SBC против рыночных 9,3–11,3× — то есть с премией</b></li>
+        <li>За LiveRamp заплачено $38,50 при верхней границе диапазона Evercore $38,14. За IAS — $10,30 при DCF-диапазоне Jefferies $7,81–10,64, у самой верхней границы</li>
+        <li><b>Дисконта нет ни в одной из трёх сделок.</b> И у DV проценты по долгу сделки ($270–310 млн/год при выведенной ставке) сопоставимы или выше денежной EBITDA после SBC ($141,4 млн) — конструкция обслуживается балансом Nielsen, а не потоком актива</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Тезис «покупатель ровно один» тоже опровергнут</h3>
+      <ul>
+        <li>В DEFM14A LiveRamp: в декабре 2025 проконтактировано <b>одиннадцать</b> третьих лиц, восемь отказались вести переговоры — но <b>24.12.2025 Party E подала all-cash предложение по $40,00 за акцию, выше итоговых $38,50</b>, и просто не довела сделку</li>
+        <li>При этом 12–13.05.2026 совет прямо решил <b>не</b> делать исходящих звонков, опасаясь отзыва предложения Publicis: отсутствие пост-сигнинговой заявки объясняется в том числе отсутствием обзвона</li>
+        <li>У IAS процесс закрыт жёстче: Written Consent в течение <b>24 часов</b> под штраф $52,5 млн, блок Vista (39%) + Atlas Venture Fund VIII (14%) = 52,6% подписал в день соглашения, все положения о Superior Proposal истекли в тот же день, слова «go-shop» в документе нет, миноритарии получили Form 14C — уведомление, не голосование</li>
+        <li>Следствие: <b>«рынок оценил дёшево» и «продавцы не дали рынку оценить» на этих документах неразличимы</b></li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Что конкретно перестаёт быть проверяемым.</b> Годового отчёта IAS за 2025 год не существует и не будет. Раскрытие прекращается <i>до</i> закрытия: DV отозвала весь гайденс «for the duration of the transaction's pendency» — три квартала компания формально публична и фактически непрозрачна. Исчезает единственный публичный ценовой ряд на измерение: Media Transactions Measured 7,0 → 8,3 → 9,5 трлн против выручки $572,5 / $656,8 / $748,3 млн даёт <b>8,18 → 7,91 → 7,88 цента за тысячу измеренных транзакций</b> — ряд не публикует никто, он выводится вручную из двух чисел в 10-K. Уходит разбивка Activation / Measurement / Supply-side, показавшая, что ядро бизнеса DV в Q2 2026 сократилось на 1%. Долг уходит в 144A-темноту: Neptune BidCo в реестре SEC отсутствует. И — о чём не пишут вовсе — исчезает состязательность: у частной компании нет ни Form 4, ни 13D/13G, ни экономического стимула у того, кто стал бы проверять цифры.</p>
+
+  <div class="eyebrow">07 · Слепые зоны</div>
+  <h2>Чего нет — и кому это удобно</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s2)">
+      <h3>Знаменатель</h3>
+      <ul>
+        <li>Ни Magnite, ни PubMatic <b>не раскрывают валовый оборот</b> — обе показывают выручку нетто, численного gross spend в 10-K нет. Ставку потерь по отрасли вычислить нельзя ни из чего; любые «0,1%» держатся на внешних оценках take rate</li>
+        <li><b>Кому удобно:</b> посредникам. Пока знаменателя нет, нельзя ни посчитать честную цену защиты, ни показать, что она завышена</li>
+        <li><b>Доля транзитных денег в кассе</b> не раскрыта ни одним эмитентом; ни одного случая restricted cash; весь процентный доход подан как доход от «excess cash». Программ supplier finance / reverse factoring не раскрывает никто, хотя ASU 2022-04 и поправки к IAS 7 действуют</li>
+        <li><b>Недоплаты в деньгах:</b> по данным OAREX 15% всех платежей приходят неполными при средней недоплате −4%, среди программатик-должников доля недоплат 18%. Публичная дискуссия целиком про сроки; систематический шорт-пэй не оценивает в деньгах никто</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Имена, лимиты и стоимость капитала</h3>
+      <ul>
+        <li>Покупатель с 40% дебиторки Magnite формально анонимен: <b>крупнейшая single-name экспозиция отрасли — порядка полумиллиарда долларов без имени</b></li>
+        <li>В договоре PubMatic с TTD, поданном в SEC, <b>платёжный срок и порог приостановки скрыты как [***]</b> — публичны только санкции (1,5% в месяц, $1 000 за восстановление)</li>
+        <li>Пер-DSP кредитные лимиты, которые выставляет страховщик, по конструкции полиса OpenX не видел <b>даже страхователь</b>. Это самая ценная кредитная оценка в отрасли, и она закрыта от всех, включая того, кто за неё платит</li>
+        <li><b>Условия долга под инфраструктуру:</b> по IAS известны только организаторы и размеры траншей — спред, ковенанты и leverage-тест не раскрыты нигде. Стоимость капитала, на котором держится верификационный слой рекламного рынка, публично неизвестна, а его прозрачность продаётся рекламодателям как продукт</li>
+        <li><b>Recovery и фактические сборы клоубэков:</b> заявленные $8,8 и $14,3 млн — это выставленные вычеты, а не подтверждённые поступления; в allowance rollforward их не видно, потому что они уходят в seller payable. Перекладывание убытка на паблишеров технически не проходит через отчёт о прибылях</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">08 · Гипотеза о клиринге</div>
+  <h2>Вывод не меняется, обоснование становится точнее</h2>
+  <p class="note">Сигнал, названный в раунде по микроструктуре подтверждающим — <b>исчезновение клаубек-оговорок</b> — свежими данными <b>не подтверждается</b>. Клоубэк жив, работает и впервые количественно раскрыт (contra seller payables у Magnite: $1,9 млн → $2,2 млн). Вероятность появления CCP в смысле PFMI для open RTB остаётся в единицах процентов, и к прежним трём причинам добавляются четыре наблюдаемые:</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Наблюдение</th><th>Почему это блокирует клиринг</th></tr></thead>
+      <tbody>
+        <tr><td><b>Нет даже предпосылки расчётного счёта</b></td><td>Слово «restricted cash» не встречается в 10-K Magnite ни разу; деньги продавцов лежат в одной строке с собственной кредиторкой. Клиринг требует сегрегации как нулевого шага, а её нет ни у кого и не будет, пока агент для ASC 606 остаётся принципалом-должником для банкротства</td></tr>
+        <tr><td><b>Двусторонний механизм дешевле любой инфраструктуры</b></td><td>Клоубэк возвращает 60–80% убытка и стоит посредникам $1–5 млн в год. Гарантийный фонд, маржирование и участие в CCP стоили бы на порядок больше</td></tr>
+        <tr><td><b>Функцию клиринга уже приватизировала одна компания</b></td><td>TTD в одиночку финансирует $762,5 млн разрыва из собственного капитала и применяет industry-specific default rates по ASC 326. Клиринговая палата конкурировала бы с ним, а не обслуживала его</td></tr>
+        <tr><td><b>Убыток по-прежнему едет вниз</b></td><td>Пока recovery необеспеченных близок к нулю, а 60–80% убытка перекладывается на фрагментированных паблишеров, у игроков с капиталом мотива платить за мутуализацию нет</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Единственный канал, который мог бы оживить вопрос, — обратный: концентрация.</b> Если дефолт случится не у среднего DSP, а у покупателя масштаба Teads, убыток упрётся в концентрированную кредиторку — у Magnite один продавец даёт 27% payable, а один покупатель 40% дебиторки. Тогда клоубэк перестаёт диффундировать убыток и превращается в единичный удар по крупным паблишерам, то есть в событие, после которого вопрос об инфраструктуре ставится заново. Наблюдаемых шагов в эту сторону на 26.08.2026 нет ни одного.</p>
+
+  <div class="eyebrow">09 · Что смотреть дальше</div>
+  <h2>Три точки с известной датой</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Companies House, окно до 30.09.2026</h3>
+      <p class="note" style="margin:0">Отчётность Revving Limited за FY2025 подлежит подаче к этой дате. Смотреть надо не на net assets — micro-entity по FRS 105 не покажет ни P&amp;L, ни примечаний, — а на строку <b>creditors due after more than one year</b> (£3 523 014 против £114 226 годом ранее) и на появление новых charges в пользу Alter Domus. Если строка не вырастет кратно, портфель действительно сидит в отдельном SPV, и единственный новый вход в сегмент за два года остаётся непроверяемым по существу.</p>
+    </div>
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Contra seller payables, февраль 2027</h3>
+      <p class="note" style="margin:0">У Magnite это прямой счётчик работающего клоубэка. Скачок на порядок означал бы крупный дефолт байера; сохранение на уровне $2–3 млн — что механизм работает в фоне и вопрос о клиринге закрыт ещё на год. Смотреть в связке с Teads: купонные даты 15.08 и 15.02, ноты по 39,7–48,5 от номинала. Дефолт или обмен долга Teads — <b>первый со времён MediaMath тест распределения убытка при концентрированной кредиторке</b>.</p>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Последний год ряда «цена измерения»</h3>
+      <p class="note" style="margin:0">8,18 → 7,91 → 7,88 цента за тысячу выводится только из 10-K DoubleVerify. Сделка подписана, гайденс отозван, закрытие к Q1 2027 — значит 10-K за FY2026 (февраль 2027) с высокой вероятностью станет <b>последним источником этого ряда</b>. Проверки: появится ли четвёртая точка до закрытия; удержится ли формулировка про «decrease in Measured Transaction Fees»; подхватит ли публикацию кто-нибудь из MRC, IAB, TAG — на 26.08.2026 такого ряда у них нет.</p>
+    </div>
+  </div>
+
+  <footer>
+    Собрано агентом gid 26.08.2026: пять research-агентов по независимым срезам, по одному адверсариальному верификатору на срез. Верификатор дал 22 правки.
+    <br><br>
+    Существенные из них: «SSP не авансируют с собственного баланса» <b>опровергнуто</b> их же 10-K; «в adtech-отчётности нет раскрытий защиты платежей» <b>опровергнуто</b> раскрытиями Taboola; «IAB кодифицировал sequential liability» <b>не подтверждается</b> текстом всех трёх опубликованных документов; «на идентичностный слой существует ровно один покупатель» <b>опровергнуто</b> заявкой Party E по $40,00; тезис о дисконте PE <b>не выживает</b> при аккуратном сопоставлении баз; ноты Teads котировались не по 83, а по 78 в середине 2025 и по <b>39,7</b> на конец года — ошибка была в базе метрики (доля от балансовой стоимости вместо номинала); Inuvo/SLR — это <b>ABL-кредит, а не факторинг</b>; разрыв average/balance-sheet net debt раскрывает <b>не только WPP</b>, но и Publicis, и ни одна из двух не связывает его с клиентским float.
+    <br><br>
+    Полный справочник со всеми правками — <code>docs/adtech-financial-underbelly.md</code> в репозитории проекта.
+  </footer>
+</main>

@@ -1,0 +1,445 @@
+<title>gid после 13 раундов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --plane:#f4f3ef; --surface:#fcfcfb; --surface-2:#f7f6f2;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --rule:#c3c2b7; --hair:rgba(11,11,11,.10);
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300; --s7:#4a3aa7; --s8:#e34948;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --plane:#0d0d0d; --surface:#1a1a19; --surface-2:#201f1e;
+    --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --rule:#383835; --hair:rgba(255,255,255,.10);
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --plane:#0d0d0d; --surface:#1a1a19; --surface-2:#201f1e;
+  --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --rule:#383835; --hair:rgba(255,255,255,.10);
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--plane); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:16px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px; margin:0 auto; padding:56px 24px 96px; display:flex; flex-direction:column; gap:44px}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0}
+h1{font-size:clamp(32px,5vw,46px); line-height:1.08; font-weight:600; letter-spacing:-.02em; margin:10px 0 0; text-wrap:balance}
+h2{font-size:23px; font-weight:600; letter-spacing:-.01em; margin:0; text-wrap:balance}
+h3{font-size:16px; font-weight:600; margin:0}
+p{margin:0; max-width:68ch}
+.lede{font-size:18px; color:var(--ink-2); max-width:70ch; margin-top:16px}
+section{display:flex; flex-direction:column; gap:18px}
+.head-rule{display:flex; align-items:baseline; gap:14px; border-bottom:1px solid var(--rule); padding-bottom:10px}
+.head-rule .n{font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--muted)}
+.card{background:var(--surface); border:1px solid var(--hair); border-radius:10px; padding:22px}
+.stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--hair); border:1px solid var(--hair); border-radius:10px; overflow:hidden}
+.stat{background:var(--surface); padding:18px 18px 16px; display:flex; flex-direction:column; gap:4px}
+.stat .v{font-size:32px; font-weight:600; letter-spacing:-.02em; font-variant-numeric:tabular-nums; line-height:1.1}
+.stat .k{font-size:13px; color:var(--ink-2); line-height:1.35}
+.stat .n{font-family:"IBM Plex Mono",monospace; font-size:11px; color:var(--muted); letter-spacing:.06em; text-transform:uppercase}
+.grid2{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:18px}
+figure{margin:0; display:flex; flex-direction:column; gap:12px}
+figcaption{font-size:13px; color:var(--ink-2); line-height:1.5}
+.scroll{overflow-x:auto}
+svg.chart{display:block; width:100%; height:auto; max-width:100%}
+.legend{display:flex; flex-wrap:wrap; gap:14px; font-size:12.5px; color:var(--ink-2)}
+.legend span{display:inline-flex; align-items:center; gap:6px}
+.chip{width:11px; height:11px; border-radius:3px; flex:none}
+ul{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:9px; max-width:68ch}
+li{padding-left:2px}
+b,strong{font-weight:600}
+.mono{font-family:"IBM Plex Mono",monospace; font-size:.92em}
+code{font-family:"IBM Plex Mono",monospace; font-size:.88em; background:var(--surface-2); border:1px solid var(--hair); border-radius:4px; padding:1px 5px}
+.break{display:flex; gap:14px; align-items:flex-start; padding:16px 0; border-top:1px solid var(--grid)}
+.break:first-of-type{border-top:0; padding-top:4px}
+.break .tag{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; padding:3px 8px; border-radius:999px; white-space:nowrap; flex:none; margin-top:2px}
+.t-crit{background:color-mix(in srgb, var(--crit) 14%, transparent); color:var(--crit); border:1px solid color-mix(in srgb, var(--crit) 35%, transparent)}
+.t-warn{background:color-mix(in srgb, var(--serious) 16%, transparent); color:var(--serious); border:1px solid color-mix(in srgb, var(--serious) 38%, transparent)}
+.t-good{background:color-mix(in srgb, var(--good) 14%, transparent); color:var(--good); border:1px solid color-mix(in srgb, var(--good) 35%, transparent)}
+.paths{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px}
+.path{background:var(--surface); border:1px solid var(--hair); border-radius:10px; padding:20px; display:flex; flex-direction:column; gap:12px}
+.path.rec{border-color:color-mix(in srgb, var(--s1) 55%, transparent); box-shadow:0 0 0 1px color-mix(in srgb, var(--s1) 22%, transparent)}
+.path .ph{display:flex; align-items:center; gap:9px}
+.path .letter{font-family:"IBM Plex Mono",monospace; font-weight:600; font-size:12px; width:22px; height:22px; border-radius:6px; display:grid; place-items:center; background:var(--surface-2); border:1px solid var(--hair); color:var(--ink-2); flex:none}
+.path.rec .letter{background:var(--s1); border-color:var(--s1); color:#fff}
+.path ul{padding-left:18px; gap:7px; font-size:14.5px; color:var(--ink-2)}
+.path .cost{font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--muted); letter-spacing:.05em; text-transform:uppercase; margin-top:auto; padding-top:10px; border-top:1px solid var(--grid)}
+table{border-collapse:collapse; width:100%; font-size:14px}
+th,td{text-align:left; padding:9px 12px; border-bottom:1px solid var(--grid); vertical-align:top}
+th{font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); font-weight:500}
+td.num{font-variant-numeric:tabular-nums; text-align:right; white-space:nowrap}
+.foot{font-size:13px; color:var(--muted); border-top:1px solid var(--rule); padding-top:16px; max-width:70ch}
+@media (prefers-reduced-motion:no-preference){ .path{transition:transform .18s ease} .path:hover{transform:translateY(-2px)} }
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Диагностика · 28 августа 2026 · замерено по data/vestige.db</p>
+  <h1>gid после 13 раундов</h1>
+  <p class="lede">Одиннадцать дней работы, 472 факта, тринадцать справочников. Машина производства раундов работает лучше, чем ожидалось. Накопительная петля — та, ради которой всё затевалось, — разорвана в трёх местах, и это видно в цифрах.</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><span class="n">раундов</span><span class="v">13</span><span class="k">каждый — справочник в <span class="mono">docs/</span> плюс дамп срезов</span></div>
+  <div class="stat"><span class="n">в памяти</span><span class="v">472</span><span class="k">факта, все размечены провенансом</span></div>
+  <div class="stat"><span class="n">улов верификации</span><span class="v">24–50</span><span class="k">правок на раунд — главный источник ценности</span></div>
+  <div class="stat"><span class="n">не прочитано</span><span class="v">46%</span><span class="k">записей, созданных до последних раундов, ни разу не всплыли в поиске</span></div>
+  <div class="stat"><span class="n">из фидов</span><span class="v">0</span><span class="k">фактов в памяти за 10 дней сбора</span></div>
+</div>
+
+<section>
+  <div class="head-rule"><h2>Что работает</h2><span class="n">подтверждено замером</span></div>
+  <ul>
+    <li><b>Адверсариальная верификация.</b> 24–50 правок на раунд, 48 записей с тегом <span class="mono">correction</span> в базе. Преобладающий класс ошибки — «принятое выдаётся за применяющееся», «вторичный источник за первичный», «счётчик одного считает другое». Ни один открытый инструмент этого класса не ловит: NLI-верификаторы отвечают «поддержано ли утверждение <em>переданным</em> документом» и на таком улове подтвердят ровно ошибку.</li>
+    <li><b>Провенанс.</b> 69,3% фактов имеют первоисточник, происхождение каждого числа классифицировано. Три ортогональные оси вместо слипшегося <span class="mono">cred:verified</span> — схема заполняется, а не стоит пустой.</li>
+    <li><b>Границы субагентов конфигом.</b> Аллоулист без <span class="mono">smart_ingest</span>, <span class="mono">Write</span> и <span class="mono">Edit</span> плюс PreToolUse-страж. Оба инцидента (запись до верификации, дампы в корне) переведены из «просьбы» в «технически невозможно» — мусора в корне сейчас нет.</li>
+    <li><b>Замки консолидации.</b> С 21.08 ни одного фонового прогона. До этого 13 прогонов слили 196 дублей и стоили 138 записей безвозвратно.</li>
+  </ul>
+</section>
+
+<section>
+  <div class="head-rule"><h2>Где рвётся петля</h2><span class="n">три обрыва</span></div>
+  <figure>
+    <div class="scroll">
+      <svg class="chart" viewBox="0 0 880 400" role="img" aria-label="Схема контура gid: сбор фидов не доходит до памяти, память почти не читается обратно, ревизит темы случился один раз из тринадцати">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+          </marker>
+          <marker id="ar-crit" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="#d03b3b"/>
+          </marker>
+        </defs>
+        <g fill="none" stroke="currentColor" stroke-width="1.25" opacity=".55">
+          <rect x="26" y="26" width="150" height="46" rx="7"/>
+          <rect x="222" y="26" width="158" height="46" rx="7"/>
+        </g>
+        <g font-family="IBM Plex Sans, system-ui, sans-serif" font-size="12.5" fill="currentColor" text-anchor="middle">
+          <text x="101" y="45">gate-feeds · 7 RSS</text>
+          <text x="101" y="61" font-size="11" opacity=".65">launchd, ежедневно</text>
+          <text x="301" y="45">inbox.jsonl</text>
+          <text x="301" y="61" font-size="11" opacity=".65">146 записей за 10 дней</text>
+        </g>
+        <line x1="180" y1="49" x2="216" y2="49" stroke="currentColor" stroke-width="1.4" marker-end="url(#ar)" opacity=".55"/>
+        <path d="M384,49 L640,49 L640,150" stroke="#d03b3b" stroke-width="1.6" stroke-dasharray="6 5" fill="none" marker-end="url(#ar-crit)"/>
+        <g stroke="#d03b3b" stroke-width="2.2">
+          <line x1="500" y1="41" x2="516" y2="57"/><line x1="516" y1="41" x2="500" y2="57"/>
+        </g>
+        <text x="508" y="79" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#d03b3b" text-anchor="middle">0 фактов дистиллировано</text>
+
+        <g fill="none" stroke="currentColor" stroke-width="1.25">
+          <rect x="26" y="176" width="104" height="52" rx="7"/>
+          <rect x="168" y="176" width="104" height="52" rx="7"/>
+          <rect x="310" y="176" width="104" height="52" rx="7"/>
+          <rect x="452" y="166" width="150" height="72" rx="7"/>
+          <rect x="640" y="96" width="176" height="52" rx="7"/>
+          <rect x="640" y="176" width="176" height="52" rx="7"/>
+        </g>
+        <g font-family="IBM Plex Sans, system-ui, sans-serif" font-size="12.5" fill="currentColor" text-anchor="middle">
+          <text x="78" y="207">Вопрос</text>
+          <text x="220" y="199">recall</text>
+          <text x="220" y="215" font-size="11" opacity=".65">память</text>
+          <text x="362" y="199">gate-web</text>
+          <text x="362" y="215" font-size="11" opacity=".65">456 фактов</text>
+          <text x="527" y="192">раунд</text>
+          <text x="527" y="209" font-size="11" opacity=".65">4–6 срезов →</text>
+          <text x="527" y="224" font-size="11" opacity=".65">верификация → синтез</text>
+          <text x="728" y="118">артефакт в docs/</text>
+          <text x="728" y="134" font-size="11" opacity=".65">13 справочников</text>
+          <text x="728" y="198">память</text>
+          <text x="728" y="214" font-size="11" opacity=".65">+50…110 за раунд</text>
+        </g>
+        <g stroke="currentColor" stroke-width="1.4" fill="none" marker-end="url(#ar)">
+          <line x1="130" y1="202" x2="164" y2="202"/>
+          <line x1="272" y1="202" x2="306" y2="202"/>
+          <line x1="414" y1="202" x2="448" y2="202"/>
+          <path d="M602,190 L620,190 L620,122 L636,122"/>
+          <line x1="602" y1="212" x2="636" y2="212"/>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" opacity=".65" text-anchor="middle">
+          <text x="147" y="194">1</text>
+          <text x="289" y="194">2</text>
+          <text x="431" y="194">3</text>
+        </g>
+
+        <path d="M728,232 L728,286 L220,286 L220,234" stroke="currentColor" stroke-width="1.3" stroke-dasharray="5 4" fill="none" marker-end="url(#ar)" opacity=".5"/>
+        <text x="474" y="278" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="currentColor" opacity=".7" text-anchor="middle">возврат в ответы: 16–22 обращения на раунд против ~100 записей</text>
+
+        <path d="M816,148 L852,148 L852,340 L78,340 L78,234" stroke="#d03b3b" stroke-width="1.5" stroke-dasharray="6 5" fill="none" marker-end="url(#ar-crit)"/>
+        <text x="452" y="332" font-family="IBM Plex Mono, monospace" font-size="11.5" fill="#d03b3b" text-anchor="middle">ревизит темы: 1 раунд из 13 · superseded_by = 0</text>
+      </svg>
+    </div>
+    <figcaption>Сплошные стрелки — то, что работает каждый раунд. Пунктир — связи, которые задуманы и не замкнулись: сбор фидов упирается в файл, память почти не возвращается в ответы, к пройденной теме раунд не возвращается.</figcaption>
+  </figure>
+
+  <div class="card">
+    <div class="break">
+      <span class="tag t-crit">обрыв 1</span>
+      <div><h3>Фиды собираются в никуда</h3><p>Сборщик отработал 7 раз за 10 дней и положил 146 материалов в <span class="mono">inbox.jsonl</span>. Фактов с тегом <span class="mono">gate:feeds</span> в памяти — ноль. Дистилляция ни разу не запускалась: она требует ручного вызова в сессии. Плюс баг среды: задача заводится в 8:00, но ноутбук в это время спит, launchd отрабатывает после пробуждения — DNS ещё не поднят, и 5 из 7 фидов падают по таймауту. Все 7 адресов при проверке сейчас отвечают <span class="mono">200</span>, реестр в порядке — дело в моменте запуска и отсутствии ретраев.</p></div>
+    </div>
+    <div class="break">
+      <span class="tag t-warn">обрыв 2</span>
+      <div><h3>Память пишется, но не читается</h3><p>Из 262 записей, созданных до последних раундов, 120 (46%) ни разу не всплыли в поиске. В два самых больших раунда 26–27.08 записано 200 фактов и сделано 36 обращений к памяти — меньше, чем один <span class="mono">recall</span> отдаёт результатов. Раунды идут мимо накопленного и добывают всё заново из веба. Накопительного эффекта, ради которого выбиралась память, пока нет.</p></div>
+    </div>
+    <div class="break">
+      <span class="tag t-crit">обрыв 3</span>
+      <div><h3>Нет механизма изменения</h3><p>Заявленная цель — понять рынок сейчас, чтобы прогнозировать, как он будет меняться. Но 12 раундов из 13 открывали новую тему, и только один вернулся к пройденной, чтобы закрыть пробелы. Ни один факт ни разу не был помечен устаревшим: <span class="mono">valid_until</span> = 0, <span class="mono">superseded_by</span> = 0. Пять открытых содержательных хвостов (ставка DST во Франции, апелляция Texas AG, лицензии Кюрасао, реестр Вермонта, remedies по Google) живут списком в хэндофф-файле и проверяются только тем, что кто-то про них вспомнит.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="head-rule"><h2>Записано против прочитано</h2><span class="n">по дням</span></div>
+  <figure>
+    <div class="scroll">
+      <svg class="chart" viewBox="0 0 880 320" role="img" aria-label="Столбиковая диаграмма: записей в память по дням против обращений к памяти. 19 августа 258 обращений, дальше обращения падают до 16-22 при 88-112 новых записях">
+        <g stroke="var(--grid)" stroke-width="1">
+          <line x1="52" y1="252" x2="856" y2="252"/>
+          <line x1="52" y1="211" x2="856" y2="211"/>
+          <line x1="52" y1="171" x2="856" y2="171"/>
+          <line x1="52" y1="130" x2="856" y2="130"/>
+          <line x1="52" y1="89" x2="856" y2="89"/>
+          <line x1="52" y1="48" x2="856" y2="48"/>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="var(--muted)" text-anchor="end">
+          <text x="44" y="256">0</text><text x="44" y="215">50</text><text x="44" y="175">100</text>
+          <text x="44" y="134">150</text><text x="44" y="93">200</text><text x="44" y="52">250</text>
+        </g>
+        <line x1="52" y1="252" x2="856" y2="252" stroke="var(--rule)" stroke-width="1.5"/>
+
+        <g>
+          <rect x="66" y="182" width="22" height="70" rx="3" fill="var(--s1)"><title>17.08 — записано 86</title></rect>
+          <rect x="90" y="193" width="22" height="59" rx="3" fill="var(--s2)"><title>17.08 — обращений 73</title></rect>
+          <rect x="133" y="204" width="22" height="48" rx="3" fill="var(--s1)"><title>18.08 — записано 59</title></rect>
+          <rect x="157" y="214" width="22" height="38" rx="3" fill="var(--s2)"><title>18.08 — обращений 47</title></rect>
+          <rect x="200" y="167" width="22" height="85" rx="3" fill="var(--s1)"><title>19.08 — записано 104</title></rect>
+          <rect x="224" y="42" width="22" height="210" rx="3" fill="var(--s2)"><title>19.08 — обращений 258</title></rect>
+          <rect x="267" y="241" width="22" height="11" rx="3" fill="var(--s1)"><title>20.08 — записано 13</title></rect>
+          <rect x="291" y="247" width="22" height="5" rx="3" fill="var(--s2)"><title>20.08 — обращений 6</title></rect>
+          <rect x="601" y="161" width="22" height="91" rx="3" fill="var(--s1)"><title>26.08 — записано 112</title></rect>
+          <rect x="625" y="239" width="22" height="13" rx="3" fill="var(--s2)"><title>26.08 — обращений 16</title></rect>
+          <rect x="668" y="180" width="22" height="72" rx="3" fill="var(--s1)"><title>27.08 — записано 88</title></rect>
+          <rect x="692" y="236" width="22" height="16" rx="3" fill="var(--s2)"><title>27.08 — обращений 20</title></rect>
+          <rect x="735" y="244" width="22" height="8" rx="3" fill="var(--s1)"><title>28.08 — записано 10</title></rect>
+          <rect x="759" y="234" width="22" height="18" rx="3" fill="var(--s2)"><title>28.08 — обращений 22</title></rect>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="11" font-weight="500" text-anchor="middle">
+          <text x="235" y="36" fill="var(--s2)">258</text>
+          <text x="612" y="155" fill="var(--s1)">112</text>
+          <text x="636" y="233" fill="var(--s2)">16</text>
+          <text x="679" y="174" fill="var(--s1)">88</text>
+          <text x="703" y="230" fill="var(--s2)">20</text>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="var(--muted)" text-anchor="middle">
+          <text x="89" y="272">17.08</text><text x="156" y="272">18.08</text><text x="223" y="272">19.08</text><text x="290" y="272">20.08</text>
+          <text x="446" y="272">21–25.08</text>
+          <text x="624" y="272">26.08</text><text x="691" y="272">27.08</text><text x="758" y="272">28.08</text>
+        </g>
+        <text x="446" y="240" font-family="IBM Plex Sans, system-ui, sans-serif" font-size="12" fill="var(--muted)" text-anchor="middle">пауза — раундов не было</text>
+        <g font-family="IBM Plex Sans, system-ui, sans-serif" font-size="12.5" fill="var(--ink-2)">
+          <rect x="60" y="292" width="11" height="11" rx="3" fill="var(--s1)"/>
+          <text x="78" y="302">записано в память</text>
+          <rect x="216" y="292" width="11" height="11" rx="3" fill="var(--s2)"/>
+          <text x="234" y="302">обращений к памяти</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>19 августа — единственный день, когда память работала как память: 258 обращений. Это был день холодных тестов recall, а не содержательного раунда. В настоящие большие раунды 26–27 августа соотношение перевернулось: 200 новых записей против 36 обращений.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="head-rule"><h2>Что из Vestige включилось</h2><span class="n">за 472 записи</span></div>
+  <figure>
+    <div class="scroll">
+      <svg class="chart" viewBox="0 0 880 430" role="img" aria-label="Горизонтальные полосы: теги, node_type и строка source используются на всех 472 записях, поиск дал 425 попаданий, promote 17, граф 9 рёбер, protected 6; validUntil, superseded_by, merge_operations, receipts и times_useful остались нулевыми">
+        <g font-family="IBM Plex Mono, monospace" font-size="11.5" fill="var(--muted)" letter-spacing="0.06em">
+          <text x="20" y="26">РАБОТАЕТ</text>
+          <text x="20" y="286">НЕ ВКЛЮЧАЛОСЬ НИ РАЗУ</text>
+        </g>
+        <g font-family="IBM Plex Sans, system-ui, sans-serif" font-size="13" fill="var(--ink)">
+          <text x="20" y="56">теги на записи</text>
+          <text x="20" y="88">node_type</text>
+          <text x="20" y="120">строка source</text>
+          <text x="20" y="152">попаданий в поиске</text>
+          <text x="20" y="184">promote</text>
+          <text x="20" y="216">рёбра графа</text>
+          <text x="20" y="248">protected</text>
+          <text x="20" y="316">validUntil</text>
+          <text x="20" y="342">superseded_by</text>
+          <text x="20" y="368">merge_operations</text>
+          <text x="20" y="394">receipts</text>
+          <text x="20" y="420">times_useful</text>
+        </g>
+        <g>
+          <rect x="230" y="44" width="472" height="15" rx="3" fill="var(--s1)"><title>теги — 472 из 472</title></rect>
+          <rect x="230" y="76" width="472" height="15" rx="3" fill="var(--s1)"><title>node_type — 472 из 472</title></rect>
+          <rect x="230" y="108" width="472" height="15" rx="3" fill="var(--s1)"><title>строка source — 472 из 472</title></rect>
+          <rect x="230" y="140" width="425" height="15" rx="3" fill="var(--s1)"><title>попаданий в поиске — 425</title></rect>
+          <rect x="230" y="172" width="17" height="15" rx="3" fill="var(--s1)"><title>promote — 17</title></rect>
+          <rect x="230" y="204" width="9" height="15" rx="3" fill="var(--s1)"><title>рёбра графа — 9</title></rect>
+          <rect x="230" y="236" width="6" height="15" rx="3" fill="var(--s1)"><title>protected — 6</title></rect>
+        </g>
+        <g>
+          <circle cx="232" cy="311" r="3" fill="var(--crit)"/>
+          <circle cx="232" cy="337" r="3" fill="var(--crit)"/>
+          <circle cx="232" cy="363" r="3" fill="var(--crit)"/>
+          <circle cx="232" cy="389" r="3" fill="var(--crit)"/>
+          <circle cx="232" cy="415" r="3" fill="var(--crit)"/>
+        </g>
+        <g font-family="IBM Plex Mono, monospace" font-size="12" font-variant-numeric="tabular-nums">
+          <text x="712" y="57" fill="var(--ink)">472</text>
+          <text x="712" y="89" fill="var(--ink)">472</text>
+          <text x="712" y="121" fill="var(--ink)">472</text>
+          <text x="665" y="153" fill="var(--ink)">425</text>
+          <text x="257" y="185" fill="var(--ink-2)">17</text>
+          <text x="249" y="217" fill="var(--ink-2)">9</text>
+          <text x="246" y="249" fill="var(--ink-2)">6</text>
+          <text x="244" y="315" fill="var(--crit)">0</text>
+          <text x="244" y="341" fill="var(--crit)">0</text>
+          <text x="244" y="367" fill="var(--crit)">0</text>
+          <text x="244" y="393" fill="var(--crit)">0</text>
+          <text x="244" y="419" fill="var(--crit)">0</text>
+        </g>
+        <line x1="20" y1="266" x2="860" y2="266" stroke="var(--grid)" stroke-width="1"/>
+      </svg>
+    </div>
+    <figcaption>Битемпоральность, обратимый dedup, receipts и FSRS-полезность — то, за что субстрат выбирался в августе, — не включились ни разу. Реально работают четыре вещи: кросс-язычный гибридный поиск офлайн, теги, <span class="mono">node_type</span> и строка <span class="mono">source</span>. Вывод не «менять память»: перенос 472 записей ради неиспользуемых фич — недели работы с нулевым эффектом. Вывод — либо начать пользоваться, либо перестать платить за это сложностью.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="head-rule"><h2>Провенанс: базовая линия</h2><span class="n">472 записи, размечены ретроспективно</span></div>
+  <div class="card" style="display:flex; flex-direction:column; gap:26px">
+    <div>
+      <p class="eyebrow" style="margin-bottom:8px">chan: — дистанция до источника</p>
+      <div style="display:flex; gap:2px; height:30px">
+        <div style="flex:0 0 69.3%; background:var(--s1); border-radius:3px" title="primary — 327 записей, 69,3%"></div>
+        <div style="flex:0 0 10.6%; background:var(--s2); border-radius:3px" title="press — 50 записей, 10,6%"></div>
+        <div style="flex:0 0 10.0%; background:var(--s3); border-radius:3px" title="inferred — 47 записей, 10,0%"></div>
+        <div style="flex:0 0 4.2%; background:var(--s4); border-radius:3px" title="secondhand — 20 записей, 4,2%"></div>
+        <div style="flex:0 0 2.8%; background:var(--s5); border-radius:3px" title="user — 13 записей, 2,8%"></div>
+        <div style="flex:0 0 1.9%; background:var(--s6); border-radius:3px" title="aggregator — 9 записей, 1,9%"></div>
+        <div style="flex:1 1 auto; background:var(--s7); border-radius:3px" title="archive — 6 записей, 1,3%"></div>
+      </div>
+      <div class="legend" style="margin-top:10px">
+        <span><i class="chip" style="background:var(--s1)"></i>primary 69,3%</span>
+        <span><i class="chip" style="background:var(--s2)"></i>press 10,6%</span>
+        <span><i class="chip" style="background:var(--s3)"></i>inferred 10,0%</span>
+        <span><i class="chip" style="background:var(--s4)"></i>secondhand 4,2%</span>
+        <span><i class="chip" style="background:var(--s5)"></i>user 2,8%</span>
+        <span><i class="chip" style="background:var(--s6)"></i>aggregator 1,9%</span>
+        <span><i class="chip" style="background:var(--s7)"></i>archive 1,3%</span>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow" style="margin-bottom:8px">num: — происхождение числа</p>
+      <div style="display:flex; gap:2px; height:30px">
+        <div style="flex:0 0 39.0%; background:var(--s1); border-radius:3px" title="na — 184 записи, 39,0%"></div>
+        <div style="flex:0 0 29.2%; background:var(--s2); border-radius:3px" title="sourced — 138 записей, 29,2%"></div>
+        <div style="flex:0 0 21.8%; background:var(--s3); border-radius:3px" title="unsourced — 103 записи, 21,8%"></div>
+        <div style="flex:0 0 7.2%; background:var(--s4); border-radius:3px" title="derived — 34 записи, 7,2%"></div>
+        <div style="flex:1 1 auto; background:var(--s5); border-radius:3px" title="normalized — 13 записей, 2,8%"></div>
+      </div>
+      <div class="legend" style="margin-top:10px">
+        <span><i class="chip" style="background:var(--s1)"></i>na 39,0%</span>
+        <span><i class="chip" style="background:var(--s2)"></i>sourced 29,2%</span>
+        <span><i class="chip" style="background:var(--s3)"></i><b>unsourced 21,8%</b></span>
+        <span><i class="chip" style="background:var(--s4)"></i>derived 7,2%</span>
+        <span><i class="chip" style="background:var(--s5)"></i>normalized 2,8%</span>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow" style="margin-bottom:8px">cred: — подтверждённость</p>
+      <div style="display:flex; gap:2px; height:30px">
+        <div style="flex:0 0 62.7%; background:var(--s1); border-radius:3px" title="primary-confirmed — 296 записей, 62,7%"></div>
+        <div style="flex:0 0 21.4%; background:var(--s2); border-radius:3px" title="single — 101 запись, 21,4%"></div>
+        <div style="flex:0 0 12.7%; background:var(--s3); border-radius:3px" title="inferred — 60 записей, 12,7%"></div>
+        <div style="flex:0 0 2.8%; background:var(--s4); border-radius:3px" title="two-independent — 13 записей, 2,8%"></div>
+        <div style="flex:1 1 auto; background:var(--s5); border-radius:3px" title="rumor — 2 записи, 0,4%"></div>
+      </div>
+      <div class="legend" style="margin-top:10px">
+        <span><i class="chip" style="background:var(--s1)"></i>primary-confirmed 62,7%</span>
+        <span><i class="chip" style="background:var(--s2)"></i>single 21,4%</span>
+        <span><i class="chip" style="background:var(--s3)"></i>inferred 12,7%</span>
+        <span><i class="chip" style="background:var(--s4)"></i><b>two-independent 2,8%</b></span>
+        <span><i class="chip" style="background:var(--s5)"></i>rumor 0,4%</span>
+      </div>
+    </div>
+    <p style="font-size:13.5px; color:var(--ink-2); max-width:70ch">Две цифры, за которыми стоит следить. <b>unsourced 21,8%</b> — каждое пятое число лежит в первоисточнике, но само неизвестного происхождения. <b>two-independent 2,8%</b> — подтверждённого двумя независимыми источниками почти нет; раньше это скрывалось под общим <span class="mono">cred:verified</span>.</p>
+  </div>
+</section>
+
+<section>
+  <div class="head-rule"><h2>Три пути дальше</h2><span class="n">развилка</span></div>
+  <div class="paths">
+    <div class="path">
+      <div class="ph"><span class="letter">A</span><h3>Достроить добычу</h3></div>
+      <p style="font-size:14.5px; color:var(--ink-2)">План из пере-скана, пункты 7–10.</p>
+      <ul>
+        <li><span class="mono">gate-archive</span>: wayback, cdx-toolkit, pdfplumber, DocumentCloud, CourtListener</li>
+        <li>Хранение исходного текста скачанных страниц — без него автопроверка цитат закрыта технически</li>
+        <li>Патч <span class="mono">SourceEnvelope</span>: оживляет шесть серверных фильтров recall</li>
+        <li><span class="mono">entities.csv</span> и реестр решений о склейке</li>
+      </ul>
+      <p style="font-size:14px"><b>Что даёт:</b> −25–35% времени на раунд, выше доля первоисточников.<br><b>Чего не даёт:</b> производит то же самое — новые статичные карты, только дешевле.</p>
+      <span class="cost">≈50–70 часов</span>
+    </div>
+    <div class="path rec">
+      <div class="ph"><span class="letter">B</span><h3>Замкнуть петлю изменений</h3></div>
+      <p style="font-size:14.5px; color:var(--ink-2)">Не из плана — следует из трёх обрывов выше и из заявленной цели.</p>
+      <ul>
+        <li><b>Ревизит как тип раунда:</b> берём готовый справочник, проверяем, что изменилось, ингестим обновления — гейтинг сам склеит версии в таймлайн, устаревшему ставим <span class="mono">validUntil</span></li>
+        <li><b>Фиды доходят до памяти:</b> дистилляция по расписанию через готовый <span class="mono">distill.sh</span> + ретраи в сборщике</li>
+        <li><b>Открытые хвосты — объекты памяти</b> с датой следующей проверки, а не список в markdown</li>
+        <li><b>recall перед раундом</b> обязательным шагом, 3–5 узких запросов вместо одного длинного</li>
+      </ul>
+      <p style="font-size:14px"><b>Что даёт:</b> база начинает компаундиться, а «как рынок меняется» становится запросом к системе, а не новым раундом с нуля.</p>
+      <span class="cost">≈8–12 часов · рекомендую первым</span>
+    </div>
+    <div class="path">
+      <div class="ph"><span class="letter">C</span><h3>Гигиена и техдолг</h3></div>
+      <p style="font-size:14.5px; color:var(--ink-2)">План из пере-скана, пункты 4–6.</p>
+      <ul>
+        <li>Правило лестницы счёта: «N строк → M после casefold → K после cleanco» плюс <span class="mono">cnt:unit</span> и <span class="mono">cnt:asof</span></li>
+        <li>Реестр резолверов: кейс без резолва в CourtListener, филинг без EDGAR, акт ЕС без CELEX → <span class="mono">claim:unresolved</span></li>
+        <li>Разбор 59 записей с маркером <span class="mono">[MERGED]</span>; текст внутри блоков сохранился</li>
+      </ul>
+      <p style="font-size:14px"><b>Что даёт:</b> −8–13 правок на раунд, то есть снимает два самых частых класса ошибок целиком.</p>
+      <span class="cost">≈6–10 часов · дёшево, можно параллельно</span>
+    </div>
+  </div>
+  <p style="font-size:15px"><b>Порядок, который я бы взял:</b> B сейчас — он дешевле всех и единственный отвечает на заявленную цель; дешёвую часть C параллельно (правило лестницы и реестр резолверов — это две правки в конвенциях, не проект); A — когда конкретный раунд упрётся в добычу, а не заранее. Разбор <span class="mono">[MERGED]</span> — фоновая рутина на вечер, не блокирует ничего.</p>
+</section>
+
+<section>
+  <div class="head-rule"><h2>Чинится за час</h2><span class="n">мелочи, найденные при осмотре</span></div>
+  <div class="card scroll">
+    <table>
+      <thead><tr><th>Что</th><th>Состояние</th><th>Почему важно</th></tr></thead>
+      <tbody>
+        <tr><td><span class="mono">VESTIGE_BACKFILL_AUTOFIRE=0</span></td><td>нет в <span class="mono">.mcp.json</span></td><td>Рекомендован планом вместе с тремя замками консолидации; сейчас автосрабатывание backfill включено</td></tr>
+        <tr><td>Ретраи в <span class="mono">gates/pull.py</span></td><td>отсутствуют</td><td>Задача стартует после пробуждения ноутбука, DNS не поднят — 5 из 7 фидов падают каждый прогон при живых адресах</td></tr>
+        <tr><td><span class="mono">scripts/validate_palette.js</span></td><td>каталога нет</td><td>CLAUDE.md требует прогонять палитру через него перед каждым чартом; валидатор живёт в скилле <span class="mono">dataviz</span> — ссылку надо поправить</td></tr>
+        <tr><td>8 записей длиннее 3000 знаков</td><td>максимум 13 466</td><td>Простыни от фоновой консолидации: одна запись с 26 вклеенными фактами размывает эмбеддинг и тянет мусор в каждый recall по теме</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<p class="foot">Все числа сняты 28.08.2026 прямыми запросами к <span class="mono">data/vestige.db</span> (472 записи, таблицы <span class="mono">knowledge_nodes</span>, <span class="mono">memory_access_log</span>, <span class="mono">consolidation_history</span>, <span class="mono">merge_operations</span>, <span class="mono">memory_receipts</span>, <span class="mono">memory_connections</span>), к логам <span class="mono">gates/.state/pull.log</span> и живой проверкой семи RSS-адресов из реестра. Оценки часов — порядок величины, а не смета.</p>
+
+</div>

@@ -1,0 +1,454 @@
+<title>Платёжные рельсы агентов</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --mark:#B4540A; --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1040px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.1rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.38rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:72ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:40px}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:78ch; margin:6px 0 16px; font-size:.92rem}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.85em; background:var(--chip-bg); padding:1px 5px; border-radius:3px}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:74ch}
+  .bars{display:grid; gap:10px}
+  .brow{display:grid; grid-template-columns:minmax(150px,235px) 1fr 132px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:17px; position:relative}
+  .bar{height:17px; border-radius:2px 4px 4px 2px; background:var(--c)}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:440px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:82ch}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:80ch}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:840px}
+  th{text-align:left; font-size:.71rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
+  td{padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.85rem}
+  tr:last-child td{border-bottom:none}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:800px){ .cons{grid-template-columns:1fr} .brow{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px; border-top:3px solid var(--cc,var(--accent))}
+  .box h3{margin:0 0 8px}
+  .box ul,.box ol{margin:0; padding-left:19px}
+  .box li{margin-bottom:7px; font-size:.88rem}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:82ch}
+</style>
+<main>
+  <h1>Платёжные рельсы агентов</h1>
+  <p class="lede">Правила уже написаны, инфраструктура ещё нет, а объёма нет вовсе. Три схемы дают три несовместимых ответа на вопрос «кто платит, если агент ошибся» — и все три в маркетинге говорят потребителю одно и то же.</p>
+  <p class="meta">Ресёрч gid · 26.08.2026 · пять срезов, адверсариальная верификация: 25 правок. Первоисточники — Visa Core Rules (923 стр.), финальный текст PSR (Council doc 8221/26), спецификации TAP и Verifiable Intent, 10-K и 10-Q, живые замеры эндпоинтов</p>
+
+  <div class="eyebrow">01 · Главное</div>
+  <h2>Объём неотличим от нуля, и это арифметика, а не оценка</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 210" role="img" aria-label="Единственная названная сетью величина агентских транзакций против общего объёма Visa">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">ЕДИНСТВЕННАЯ ВЕЛИЧИНА, КОГДА-ЛИБО НАЗВАННАЯ ПЛАТЁЖНОЙ СЕТЬЮ</text>
+
+        <rect x="0" y="26" width="455" height="92" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="52" fill="var(--mark)" font-size="12.5" font-weight="600">Visa, релиз 18.12.2025, closed beta в США</text>
+        <text x="16" y="82" fill="var(--ink)" font-size="22" font-weight="600">«hundreds»</text>
+        <text x="16" y="104" fill="var(--muted)">secure, agent-initiated transactions — накопленным итогом за пилот</text>
+
+        <rect x="485" y="26" width="455" height="92" rx="6" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="501" y="52" fill="var(--s1)" font-size="12.5" font-weight="600">Visa, фискальный Q3 2026 (квартал до 30.06.2026)</text>
+        <text x="501" y="82" fill="var(--ink)" font-size="22" font-weight="600">71 700 000 000</text>
+        <text x="501" y="104" fill="var(--muted)">транзакций при платёжном объёме выше $4 трлн</text>
+
+        <rect x="0" y="130" width="940" height="34" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="152" fill="var(--ink)" font-size="12.5" font-weight="600">Отношение порядка 10⁻⁹…10⁻⁸.</text>
+        <text x="215" y="152" fill="var(--muted)" font-size="12">Сравниваются разнородные величины — накопленный итог пилота против квартального потока. Это единственная честная форма сравнения, которая доступна.</text>
+
+        <rect x="0" y="176" width="940" height="34" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="16" y="198" fill="var(--muted)" font-size="12">За 01.01–26.08.2026 фраза «agentic commerce» встречается в <tspan fill="var(--ink)" font-weight="600">37 формах 10-K/10-Q у 24 эмитентов</tspan> — Visa, Mastercard, PayPal, Amex, Capital One, Shopify, Etsy, Criteo, Macy's, Ulta и др. <tspan fill="var(--mark)" font-weight="600">Ни в одной нет числа.</tspan></text>
+      </g>
+    </svg>
+    <figcaption>В 10-Q Visa за июньский квартал слово встречается один раз — в примечании о покупке Prisma/Newpay за $1,5 млрд. В 10-Q PayPal за Q2 2026 слова «agentic» нет вообще. Оговорка: поиск по точной фразе не ловит «agentic payments» и «AI agents», так что доказано отсутствие числа при этой фразе, а не отсутствие любых агентских раскрытий.</figcaption>
+  </figure>
+  <p class="note"><b>Главный источник завышенных оценок — подмена замера.</b> Adobe (AI-реферальный трафик +62% г/г за июль 2026, конверсия на 60% выше, RPV +53%) и Salesforce ($263 млрд «AI-influenced») меряют переход по ссылке из ассистента и последующую покупку <i>человеком</i> либо атрибуцию сессии, а не платёж, инициированный агентом с агентским credential. Между этими величинами разница на порядки. Adobe при базе в 1 трлн визитов одиннадцать месяцев подряд публикует отношения и ни разу — долю. Checkout.com, эквайер, физически способный измерить долю по своей сети, вместо замера публикует опрос, где мерчанты сами оценивают её в 3%.</p>
+  <p class="note"><b>Единственный знаменатель от публичной компании — Etsy, и назван дважды.</b> Q4 2025 (19.02.2026): трафик из агентских каналов вырос примерно в 15 раз и составил «less than 1% of total traffic». Q1 2026 (29.04.2026), CEO Kruti Goyal: «it's still very, very small. It's a fraction of a percent of our total traffic». Shopify в Q2 2026 сообщил о трёхкратном росте AI-заказов — без базы. Асимметрия односторонняя: раскрывается всё, что растёт в разах, и скрывается всё, что показало бы базу.</p>
+
+  <div class="eyebrow">02 · Что построили схемы</div>
+  <h2>Протокол, продукт и правило — три разных уровня, которые постоянно смешивают</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 176" role="img" aria-label="Три уровня агентских платежей у Visa">
+      <g font-size="11.5">
+        <rect x="0" y="0" width="300" height="112" rx="6" fill="var(--card)" stroke="var(--line)"/>
+        <text x="16" y="24" fill="var(--ink)" font-size="12.5" font-weight="600">1 · ПРОТОКОЛ — TAP</text>
+        <text x="16" y="44" fill="var(--muted)">Узнавание агента на границе</text>
+        <text x="16" y="59" fill="var(--muted)">мерчанта: RFC 9421 HTTP</text>
+        <text x="16" y="74" fill="var(--muted)">Message Signature, Consumer</text>
+        <text x="16" y="89" fill="var(--muted)">Recognition Object, Payment</text>
+        <text x="16" y="104" fill="var(--muted)">Container, browsingIOU под 402</text>
+
+        <rect x="320" y="0" width="300" height="112" rx="6" fill="var(--card)" stroke="var(--line)"/>
+        <text x="336" y="24" fill="var(--ink)" font-size="12.5" font-weight="600">2 · ПРОДУКТ — VIC</text>
+        <text x="336" y="44" fill="var(--muted)">Токенизация, мандаты, FIDO/Visa</text>
+        <text x="336" y="59" fill="var(--muted)">Payment Passkey, сверка</text>
+        <text x="336" y="74" fill="var(--muted)">авторизации в VisaNet.</text>
+        <text x="336" y="89" fill="var(--muted)">Гайд ревизий 25.09.01 «Pilot»</text>
+        <text x="336" y="104" fill="var(--muted)">→ 25.12.01, дальше не обновлялся</text>
+
+        <rect x="640" y="0" width="300" height="112" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="656" y="24" fill="var(--mark)" font-size="12.5" font-weight="600">3 · ПРАВИЛО — Core Rules §4.1.24</text>
+        <text x="656" y="44" fill="var(--muted)">Определения APP и Agentic</text>
+        <text x="656" y="59" fill="var(--muted)">Transaction, обязанности APP,</text>
+        <text x="656" y="74" fill="var(--muted)">ОТВЕТСТВЕННОСТЬ ДЕРЖАТЕЛЯ,</text>
+        <text x="656" y="89" fill="var(--muted)">запрет эмитентам блокировать.</text>
+        <text x="656" y="104" fill="var(--ink)" font-weight="600">Действующая норма с Oct 2025</text>
+
+        <rect x="0" y="126" width="940" height="50" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="146" fill="var(--ink)" font-size="12.5" font-weight="600">Только третий уровень отвечает на вопрос «кто несёт риск».</text>
+        <text x="404" y="146" fill="var(--muted)" font-size="12">И слов «Trusted Agent Protocol» в рулбуке нет вообще — 0 вхождений.</text>
+        <text x="16" y="166" fill="var(--muted)" font-size="12">Причина, по которой тиражируется тезис «правил ещё нет»: правило Visa лежит в открытом PDF с октября 2025, но все ходят по пресс-релизам, а не по рулбуку.</text>
+      </g>
+    </svg>
+    <figcaption>Онбординг в VIC не self-serve: Token Requestor ID и Relationship ID выдаёт аккаунт-менеджер. Passkey Service, card art и push provisioning прямо помечены «This feature is in pilot phase».</figcaption>
+  </figure>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Схема</th><th>Статус</th><th>Кто подключён</th><th>Раскрытые объёмы</th></tr></thead>
+      <tbody>
+        <tr><td><b>Visa Intelligent Commerce</b></td><td>Пилот. US closed beta с 18.12.2025, Agentic Ready расширен на APAC и LatAm 29.04.2026</td><td>100+ партнёров, 30+ в песочнице, 20+ агентов; мерчанты Bose, Jomashop, Honeylove, Price.com</td><td><b>«Hundreds»</b> (18.12.2025). Больше ничего</td></tr>
+        <tr><td><b>Visa TAP</b></td><td>Спецификация, <b>не норма</b>. Репозиторий: последний push 28.10.2025; PR «make signature verifier RFC 9421-conformant» висит с 15.07.2026 без единого комментария</td><td>—</td><td>—</td></tr>
+        <tr><td><b>Mastercard Agent Pay</b></td><td>Анонс 29.04.2025. Технической публичной документации нет: developer.mastercard.com отдаёт SPA-заглушку. <b>Agent Pay Program Standards, на который ссылаются сами Mastercard Rules, не публичен</b></td><td>Microsoft, IBM, Braintree, Checkout.com; эмитенты Citi, US Bank</td><td><b>Ноль.</b> Только «первая транзакция в Европе» (Santander, 02.03.2026, одна транзакция), Nordea 05.06.2026 — одна покупка</td></tr>
+        <tr><td><b>Verifiable Intent</b></td><td>v0.1-draft от 18.02.2026, Apache-2.0. README: «Maintained by Mastercard». Содержимое не менялось с 20.04.2026, 28 открытых issue</td><td>—</td><td>—</td></tr>
+        <tr><td><b>Amex ACE / Agent Purchase Protection</b></td><td>Анонс 14.04.2026. <b>Agent Registration и Cart Context «still under development»</b> и на 26.08.2026. Защита сформулирована в будущем времени под PSLRA-дисклеймером</td><td>16 партнёров: Adyen, Cloudflare, Delta, Expedia, Fiserv, Google, Hilton, Microsoft, OpenAI, PayPal, Stripe</td><td><b>Ноль</b></td></tr>
+        <tr><td><b>Mastercard AP4M</b></td><td>Анонс 10.06.2026, «collaborating to validate priority use cases»</td><td>30+ партнёров: Stripe, Adyen, Coinbase, Cloudflare, Ripple, Solana Foundation, Ant International</td><td><b>Ноль</b></td></tr>
+        <tr><td><b>EMVCo</b></td><td><b>Рабочая группа без спецификации.</b> Agentic Payments Task Force объявлена 10.04.2026, приоритет — Digital Payment Credentials, черновик Schema Framework на Associate review. Сроков нет, о liability не сказано ничего</td><td>—</td><td>—</td></tr>
+        <tr><td><b>Discover / Capital One</b></td><td>Собственной агентской схемы нет</td><td>—</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="eyebrow">03 · Кто несёт риск</div>
+  <h2>Три схемы, три несовместимых ответа</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 262" role="img" aria-label="Три схемы назначают трёх разных носителей риска ошибки агента">
+      <g font-size="11.5">
+        <rect x="0" y="0" width="300" height="150" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="24" fill="var(--mark)" font-size="12.5" font-weight="600">VISA → ДЕРЖАТЕЛЬ КАРТЫ</text>
+        <text x="16" y="46" fill="var(--muted)">§4.1.24.10, действует с Oct 2025:</text>
+        <text x="16" y="63" fill="var(--ink)" font-size="11">«A Cardholder is responsible for any</text>
+        <text x="16" y="78" fill="var(--ink)" font-size="11">actions taken by an Agentic Payment</text>
+        <text x="16" y="93" fill="var(--ink)" font-size="11">Provider … as if the Cardholder</text>
+        <text x="16" y="108" fill="var(--ink)" font-size="11">initiated the Transaction»</text>
+        <text x="16" y="130" fill="var(--muted)">Глоссарий: APP «is considered to be</text>
+        <text x="16" y="144" fill="var(--muted)">the Cardholder» — юридическая фикция</text>
+
+        <rect x="320" y="0" width="300" height="150" rx="6" fill="var(--card)" stroke="var(--s3)" stroke-width="2"/>
+        <text x="336" y="24" fill="var(--s3)" font-size="12.5" font-weight="600">MASTERCARD → МЕРЧАНТ</text>
+        <text x="336" y="46" fill="var(--muted)">Открытый issue #15, 27.03.2026:</text>
+        <text x="336" y="63" fill="var(--ink)" font-size="11">«The merchant is liable as they have</text>
+        <text x="336" y="78" fill="var(--ink)" font-size="11">verified L3 cart_jwt against the L2's</text>
+        <text x="336" y="93" fill="var(--ink)" font-size="11">user intent»</text>
+        <text x="336" y="115" fill="var(--mark)">НО: это не ответ мейнтейнера, а</text>
+        <text x="336" y="130" fill="var(--mark)">транскрипция, вписанная автором</text>
+        <text x="336" y="144" fill="var(--mark)">вопроса с пометкой «please verify»</text>
+
+        <rect x="640" y="0" width="300" height="150" rx="6" fill="var(--card)" stroke="var(--s4)" stroke-width="2"/>
+        <text x="656" y="24" fill="var(--s4)" font-size="12.5" font-weight="600">AMEX → ЭМИТЕНТ, НО В БУДУЩЕМ</text>
+        <text x="656" y="46" fill="var(--muted)">Agent Purchase Protection, 14.04.2026:</text>
+        <text x="656" y="63" fill="var(--ink)" font-size="11">«IN THE FUTURE, if a Card Member</text>
+        <text x="656" y="78" fill="var(--ink)" font-size="11">authorizes a registered AI agent…</text>
+        <text x="656" y="93" fill="var(--ink)" font-size="11">American Express will protect eligible</text>
+        <text x="656" y="108" fill="var(--ink)" font-size="11">customers from AI agent error»</text>
+        <text x="656" y="130" fill="var(--mark)">Обязательное условие — регистрация</text>
+        <text x="656" y="144" fill="var(--mark)">агента, спека которой не опубликована</text>
+
+        <rect x="0" y="166" width="940" height="42" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="186" fill="var(--ink)" font-size="12.5" font-weight="600">LIABILITY SHIFT НЕ СУЩЕСТВУЕТ.</text>
+        <text x="252" y="186" fill="var(--muted)" font-size="12">Worldpay дословно: «No liability shift exists yet». Adyen (18.02.2026): агентская транзакция «дефолтится в нечто</text>
+        <text x="16" y="202" fill="var(--muted)" font-size="12">похожее на высокорисковый guest checkout», а ответственность за ошибки агента «не кодифицирована в правилах платёжных сетей».</text>
+
+        <rect x="0" y="220" width="940" height="42" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="16" y="240" fill="var(--muted)" font-size="12">Оговорка, без которой формулировка неверна: правила Visa связывают эмитентов, APP и эквайеров, а <tspan fill="var(--ink)" font-weight="600">не потребителя напрямую</tspan> — они не отменяют</text>
+        <text x="16" y="256" fill="var(--muted)" font-size="12">ни диспут-прав по разделу 11, ни Reg Z с потолком $50 и тестом на apparent authority, ни PSR ст. 55(2). До первого реального спора исход неизвестен.</text>
+      </g>
+    </svg>
+    <figcaption><b>Оператор агента структурно вне цепочки chargeback.</b> APP «не участвует в Authorization, Clearing или Settlement», «Initiators of Agentic Transactions are not considered Merchants» — с него нечего взыскать транзакционно. Экспозиция чисто комплаенсная: регистрация в VIC, PCI DSS, обязанность отвечать на расследования, дисквалификация по усмотрению Visa (§4.1.24.11). Штрафы по §1.11.2.5 налагаются на банк: $50 000 за подтверждённое нарушение, далее от $50 000 до $1 000 000 в месяц.</figcaption>
+  </figure>
+  <p class="note"><b>Временна́я дыра в защите мерчанта, которой нет ни в одном обзоре.</b> В главе 11 Visa Rules слово «Agentic» встречается ровно два раза — Table 11-28 и Table 11-31, оба в Compelling Evidence 3.0 по Dispute Condition 10.4, где логин APP добавлен в список приемлемых login ID. Оба вхождения внутри блока «Effective for Disputes processed on or after <b>24 October 2026</b>». А CE 3.0 по 10.4 требует двух предыдущих неоспоренных транзакций старше 120 дней — значит любой новый агентский поток <b>минимум четыре месяца после запуска не может опереться на эту защиту вообще</b>. Единственный инструмент обороны мерчанта работает только для тех, кто начал раньше.</p>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s1)">
+      <h3>США: Reg Z, а не Reg E</h3>
+      <ul>
+        <li>Reg E (§1005.2(m)(1)) действительно выводит из «unauthorized EFT» перевод, инициированный лицом, которому потребитель сам передал access device — но <b>Reg E регулирует EFT со счетов-активов</b> (дебет, ACH)</li>
+        <li>Карточная агентская коммерция идёт по кредитным продуктам, где действует <b>Reg Z</b>: §1026.12(b)(1)(i) определяет unauthorized use через отсутствие «actual, implied, or apparent authority» — категорию шире механического «передал устройство», — а §1026.12(b)(1)(ii) ограничивает ответственность держателя «the lesser of $50 or the amount obtained before notification»</li>
+        <li>Плюс у потребителя остаётся спор по товару, и он бьёт по мерчанту, а не по эмитенту</li>
+        <li>Квалификация ИИ-агента как «person» и передачи API-доступа как «access device» <b>официально не разъяснена ни CFPB, ни судами</b> — это правдоподобное прочтение, а не действующее правило</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>ЕС: SCA сама по себе ничего не доказывает</h3>
+      <ul>
+        <li>PSR ст. 55(2): факт аутентификации, «including where applicable, via strong customer authentication… <b>shall in itself not necessarily be sufficient to prove</b> either that the payment transaction was authorised by the payer or that the payer acted fraudulently»</li>
+        <li>Ст. 60(2): если PSP не применил SCA <i>или применил исключение из SCA</i>, плательщик не несёт финансовых потерь вообще</li>
+        <li><b>Ходовой тезис «ЕС и США зеркально инвертированы» на этом ломается:</b> вся ст. 60 озаглавлена «Payer's liability for <i>unauthorised</i> transactions» и включается только если транзакция признана неавторизованной, а агент в пределах мандата таких, вероятно, не порождает. Рельсы несопоставимы, а по основному рельсу США потребитель ограничен $50</li>
+        <li>Что ст. 55(2) действительно ломает — несущую конструкцию ACP: 3DS-криптограмма доказывает аутентификацию карты эмитентом, но <b>не согласие плательщика на конкретную покупку агента</b></li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Судов нет ни одного.</b> Единственное реальное решение — Amazon v. Perplexity, Ninth Circuit, 04.08.2026: доступ к Amazon совершил пользователь «с помощью агента Perplexity», а не сама Perplexity; суд оговорил, что при большей автономии агента вывод может быть иным. Направление то же, что в Visa Rules: действия агента атрибутируются пользователю. Публичных споров, исков и зафиксированных инцидентов «агент купил не то» <b>не существует</b> — категория ущерба обсуждается всей индустрией и не имеет ни одного публичного кейса. <b>Отдельная санитарная зона:</b> слой публикаций про агентскую ответственность заметно заражён сгенерированным контентом. «Reyes v. Perplexity» с $1,8 млн неавторизованных покупок не подтверждается ничем, кроме одного блога; «CFPB January 2026 advisory on autonomous-agent purchases under Regulation Z» на consumerfinance.gov отсутствует, а его первоисточник ссылается на AI Liability Directive, официально отозванную в октябре 2025. Проверять надо каждую ссылку на дело и каждый процент.</p>
+
+  <div class="eyebrow">04 · Делегирование</div>
+  <h2>Мандат ограничивает только то, что трекает сеть</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Что реально есть</h3>
+      <ul>
+        <li><b>Visa:</b> мандат — это четыре поля. <code>mandateId</code>, <code>preferredMerchantName</code>, <code>declineThreshold</code>, <code>effectiveUntilTime</code>, плюс <code>quantity</code> и <code>consumerPrompt</code>. Энфорсмент на выдаче credential: агент передаёт merchantName, URL и totalAmount, Visa сверяет с мандатом и сверяет авторизацию в VisaNet</li>
+        <li><b>Mastercard:</b> спека <b>прямо признаёт предел криптографии</b> — «Transaction count and budget enforcement cannot be done cryptographically within VI alone — they require stateful tracking by the payment network». Требование MUST при этом действует <b>только для Autonomous mode</b></li>
+        <li><b>Stripe SPT:</b> <code>usage_limits</code> и событие <code>shared_payment.granted_token.deactivated</code> со статусами consumed/expired/revoked — единственный публично документированный явный статус отзыва токена. Preview: <code>Stripe-Version: 2026-04-22.preview</code></li>
+        <li><b>В TAP нет ни одного поля про делегирование</b> — ни лимита, ни категории, ни срока, ни отзыва. Спецификация вообще не описывает мандат; всё это живёт в VIC API, невидимо для мерчанта</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Чего нет</h3>
+      <ul>
+        <li><b>Отзыв полномочий не существует ни в одной из двух открытых спецификаций.</b> VI v0.1: «VI v0.1 does not define a credential-layer revocation protocol», отзыв «deferred to future version»</li>
+        <li>Единственный названный рычаг грубый: «removing the key from JWKS is the VI-layer revocation mechanism» — что <b>аннулирует все L1, подписанные этим ключом</b></li>
+        <li>У Visa <code>PUT .../{instructionID}/cancel</code> отменяет конкретный purchase intent, <b>а не полномочия агента как таковые</b></li>
+        <li>У Amex механика отзыва не описана вовсе</li>
+        <li><b>Итог:</b> заявленный «полный контроль потребителя над агентом» сегодня существует как маркетинговое утверждение и сетевой стейт, а не как криптографическое свойство или пользовательская функция отзыва</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Реально работающая делегация существует ровно в одном месте — в Индии, и она узкая.</b> UPI Circle (циркуляр 2024): ₹5 000 на транзакцию, ₹15 000 в месяц — порядок ~$180/мес против $10 000 в примере <code>declineThreshold</code> у Visa. Агентский слой поверх — «UPI Reserve Pay» в Claude (Razorpay + NPCI, 20.02.2026, Zomato/Swiggy/Zepto), пилот на closed user group, объёмы не раскрыты. Название вскрывает суть: NPCI опубликовала циркуляр «Enhancement in UPI <b>Single Block Multiple Debits</b> (UPI Reserve Pay)» примерно в октябре 2025 — то есть это расширение существующего примитива блокировки средств, того же, что под ASBA и IPO-блоками, а не новая агентская спецификация.</p>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 176" role="img" aria-label="Измеримая пустота инфраструктуры агентских ключей">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">ЖИВОЙ ЗАМЕР 26.08.2026, 17:39 UTC — АДРЕС, КОТОРЫЙ СПЕЦИФИКАЦИЯ TAP НАЗЫВАЕТ ИСТОЧНИКОМ КЛЮЧЕЙ</text>
+        <rect x="0" y="26" width="940" height="34" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="16" y="48" fill="var(--ink)" font-size="12" font-family="ui-monospace,Menlo,monospace">GET https://mcp.visa.com/.well-known/jwks → 200, content-length 2340</text>
+
+        <rect x="0" y="70" width="455" height="58" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="92" fill="var(--mark)" font-size="12.5" font-weight="600">Ровно ОДИН ключ в keys[]</text>
+        <text x="16" y="112" fill="var(--muted)">kty=RSA, без полей use и alg</text>
+
+        <rect x="485" y="70" width="455" height="58" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="501" y="92" fill="var(--mark)" font-size="12.5" font-weight="600">issuer: «Visa Sandbox Issuing CA»</text>
+        <text x="501" y="112" fill="var(--muted)">CN=vic-oauth-jwe.visa.com, EKU = TLS Web Client Auth</text>
+
+        <rect x="0" y="138" width="940" height="38" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="156" fill="var(--muted)" font-size="12">Описанный в спеке <tspan font-family="ui-monospace,Menlo,monospace">GET /keys?keyID=</tspan> отдаёт 302 на маркетинговую страницу, а не JWK. ПОПРАВКА к ходовой интерпретации: это store ключей самой Visa, а не</text>
+        <text x="16" y="171" fill="var(--muted)" font-size="12">«Visa-operated directory of agent public keys» — последняя формулировка идёт из вторичной прессы; реестр ключей агентов в референс-реализации — sample-сервис на <tspan font-family="ui-monospace,Menlo,monospace">localhost:8080</tspan>.</text>
+      </g>
+    </svg>
+    <figcaption>Отраслевая дискуссия про «cryptographic agent identity» опирается на инфраструктуру, наполненность которой никто не проверяет: у Mastercard публичного директория не видно ни на одном домене; репозиторий <code>agent-intent/verifiable-intent</code> не менялся с 20.04.2026; спецификация Amex Agent Registration, без которой Agent Purchase Protection нерабочая по построению, не опубликована.</figcaption>
+  </figure>
+  <p class="note"><b>Продолжение сюжета про фингерпринтинг.</b> Периметр, вычищенный из рекламного контура, в агентском платеже восстанавливается целиком — и с обязанностью мерчанта его хранить. Agentic Consumer Recognition Object несёт Visa ID Token с обфусцированными phone/email, и <b>мерчант обязан вести таблицу соответствия этих хешей своим клиентам</b>; рядом <code>contextualData</code>: IP, device, страна, ZIP. §4.1.24 обязывает APP передавать мерчанту имя, адреса и e-mail держателя и хранить order confirmation 120 дней. Visa Payments Forum 10.06.2026 добавил в дорожную карту <b>Agent Score, Agentic Directory и Large Transaction Model</b>. Это ровно та архитектура, за которую рекламный контур получил Privacy Sandbox, только теперь она несёт ярлык узнавания агента, и режима отказа от неё не описано. Отдельно: <b>тезис «агент никогда не видит номер карты» для key-entry-ветки TAP ложен</b> — <code>credentialHash</code> считается от 16-значного PAN + месяца + года + CVV именно для сверки того, что агент вбивает эти реквизиты в форму мерчанта.</p>
+
+  <div class="eyebrow">05 · Не-карточные рельсы</div>
+  <h2>Ни одной рельсы с публично подтверждаемым потребительским объёмом</h2>
+  <div class="viz">
+    <h3>x402: оценки дневного сеттлмента, доллары в день</h3>
+    <p class="sub">Единственный рельс с независимо измеримым объёмом — и измерение сломано по конструкции: в счётчик попадает любой перевод стейблкоина через контракт фасилитатора, включая тестовые петли, самопереводы и мемкоин-минты.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">CoinDesk<em>30 дней до 15.07.2026</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--s1)"></div></div>
+        <div class="bval">~$800 000</div>
+        <div class="tip">75 млн платежей на $24 млн за 30 дней, 94 тыс. покупателей, 22 тыс. продавцов, средний платёж ~32 цента.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Token Terminal<em>неделя с 17.08.2026</em></div>
+        <div class="track"><div class="bar" style="width:6.6%; --c:var(--s2)"></div></div>
+        <div class="bval">~$52 600</div>
+        <div class="tip">8,7 млн трансферов на $367 950, средний чек $0,042. Разбивка: Base 4,2 млн / 48% / $191 816; Solana 3,3 млн / 38% / $91 715; Algorand 1,1 млн / 12% / $50 785; Polygon 109 тыс. / 2% / $33 633.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Helios через CCN<em>13.08.2026</em></div>
+        <div class="track"><div class="bar" style="width:3.6%; --c:var(--mark)"></div></div>
+        <div class="bval">~$28 400</div>
+        <div class="tip">7-дневное среднее ~$41,8 тыс., −93% с начала года, при пике конца 2025, который «repeatedly approached $800,000 and occasionally exceeded $1 million».</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Artemis через OKX<em>февраль–март 2026</em></div>
+        <div class="track"><div class="bar" style="width:1.8%; --c:var(--s3)"></div></div>
+        <div class="bval">~$14 000</div>
+        <div class="tip">Реальный объём после вычета накрутки. Дневные транзакции упали с ~731 тыс. в декабре 2025 до ~57 тыс. в марте (−92%).</div>
+      </div>
+    </div>
+    <p class="vizfoot"><b>Это не доказанное расхождение трекеров, а несопоставимость:</b> ни один источник не определяет, что именно считает «settlement volume», поэтому данные равно допускают либо разницу метрик, либо реальный обвал в 20–28 раз между серединой июля и серединой августа. <b>Устойчиво только одно: средний чек упал с ~$0,30 до ~$0,04</b> — счёт транзакций растёт быстрее стоимости. Портрет плательщика добивает тезис «это коммерция»: средний кошелёк x402 живёт 197 дней против 423 у обычного пользователя Base и держит 26 разных токенов против 4 — это крипто-нативы, а не покупатели.</p>
+  </div>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s2)">
+      <h3>Граница проходит по чеку, а не по типу товара</h3>
+      <ul>
+        <li>Stripe документирует дословно: «For card payments through Shared Payment Tokens, the minimum amount is <b>0.50 USD</b>. For stablecoin payments, the minimum amount is <b>0.01 USDC</b>»</li>
+        <li>Отсюда часто выводят дихотомию «карты для товаров, стейблкоины для API» — она <b>неверна по собственным докам Stripe</b>: заглавный пример квикстарта MPP это «monetize my API using MPP to charge 0.50 USD per API call» <b>картой через SPT</b>; стейблкоины добавляются вторым шагом, чтобы опуститься ниже порога</li>
+        <li>Правильная формулировка: карта обслуживает машинный сегмент выше $0,50, стейблкоин добирает хвост ниже. <b>Стейблкоин-онли — только x402</b></li>
+        <li>Названные ранние адоптеры MPP: Browserbase, PostalForm, Prospect Butcher Co., Parallel Web Systems — три API-сервиса и одна сэндвичная. Объёмов нет</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Регуляторная база под стейблкоины ещё не построена</h3>
+      <ul>
+        <li>GENIUS Act подписан 18.07.2025, но <b>режима лицензирования ещё нет</b>: OCC опубликовал только NPRM (02.03.2026), финальный rulebook обещан к ноябрю 2026 → вступление ~март 2027. <b>OCC просрочил установленный законом годовой дедлайн 18.07.2026</b> — лучший измеримый аргумент про разрыв анонсов и поставки в регуляторном слое</li>
+        <li>Формулировать надо точно: лицензии <i>в режиме GENIUS</i> нет ни у кого, потому что режима нет — но федерально чартерованный выпуск <b>уже работает</b> через обычный банковский чартер OCC: Anchorage Digital Bank выпускает USAT (Tether, с 27.01.2026), USDtb, USDGO</li>
+        <li>В ЕС переходный период MiCA закончился 01.07.2026, но <b>весь комплаентный евро-стейблкоин-флоат — $673,9 млн по восьми токенам</b>. Меньше $700 млн — это не рельса, на которой может поехать потребительский объём</li>
+        <li>Отдельная мина: в NPRM OCC заложена презумпция, что схема выплаты доходности держателям через аффилиата — запрещённое yield-соглашение. Это целится в 3,5% APY, которые Coinbase платит держателям USDC, то есть в экономику, финансирующую весь агентский стейблкоин-стек</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Поправка к ходовому выводу про AP2.</b> «Заморожен» — перебор: репозиторий не архивирован, события вплоть до 25.08.2026, живы 17 dependabot-веток. Но последний содержательный коммит — 29.04.2026, днём позже релиза v0.2.0 с «Human Not Present», вышедшего в день анонса донации: это прощальный релиз, а не начало цикла. И тезис «AP2 перешёл под контроль карточных сетей» первоисточником <b>не подтверждается</b>: FIDO создал две рабочие группы — Payments TWG под сопредседательством Mastercard и Visa, но <b>Agentic Authentication TWG ведут Google, OpenAI и CVS Health</b>. Захвачена платёжная половина, а не стандартизация целиком. Сроков нет ни у одной: на fidoalliance.org/specifications ни одной агентской спецификации, включая драфты.</p>
+  <p class="note"><b>Проверка UCP: «метод-агностичность» — это точка расширения, а не поставка.</b> Спецификация ucp.dev версии 2026-04-08 <b>не определяет ни одной схемы не-карточного payment handler</b>. Названные примеры — <code>com.google.pay</code>, <code>dev.shopify.shop_pay</code>, <code>com.example.processor_tokenizer</code>. Схем для стейблкоинов, банковских переводов и A2A нет. Структурно это ровно тот же провал, что <code>Channel.type</code> — enum из одного значения <code>browser</code> — в ACP. А в открытом банкинге живое есть, но агентского в нём нет: британская UK Payments Initiative (02.06.2026, 31 организация) не упоминает агентские платежи в scope cVRP нигде; бразильский Iniciador MCP по Pix требует биометрического подтверждения <b>каждого</b> платежа; американское правило CFPB 1033 <b>запрещено к применению судом</b>, и само Бюро заявило суду, что считает правило незаконным.</p>
+
+  <div class="eyebrow">06 · Регуляторный контур</div>
+  <h2>Новый платёжный свод правил ЕС не знает слова «агент» в смысле ИИ</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 128" role="img" aria-label="Полнотекстовый греп по финальному тексту PSR">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">ГРЕП ПО ФИНАЛЬНОМУ КОМПРОМИССНОМУ ТЕКСТУ PSR (Council doc 8221/26 от 17.04.2026, 431 стр., 524 082 знака)</text>
+        <rect x="0" y="26" width="180" height="46" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="90" y="46" fill="var(--muted)" text-anchor="middle" font-size="11">«artificial intelligence»</text>
+        <text x="90" y="65" fill="var(--mark)" text-anchor="middle" font-size="15" font-weight="600">0</text>
+        <rect x="190" y="26" width="180" height="46" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="280" y="46" fill="var(--muted)" text-anchor="middle" font-size="11">«agentic»</text>
+        <text x="280" y="65" fill="var(--mark)" text-anchor="middle" font-size="15" font-weight="600">0</text>
+        <rect x="380" y="26" width="180" height="46" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="470" y="46" fill="var(--muted)" text-anchor="middle" font-size="11">«autonomous»</text>
+        <text x="470" y="65" fill="var(--mark)" text-anchor="middle" font-size="15" font-weight="600">0</text>
+        <rect x="570" y="26" width="180" height="46" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="660" y="46" fill="var(--muted)" text-anchor="middle" font-size="11">отдельностоящее «AI»</text>
+        <text x="660" y="65" fill="var(--mark)" text-anchor="middle" font-size="15" font-weight="600">0</text>
+        <rect x="760" y="26" width="180" height="46" rx="5" fill="var(--card)" stroke="var(--s4)" stroke-width="2"/>
+        <text x="850" y="46" fill="var(--muted)" text-anchor="middle" font-size="11">«algorithm» (контроль)</text>
+        <text x="850" y="65" fill="var(--s4)" text-anchor="middle" font-size="15" font-weight="600">есть</text>
+
+        <rect x="0" y="84" width="940" height="44" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="104" fill="var(--muted)" font-size="12">Слово «agent» встречается 38 раз — исключительно commercial agent и агенты платёжного учреждения. Статус PSR/PSD3: <tspan fill="var(--ink)" font-weight="600">НЕ ПРИНЯТЫ</tspan>, «Awaiting Council's</text>
+        <text x="16" y="120" fill="var(--muted)" font-size="12">1st reading position», ориентировочный пленар 14.12.2026, применение через 21 месяц → конец 2028 / 2029. <tspan fill="var(--ink)" font-weight="600">Весь агентный дизайн в Европе ~2,5 года живёт под PSD2.</tspan></text>
+      </g>
+    </svg>
+    <figcaption>Четыре механизма PSR определят судьбу агентных платежей, не будучи названы агентными. <b>Ст. 2(2)(b)</b> — исключение коммерческого агента: единственная дверь остаться нелицензированным, но только если агент действует за плательщика ИЛИ за получателя, не за обоих. <b>Ст. 85(8)</b> — SCA для дистанционных поручений требует dynamic linking к конкретной сумме и конкретному получателю, что ломает открытый мандат «купи мне что-нибудь подходящее». <b>Ст. 85a</b> — SCA не нужна для повторяющихся переводов известному получателю, и ст. 112 выводит её из общего 21-месячного срока: она применяется с даты вступления в силу, на ~2 года раньше остального. <b>Ст. 2(1a) + 58 + 87</b> — расширение периметра на не-PSP со статутной ответственностью за провал SCA.</figcaption>
+  </figure>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Норма или орган</th><th>Статус на 26.08.2026</th><th>Что это значит для агентов</th></tr></thead>
+      <tbody>
+        <tr><td><b>PSR / PSD3 (ЕС)</b></td><td><b>Не приняты</b>, применение ~2028/2029</td><td>Агентских положений ноль. Ст. 85a и 108a применяются досрочно</td></tr>
+        <tr><td><b>EU AI Act ст. 50</b></td><td><b>В силе с 02.08.2026</b>, штрафы до €15 млн / 3% оборота</td><td>Пользователь должен знать, что взаимодействует с ИИ. Сбор данных не ограничивает. Платёжная инициация в Annex III не входит</td></tr>
+        <tr><td><b>Reg E / Reg Z (США)</b></td><td><b>В силе</b>, агентских изменений не вносилось (последняя правка 1005.2 — февраль 2018)</td><td>Применимость «person» и «access device» к ИИ-агентам официально не разъяснена</td></tr>
+        <tr><td><b>CFPB</b></td><td>Фактически обездвижен: штат с ~1700 до ~1300, отозвано 67 guidance-документов, правило 1033 запрещено судом</td><td>Регулятора, по сути, нет</td></tr>
+        <tr><td><b>HM Treasury (UK)</b></td><td><b>Консультация</b> «Modernising Payment Services Regulation», 14.07.2026, закрытие <b>06.10.2026</b></td><td>Агентам отведено ровно шесть абзацев и один открытый <b>Question 15</b> про authentication, consent и liability. Предложений ноль; единственная нормативная констатация — «the PSRs were designed before the development of AI»</td></tr>
+        <tr><td><b>UK AI Adoption Plan</b></td><td><b>Рекомендация без сроков</b>, 14.07.2026</td><td>Recommendation 10 «agentic payment readiness» вводит <b>Know Your Agent (KYA)</b> — единственная известная регуляторная формулировка требования идентифицировать самого агента</td></tr>
+        <tr><td><b>GENIUS Act (США)</b></td><td><b>Принят, не в силе.</b> Годовой дедлайн 18.07.2026 просрочен OCC</td><td>Лицензирование самой передачи стейблкоина не преэмптит штатные требования</td></tr>
+        <tr><td><b>S.5051 «AI AGENT Act of 2026»</b></td><td>Внесён 21.07.2026, соспонсоров <b>0</b>, ушёл в комитет по <b>Commerce</b>, а не Banking</td><td>Про интероперабельность и доступ агентов к платформам. <b>Платёжного законопроекта нет вообще</b></td></tr>
+        <tr><td><b>FATF, BIS, IMF</b></td><td>FATF (16.07.2026) впервые называет ИИ фактором риска — но про агентов как инициаторов ничего. BIS WP 1310 — про внутридневную ликвидность в RTGS. IMF Note 2026/004 — <b>ноль вхождений volume, million, billion, trillion, interchange</b></td><td>Специальная институциональная работа по агентским платежам существует и не содержит ни одной количественной оценки рынка</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Идентичность агента де-факто задают схемы, а не регуляторы.</b> Visa — подпись агента в HTTP-заголовках, допуск через vetting в Intelligent Commerce, право дисквалификации «по собственному усмотрению». Mastercard — агентные токены, enrollment через эмитента, key directory под управлением сети. Это частные допуски, а не лицензии: <b>право отозвать агента с рынка держит схема, а не надзорный орган.</b> Единственная норма, которая целится в этот слой, — рекомендация KYA в британском плане, и у неё нет сроков.</p>
+
+  <div class="eyebrow">07 · Экономика</div>
+  <h2>Take rate за агентский чекаут сегодня равен нулю у всех</h2>
+  <p class="note">Единственная публично раскрытая ставка — <b>4% OpenAI с Shopify-мерчантов</b> с 26.01.2026 — прожила около пяти недель. Комиссия была не первой: OpenAI брал плату с запуска Instant Checkout 29.09.2025 как «a small fee akin to Amazon's referral fee». И продукт исчез не 04.03.2026 (это дата репортажа), а <b>24.03.2026</b>, когда OpenAI сам объявил: «We've found that the initial version of Instant Checkout did not offer the level of flexibility that we aspire to provide, so we're allowing merchants to use their own checkout experiences while we focus our efforts on product discovery». На карточном рельсе агентской надбавки нет ни у кого: Stripe — «Any seller already processing payments with Stripe automatically supports these new payment methods for agentic transactions», без отдельного прайса. Agentic-транзакция классифицируется как обычный CNP без liability shift, то есть chargeback-экспозиция остаётся на мерчанте, плюс, по Adyen, повышенная фрод-оценка.</p>
+  <div class="cons">
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Кто платит сегодня</h3>
+      <ul>
+        <li><b>Мерчант и вендоры, и это расходная строка.</b> Commerce.com (бывший BigCommerce), Q2 2026: гайденс на год срезан на $18 млн, среди причин прямо названо давление на маржу от роста хостинговых расходов из-за активности AI-краулеров; агентской выручки не раскрыто ни цента</li>
+        <li>Доля блокируемого агентского трафика растёт: 8,2% в апреле → около 9% в мае 2026</li>
+        <li><b>Крупнейшие мерчанты активно подавляют ровно тот объём, о котором спорят:</b> Walmart ввёл правила, запрещающие агентам доводить пользователя до чекаута; Amazon и Shopify ограничивают внешних агентов</li>
+        <li>Amex — единственный, кто добавляет к цене нечто новое, и это <b>отрицательная величина</b>: Agent Purchase Protection не тарифицируется отдельно, то есть риск субсидируется эмитентом</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Где реально монетизируется нарратив</h3>
+      <ul>
+        <li>У сетей — через value-added services: Visa FQ3 2026, VAS $3,8 млрд (+34% cc), ~33% выручки. <b>Но VAS не разбит по агентике</b>, и агентская доля там почти наверняка исчезающая</li>
+        <li>У Stripe — $1,9 трлн TPV за 2025, 700+ AI-агентных стартапов на платформе, пять брендов на ACP, <b>ни одной цифры агентского объёма от компании, которая физически видит каждую такую транзакцию</b></li>
+        <li>PayPal датировал существенность прямо (Q2 2026, 28.07.2026): «<b>Looking to 2028 and beyond</b>, we expect our next-generation innovations such as agent payments and digital identity to become increasingly meaningful contributors». Отягчающее обстоятельство: с мая 2026 PayPal — ответчик по консолидированному иску о заявлениях про рост branded checkout, то есть у компании сильный юридический стимул датировать новые драйверы консервативно</li>
+        <li>Capital One (10-K, 19.02.2026) даёт самую честную формулировку со стороны эмитента: рост агентской коммерции «may increase fraud losses as well as change circumstances when the merchant or issuer is liable», правовые рамки «remain nascent, with limited direct guidance»</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Практический вывод.</b> Пока агентский платёж классифицируется как обычный CNP без liability shift, не имеет собственного интерчейнджа и не приносит take rate ни одному участнику, «агентские платежи» — это не рынок, а издержка на разработку, оплачиваемая из бюджета на позиционирование.</p>
+
+  <div class="eyebrow">08 · Слепые зоны</div>
+  <h2>Знаменатель не публикует никто, и это выбор, а не техническое ограничение</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 156" role="img" aria-label="Агентская транзакция помечена на уровне токена и считается до штуки">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">АГЕНТСКАЯ ТРАНЗАКЦИЯ ПОМЕЧЕНА НА УРОВНЕ ТОКЕНА У КАЖДОГО УЧАСТНИКА</text>
+
+        <rect x="0" y="26" width="300" height="66" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="16" y="48" fill="var(--ink)" font-size="12.5" font-weight="600">MASTERCARD</text>
+        <text x="16" y="68" fill="var(--muted)">Маркер в авторизации, бюллетень</text>
+        <text x="16" y="84" fill="var(--muted)">GLB 12204.1, effective 17.04.2026</text>
+
+        <rect x="320" y="26" width="300" height="66" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="336" y="48" fill="var(--ink)" font-size="12.5" font-weight="600">VISA</text>
+        <text x="336" y="68" fill="var(--muted)">§4.1.15.9 — отдельный тип «Agentic</text>
+        <text x="336" y="84" fill="var(--muted)">Payment Provider Token Requestor»</text>
+
+        <rect x="640" y="26" width="300" height="66" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="656" y="48" fill="var(--ink)" font-size="12.5" font-weight="600">ПРОЦЕССОРЫ</text>
+        <text x="656" y="68" fill="var(--muted)">У SoFi виден как program_id: 08</text>
+        <text x="656" y="84" fill="var(--muted)">в объекте digital_commerce_data</text>
+
+        <rect x="0" y="104" width="940" height="52" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="126" fill="var(--mark)" font-size="12.5" font-weight="600">Технической невозможности нет. Считается до штуки. Никто не публикует.</text>
+        <text x="16" y="146" fill="var(--muted)" font-size="12">Публикация доли стоила бы дороже молчания ровно в одном случае — если доля близка к нулю. Это и подтверждает единственный, кто её назвал.</text>
+      </g>
+    </svg>
+    <figcaption>Не публикуются шесть величин, без которых рынка нет: доля агентских транзакций в обработанном объёме; абсолютное число агентских авторизаций после декабрьских «сотен» Visa; авторизационная и decline-статистика отдельно от общего CNP; chargeback-рейт и фактическое распределение убытка; GMV, оформленный внутри AI-интерфейсов, со стороны OpenAI, Google, Microsoft и Perplexity; агентская доля в выручке VAS у сетей.</figcaption>
+  </figure>
+  <p class="note"><b>Кому это удобно.</b> Сетям — потому что охватная метрика («все карты США enabled», «100+ партнёров») растёт бесплатно, а транзакционная не растёт вовсе. Платформам-ассистентам — потому что $20 млрд прогноза eMarketer и «AI-influenced $263 млрд» Salesforce живут в тех же презентациях, что и «около 30 живых мерчантов». Эквайерам — потому что опрос звучит как замер, ничем не рискуя. Аналитическим панелям — потому что отношения продаются одиннадцать месяцев подряд, а доля продалась бы один раз и закрыла тему.</p>
+
+  <div class="eyebrow">09 · Что смотреть дальше</div>
+  <h2>Три даты с известным сроком</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Появление агентской категории в цене</h3>
+      <p class="note" style="margin:0">Сегодня агентская транзакция не отличается по цене от обычной CNP ни у кого. Фазу поменяет первое из трёх: агентская категория в опубликованном графике интерчейнджа или схемных сборов; отдельная строка агентского объёма в MD&amp;A хотя бы у одного эмитента, эквайера или процессора; возвращение платного take rate, который переживёт хотя бы два квартала (предыдущая попытка прожила пять недель). Проверяемо полнотекстовым поиском EDGAR: сегодня 37 форм, 24 эмитента, ноль чисел.</p>
+    </div>
+    <div class="box" style="--cc:var(--s2)">
+      <h3>Наполнение директорий и первый отзыв</h3>
+      <p class="note" style="margin:0">Появится ли по <code>mcp.visa.com/.well-known/jwks</code> больше одного ключа и уйдёт ли issuer «Visa Sandbox Issuing CA» на продакшн-CA; заработает ли <code>GET /keys?keyID=</code> как JWK-эндпоинт; появится ли публичный Mastercard Agent Pay key directory; сдвинется ли <code>verifiable-intent</code> с 20.04.2026 и получит ли §6.1 Revocation протокол вместо «does not define»; опубликует ли Amex спецификацию Agent Registration. Пока это не произошло, «криптографическая идентичность агента» существует как схема на бумаге.</p>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Первый реальный спор</h3>
+      <p class="note" style="margin:0">Три даты сделают его возможным и наблюдаемым: <b>06.10.2026</b> — закрытие консультации HM Treasury с Question 15; <b>24.10.2026</b> — вступление в силу CE 3.0 по Condition 10.4, единственного инструмента защиты мерчанта; <b>14.12.2026</b> — ориентировочный пленар ЕП по PSR/PSD3, после которого начнётся отсчёт 21 месяца и немедленно включится ст. 85a. Смежно: ноябрь 2026 — обещанный финальный rulebook OCC; любая публикация EMVCo, которой сегодня нет ни в каком виде; и первый апелляционный кейс после Amazon v. Perplexity, где агент действовал автономнее — суд прямо оговорил, что тогда вывод может быть иным.</p>
+    </div>
+  </div>
+
+  <footer>
+    Собрано агентом gid 26.08.2026: пять research-агентов по независимым срезам, по одному адверсариальному верификатору на срез. Верификатор дал 25 правок.
+    <br><br>
+    Существенные из них: тезис «AP2 перешёл под контроль карточных сетей» <b>не подтверждается</b> — сети возглавляют платёжную группу FIDO, а группу аутентификации и делегирования ведут Google, OpenAI и CVS Health; «AP2 заморожен» — перебор, репозиторий жив, но последний содержательный коммит 29.04.2026; расхождение метрик x402 — это <b>несопоставимость определений, а не доказанное расхождение трекеров</b>; дихотомия «карты для товаров, стейблкоины для API» <b>неверна по собственным докам Stripe</b>; «Visa-operated directory of agent public keys» — формулировка вторичной прессы, а по факту это store ключей самой Visa; «ЕС и США инвертированы по тому, кто ест убыток» <b>ломается</b>, потому что рельсы несопоставимы и по основному рельсу США потребитель ограничен $50; «единственное схемное правило» у Visa — <b>не подтверждается</b>, Mastercard Rules ссылаются на непубличные Agent Pay Program Standards как на обязательный документ; и утверждение про то, что Amex может дать защиту «только из-за closed loop», — вывод, а не факт: формально это issuer-side benefit, который может дать любой эмитент.
+    <br><br>
+    Полный справочник со всеми правками — <code>docs/agent-payment-rails.md</code> в репозитории проекта.
+  </footer>
+</main>

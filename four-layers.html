@@ -1,0 +1,472 @@
+<title>Четыре слоя рекламы</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&display=swap">
+
+<style>
+:root{
+  --ground:#f3f5f3; --surface:#ffffff; --surface-2:#eaeee9; --line:#d3dad2; --line-strong:#b4bfb2;
+  --ink:#14191a; --ink-2:#454e4b; --ink-3:#616a67;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#4a3aa7;
+  --strike:#b3271e; --stamp:#8a1f18;
+  --shadow:0 1px 2px rgba(20,25,26,.06),0 8px 24px -12px rgba(20,25,26,.18);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#101416; --surface:#171d1f; --surface-2:#1f2629; --line:#2c3538; --line-strong:#3d4a4e;
+    --ink:#eef2f1; --ink-2:#adb9b6; --ink-3:#8c9995;
+    --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#9085e9;
+    --strike:#ef6a5f; --stamp:#f08a80;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#101416; --surface:#171d1f; --surface-2:#1f2629; --line:#2c3538; --line-strong:#3d4a4e;
+  --ink:#eef2f1; --ink-2:#adb9b6; --ink-3:#8c9995;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#9085e9;
+  --strike:#ef6a5f; --stamp:#f08a80;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -14px rgba(0,0,0,.6);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--ground); color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  font-size:16px; line-height:1.62; -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.col{max-width:68ch}
+h1,h2,h3,h4{font-family:"IBM Plex Serif",Georgia,serif;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.4rem,6vw,4.1rem);line-height:1.02;font-weight:700;letter-spacing:-.02em}
+h2{font-size:clamp(1.6rem,3.2vw,2.3rem);line-height:1.12;font-weight:600;letter-spacing:-.01em}
+h3{font-size:1.16rem;font-weight:600;line-height:1.3}
+p{margin:0 0 1.05em}
+a{color:inherit}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:500}
+
+/* ── шапка ── */
+header{border-bottom:1px solid var(--line);background:var(--surface);padding:clamp(48px,9vw,104px) 0 clamp(36px,5vw,60px)}
+.lede{font-size:clamp(1.06rem,1.9vw,1.32rem);color:var(--ink-2);margin-top:1.4em}
+.lede b{color:var(--ink);font-weight:600}
+.meta{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:34px;font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--ink-3)}
+.meta span{white-space:nowrap}
+
+/* ── слои ── */
+.layers{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);margin-top:40px}
+.layer{background:var(--surface);padding:18px 18px 20px;border-top:3px solid var(--lc)}
+.layer .n{font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--ink-3);letter-spacing:.1em}
+.layer h3{margin:6px 0 4px}
+.layer .yrs{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--lc);font-weight:500}
+.layer p{font-size:.88rem;color:var(--ink-2);margin:8px 0 0;line-height:1.5}
+
+section{padding:clamp(48px,7vw,86px) 0;border-bottom:1px solid var(--line)}
+.sec-head{display:flex;gap:16px;align-items:baseline;margin-bottom:26px;flex-wrap:wrap}
+.act{font-family:"IBM Plex Mono",monospace;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.act::before{content:"";width:10px;height:10px;background:var(--ac);flex:none}
+
+/* ── карточка факта ── */
+.fact{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--ac);padding:20px 22px;margin:22px 0;box-shadow:var(--shadow)}
+.fact h4{font-family:"IBM Plex Sans",sans-serif;font-size:.94rem;font-weight:600;margin:0 0 8px}
+.fact p{margin:0 0 .7em;font-size:.94rem;color:var(--ink-2)}
+.fact p:last-child{margin-bottom:0}
+.src{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--ink-3);margin-top:12px;padding-top:10px;border-top:1px dotted var(--line-strong);line-height:1.5}
+
+/* ── поправка ── */
+.corr{background:var(--surface-2);border:1px solid var(--line-strong);padding:18px 20px;margin:22px 0}
+.corr .tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;color:var(--stamp);border:1px solid currentColor;padding:2px 7px;margin-bottom:10px;font-weight:600}
+.was{text-decoration:line-through;text-decoration-color:var(--strike);text-decoration-thickness:1.5px;color:var(--ink-3)}
+.now{color:var(--ink);font-weight:500}
+.corr table{width:100%;border-collapse:collapse;margin-top:6px;font-size:.88rem}
+.corr td{padding:7px 10px 7px 0;vertical-align:top;border-bottom:1px solid var(--line)}
+.corr tr:last-child td{border-bottom:0}
+.corr td:first-child{width:46%}
+
+/* ── статистика ── */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:2px;background:var(--line);border:1px solid var(--line);margin:26px 0}
+.stat{background:var(--surface);padding:20px;border-top:2px solid var(--sc,transparent)}
+.stat .v{font-family:"IBM Plex Mono",monospace;font-size:clamp(1.7rem,3.4vw,2.35rem);font-weight:600;line-height:1;color:var(--ink);letter-spacing:-.02em}
+.stat .k{font-size:.82rem;color:var(--ink-2);margin-top:9px;line-height:1.45}
+.stat .n{font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--ink-3);margin-top:7px}
+
+/* ── чарты ── */
+figure{margin:30px 0;background:var(--surface);border:1px solid var(--line);padding:22px;box-shadow:var(--shadow)}
+figcaption{font-size:.86rem;color:var(--ink-2);margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+figcaption b{color:var(--ink)}
+.ftitle{font-family:"IBM Plex Serif",serif;font-size:1.08rem;font-weight:600;margin-bottom:4px}
+.fsub{font-size:.82rem;color:var(--ink-3);margin-bottom:20px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;margin-bottom:18px;font-size:.82rem}
+.legend i{display:inline-block;width:11px;height:11px;background:var(--c);margin-right:7px;vertical-align:-1px;border-radius:2px}
+.scroll{overflow-x:auto}
+
+.grp{display:grid;grid-template-columns:auto 1fr;gap:14px 18px;align-items:center;min-width:520px}
+.glab{font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--ink-2);text-align:right;white-space:nowrap}
+.bars{display:flex;flex-direction:column;gap:5px}
+.brow{display:flex;align-items:center;gap:9px;height:19px}
+.btrack{flex:1;display:flex;align-items:center;position:relative;height:100%}
+.bar{height:11px;border-radius:0 3px 3px 0;background:var(--c);box-shadow:0 0 0 2px var(--surface)}
+.bar.neg{border-radius:3px 0 0 3px;margin-left:auto}
+.bval{font-family:"IBM Plex Mono",monospace;font-size:.76rem;font-weight:500;color:var(--ink);min-width:44px}
+.zero{position:absolute;top:-3px;bottom:-3px;width:1px;background:var(--line-strong)}
+
+.prop{display:flex;height:34px;border:1px solid var(--line);overflow:hidden;gap:2px;background:var(--line)}
+.prop span{display:block;height:100%}
+.plab{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:12px;font-size:.85rem;color:var(--ink)}
+.plab b{font-family:"IBM Plex Mono",monospace;font-weight:600}
+.plab i{display:inline-block;width:11px;height:11px;background:var(--c);margin-right:7px;vertical-align:-1px;border-radius:2px}
+
+/* ── таймлайн ── */
+.tl{margin:26px 0;border-top:1px solid var(--line)}
+.ev{display:grid;grid-template-columns:96px 118px 1fr;gap:16px;padding:13px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.ev .d{font-family:"IBM Plex Mono",monospace;font-size:.8rem;color:var(--ink-2);font-weight:500}
+.ev .st{font-family:"IBM Plex Mono",monospace;font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);border-left:3px solid var(--lc);padding-left:9px;line-height:1.35}
+.ev .t{font-size:.92rem}
+.ev .t em{font-style:normal;color:var(--ink-3);font-size:.85rem;display:block;margin-top:3px}
+@media(max-width:680px){.ev{grid-template-columns:1fr;gap:5px}.ev .st{border-left:0;border-top:2px solid var(--lc);padding:6px 0 0}}
+
+.note{font-size:.88rem;color:var(--ink-2);background:var(--surface-2);border:1px solid var(--line);padding:15px 18px;margin:22px 0}
+.note b{color:var(--ink)}
+ul.tight{margin:0 0 1.1em;padding-left:1.15em}
+ul.tight li{margin-bottom:.5em}
+footer{padding:56px 0 76px;color:var(--ink-3);font-size:.85rem}
+:focus-visible{outline:2px solid var(--s1);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Ретроспектива · 2011 — 2026</div>
+    <h1>Четыре слоя рекламы</h1>
+    <div class="col">
+      <p class="lede">За пятнадцать лет онлайн-реклама сменила не одну технологию, а <b>четыре слоя подряд</b> — и каждый раз отрасль готовилась не к тому, что произошло. Сначала перестраивалась труба доставки, потом идентичность зрителя, потом арбитр, считающий результат. Сейчас меняется четвёртый слой — <b>интерфейс</b>, через который человек вообще спрашивает.</p>
+      <p class="lede">Общее у всех четырёх переходов одно: <b>объявленное регулярно принимают за действующее</b>. Куки хоронили семь лет, а умерла их замена. Отмену третьесторонних кук реально включили ровно один раз — на 1% трафика Chrome.</p>
+    </div>
+    <div class="meta">
+      <span>Собрано в gid · 31.08.2026</span>
+      <span>1408 записей памяти</span>
+      <span>106 первоисточников в архиве</span>
+      <span>Каждый факт — с провенансом</span>
+    </div>
+    <div class="layers">
+      <div class="layer" style="--lc:var(--s1)"><div class="n">СЛОЙ 1</div><h3>Труба</h3><div class="yrs">2011 — 2019</div><p>Аукцион в реальном времени, header bidding, сжатие биржевого слоя.</p></div>
+      <div class="layer" style="--lc:var(--s2)"><div class="n">СЛОЙ 2</div><h3>Идентичность</h3><div class="yrs">2017 — 2025</div><p>Браузеры режут трекинг. Куки выживают, умирает их замена.</p></div>
+      <div class="layer" style="--lc:var(--s3)"><div class="n">СЛОЙ 3</div><h3>Арбитр</h3><div class="yrs">2021 — 2026</div><p>Верификация и измерение: дефляция цены, уход с биржи, консолидация.</p></div>
+      <div class="layer" style="--lc:var(--s4)"><div class="n">СЛОЙ 4</div><h3>Интерфейс</h3><div class="yrs">2025 — ?</div><p>Ответ ассистента вместо страницы выдачи. Видимость обнуляется.</p></div>
+    </div>
+  </div>
+</header>
+
+<section style="--ac:var(--s1)">
+  <div class="wrap">
+    <div class="sec-head"><span class="act">Слой 1</span><h2>Труба: где отрасль научилась объявлять вместо того, чтобы измерять</h2></div>
+    <div class="col">
+      <p>Первый слой строился десять лет: аукцион в реальном времени, открытый враппер header bidding, консолидация биржи, переход на first-price. Он же оставил после себя две привычки, которые дожили до сегодняшнего дня, — <b>объявлять без цены и измерять без метода</b>.</p>
+    </div>
+
+    <figure>
+      <div class="ftitle">Один и тот же 2014 год, два замера, разные ответы</div>
+      <div class="fsub">Доля программатика в дисплейной рекламе США</div>
+      <div class="scroll"><div style="min-width:460px">
+        <div class="prop" style="margin-bottom:8px"><span style="background:var(--s1);width:52%"></span><span style="background:var(--surface-2);width:48%"></span></div>
+        <div class="plab" style="margin-bottom:18px"><span style="--c:var(--s1)"><i></i>IAB / PwC, отраслевой замер выручки — <b>52%</b> display-related, $10,1 млрд</span></div>
+        <div class="prop" style="margin-bottom:8px"><span style="background:var(--s2);width:45%"></span><span style="background:var(--surface-2);width:55%"></span></div>
+        <div class="plab"><span style="--c:var(--s2)"><i></i>eMarketer, прогноз вендора — <b>45,0%</b> рынка digital display</span></div>
+      </div></div>
+      <figcaption>Разница не в семи процентных пунктах, а в том, <b>что именно считали</b>. IAB с PwC мерили <b>выручку постфактум</b> — по опросу участников рынка, и публиковали её как долю display-related. eMarketer оценивал <b>расходы рекламодателей вперёд</b>, описав метод одной фразой — «exhaustive analysis of dozens of data sources», — и считал долю от другого, нераскрытого знаменателя. В самом отчёте IAB прямо сказано, что универсального определения «программатик» в отрасли не существует. Переход через половину дисплея eMarketer поместил на 2015 год <b>ещё в октябре 2014-го</b>, в своём первом в истории прогнозе программатика — то есть это была модельная экстраполяция вперёд, а не наблюдение. Год спустя тот же вендор переписал и прошлое: в винтаже октября 2015 доля 2014 года выросла с 45,0% до 49,0%. <b>Ни один из двух рядов не проверяем сторонним лицом</b>, и именно они пятнадцать лет цитируются как размер рынка.</figcaption>
+    </figure>
+
+    <div class="tl">
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2013-10-30</div><div class="st">вступило в силу</div><div class="t">Criteo дебютирует на Nasdaq по $31,00 за ADS<em>Ценообразование 29.10, дебют торгов 30.10. Проспект называет базовый транш 8 082 580 ADS, но опцион был исполнен полностью: реально размещено 9 294 967 ADS на ~$288,1 млн — цифра из 20-F, а не из проспекта.</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2015-08-04</div><div class="st">применяется</div><div class="t">Код Prebid.js выложен на GitHub: 18 файлов, +2719 строк, шесть адаптеров<em>Репозиторий создан 19.07.2015, но корневой коммит — это README на четыре строки и ноль строк кода; следующие 15 дней коммитов нет. Лицензия Apache-2.0 добавлена 05.08.2015.</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2017-09-11</div><div class="st">вступило в силу</div><div class="t">AppNexus и Rubicon Project учреждают Prebid.org<em>Открытый враппер получает независимого держателя и Code of Conduct.</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2018-08-15</div><div class="st">закрыто · цена позже</div><div class="t">AT&amp;T закрывает покупку AppNexus за $1 432 млн<em>Объявляя сделку 25.06.2018, цену не назвали. Сумма всплыла только в приложении к 10-K за 2018 год — через полтора года.</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2019-03-06</div><div class="st">объявлено</div><div class="t">Google объявляет переход Ad Manager на единый first-price аукцион<em>«В ближайшие месяцы», завершение — «до конца 2019».</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2019-09-25</div><div class="st">применяется · сказано задним числом</div><div class="t">Переход AdX на first-price фактически завершён<em>Дату завершения Google назвал только ретроспективно, в release notes. Развёртывание шло с 10.09, до 3% трафика какое-то время оставалось на second-price.</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2020-04-01</div><div class="st">вступило в силу</div><div class="t">Rubicon Project закрывает слияние с Telaria; 30.06.2020 становится Magnite</div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2020-12-09</div><div class="st">вступило в силу</div><div class="t">PubMatic выходит на Nasdaq по $20,00 за акцию класса A</div></div>
+    </div>
+
+    <div class="note"><b>Дважды одна и та же фигура.</b> Цену AppNexus раскрыли не в анонсе сделки, а в отчётности полтора года спустя. Дату, когда first-price аукцион реально заработал, Google назвал задним числом. В обоих случаях публичной была новость, а не факт — и разрыв между ними отрасль пережила, не заметив.</div>
+  </div>
+</section>
+
+<section style="--ac:var(--s2)">
+  <div class="wrap">
+    <div class="sec-head"><span class="act">Слой 2</span><h2>Идентичность: хоронили не то</h2></div>
+    <div class="col">
+      <p>Самый длинный и самый поучительный переход. С 2017 года браузеры один за другим резали третьесторонний трекинг, и отрасль семь лет строила замену третьесторонней куке. К 2026 году выяснилось, что <b>исчезла именно замена</b>.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat" style="--sc:var(--s2)"><div class="v">41,49%</div><div class="k">загрузок страниц Chrome читают третьестороннюю куку</div><div class="n">на 24.08.2026</div></div>
+      <div class="stat"><div class="v">55,52%</div><div class="k">пик того же показателя</div><div class="n">15.02.2025</div></div>
+      <div class="stat"><div class="v">1%</div><div class="k">трафика Chrome — единственный раз, когда отмена кук реально применялась</div><div class="n">с 04.01.2024, свёрнуто</div></div>
+      <div class="stat"><div class="v">3</div><div class="k">публично объявленных переноса срока отмены</div><div class="n">2021 · 2022 · 2024</div></div>
+    </div>
+
+    <div class="tl">
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2017-06-05</div><div class="st">объявлено</div><div class="t">Apple анонсирует Intelligent Tracking Prevention на WWDC<em>Первый мейнстрим-браузер, режущий трекинг по умолчанию.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2019-09-03</div><div class="st">применяется</div><div class="t">Firefox 69: Enhanced Tracking Protection включена всей базе<em>С 04.06.2019 — только новым установкам; всем пользователям — с сентября.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2020-01-14</div><div class="st">объявлено намерение</div><div class="t">Google объявляет вывод третьесторонних кук из Chrome «в течение двух лет»<em>Не решение и не норма. Срок сорван, впоследствии отменён.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2020-03-24</div><div class="st">вступило в силу</div><div class="t">Safari полностью блокирует третьесторонние куки<em>iOS/iPadOS 13.4, Safari 13.1 — первым из мейнстрим-браузеров.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2021-06-24</div><div class="st">перенос № 1</div><div class="t">Отмена сдвинута на середину–конец 2023 года</div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2022-07-27</div><div class="st">перенос № 2</div><div class="t">Сдвинута на вторую половину 2024 года</div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2024-01-04</div><div class="st">применяется</div><div class="t">Единственное реальное включение: 1% стабильного канала Chrome<em>Впоследствии свёрнуто разворотом 2025 года.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2024-04-23</div><div class="st">перенос № 3</div><div class="t">Отмена не будет завершена в 2024 году<em>Срок «начало 2025» так и не наступил.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2025-04-22</div><div class="st">разворот</div><div class="t">Куки остаются. Отдельного запроса выбора в Chrome не будет<em>Статус-кво сохранён, изменений в Chrome не вносилось.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2025-10-17</div><div class="st">подтверждено</div><div class="t">Google сворачивает десять технологий Privacy Sandbox<em>Прямая причина в формулировке Google — «low levels of adoption».</em></div></div>
+    </div>
+
+    <div class="note"><b>Что тут стоит запомнить.</b> Между «объявлено намерение» (14.01.2020) и «фактически применяется» (04.01.2024, 1% трафика) прошло четыре года, и применилось это на одну сотую аудитории. Всё остальное время индустрия перестраивалась под событие, которого не произошло.</div>
+  </div>
+</section>
+
+<section style="--ac:var(--s3)">
+  <div class="wrap">
+    <div class="sec-head"><span class="act">Слой 3</span><h2>Арбитр: цена за единицу падает четвёртый период подряд</h2></div>
+    <div class="col">
+      <p>Слой, который считает, состоялся ли показ и был ли он настоящим. С 2021 года обе публичные компании верификации — DoubleVerify и Integral Ad Science — вышли на биржу, и обе к 2026 году с неё ушли. Причина видна в отчётности: <b>это не «рост объёмный, а не ценовой», а устойчивая дефляция цены</b>, наложенная на затухание объёма.</p>
+    </div>
+
+
+    <div class="stats">
+      <div class="stat" style="--sc:var(--s2)"><div class="v">$27,00 → $13,60</div><div class="k">DoubleVerify: цена IPO против цены, по которой её покупает Nielsen</div><div class="n">20.04.2021 → 06.08.2026</div></div>
+      <div class="stat" style="--sc:var(--s2)"><div class="v">$18,00 → $10,30</div><div class="k">Integral Ad Science: цена IPO против цены выкупа фондами Novacap</div><div class="n">29.06.2021 → 23.12.2025</div></div>
+      <div class="stat"><div class="v">19 мес.</div><div class="k">без аккредитации MRC пробыл национальный ТВ-рейтинг Nielsen</div><div class="n">01.09.2021 → 17.04.2023</div></div>
+      <div class="stat"><div class="v">$28,00</div><div class="k">за акцию — цена ухода самого Nielsen с биржи</div><div class="n">закрыто 11.10.2022</div></div>
+    </div>
+
+    <div class="note"><b>Оба верификатора куплены дешевле цены собственного размещения.</b> Обе компании вышли на биржу в 2021 году на пике интереса к слою проверки, и обе покинули её ниже цены IPO — DoubleVerify на 50%, IAS на 43%. Восстановление аккредитации Nielsen в 2023 было при этом неполным: вернули только национальный TAM, а Digital in TV Ratings и локальные сервисы — нет.</div>
+
+    <figure>
+      <div class="ftitle">DoubleVerify: объём растёт медленнее, цена падает быстрее</div>
+      <div class="fsub">Изменение к предыдущему периоду, % · по 10-K и 10-Q компании</div>
+      <div class="legend">
+        <span style="--c:var(--s1)"><i></i>Объём измеренных транзакций</span>
+        <span style="--c:var(--s2)"><i></i>Цена за единицу (MTF)</span>
+        <span style="--c:var(--s3)"><i></i>Выручка</span>
+      </div>
+      <div class="scroll"><div class="grp">
+        <div class="glab">FY 2024</div><div class="bars">
+          <div class="brow"><div class="btrack" style="--c:var(--s1)"><div class="zero" style="left:22%"></div><div class="bar" style="width:47.5%;margin-left:22%"></div></div><span class="bval">+19%</span></div>
+          <div class="brow"><div class="btrack" style="--c:var(--s2)"><div class="zero" style="left:22%"></div><div class="bar neg" style="width:10%;margin-left:12%;margin-right:78%"></div></div><span class="bval">−4%</span></div>
+          <div class="brow"><div class="btrack" style="--c:var(--s3)"><div class="zero" style="left:22%"></div><div class="bar" style="width:35%;margin-left:22%"></div></div><span class="bval">+14%</span></div>
+        </div>
+        <div class="glab">FY 2025</div><div class="bars">
+          <div class="brow"><div class="btrack" style="--c:var(--s1)"><div class="zero" style="left:22%"></div><div class="bar" style="width:37.5%;margin-left:22%"></div></div><span class="bval">+15%</span></div>
+          <div class="brow"><div class="btrack" style="--c:var(--s2)"><div class="zero" style="left:22%"></div><div class="bar neg" style="width:7.5%;margin-left:14.5%;margin-right:78%"></div></div><span class="bval">−3%</span></div>
+          <div class="brow"><div class="btrack" style="--c:var(--s3)"><div class="zero" style="left:22%"></div><div class="bar" style="width:32.5%;margin-left:22%"></div></div><span class="bval">+13%</span></div>
+        </div>
+        <div class="glab">Q1 2026</div><div class="bars">
+          <div class="brow"><div class="btrack" style="--c:var(--s1)"><div class="zero" style="left:22%"></div><div class="bar" style="width:30%;margin-left:22%"></div></div><span class="bval">+12%</span></div>
+          <div class="brow"><div class="btrack" style="--c:var(--s2)"><div class="zero" style="left:22%"></div><div class="bar neg" style="width:10%;margin-left:12%;margin-right:78%"></div></div><span class="bval">−4%</span></div>
+          <div class="brow"><div class="btrack" style="--c:var(--s3)"><div class="zero" style="left:22%"></div><div class="bar" style="width:22.5%;margin-left:22%"></div></div><span class="bval">+9%</span></div>
+        </div>
+        <div class="glab">Q2 2026</div><div class="bars">
+          <div class="brow"><div class="btrack" style="--c:var(--s1)"><div class="zero" style="left:22%"></div><div class="bar" style="width:22.5%;margin-left:22%"></div></div><span class="bval">+9%</span></div>
+          <div class="brow"><div class="btrack" style="--c:var(--s2)"><div class="zero" style="left:22%"></div><div class="bar neg" style="width:17.5%;margin-left:4.5%;margin-right:78%"></div></div><span class="bval">−7%</span></div>
+          <div class="brow"><div class="btrack" style="--c:var(--s3)"><div class="zero" style="left:22%"></div><div class="bar" style="width:5%;margin-left:22%"></div></div><span class="bval">+2%</span></div>
+        </div>
+      </div></div>
+      <figcaption><b>Оговорка, без которой ряд читается неверно.</b> Годовые и квартальные значения несопоставимы по шкале: FY2024 и FY2025 — годовые контейнеры, Q1 и Q2 2026 — кварталы внутри следующего года. Базы расчёта тоже разные: годовые падения цены даны «excluding the impact of an introductory fixed fee deal for one large customer», квартальные — без этой оговорки. MTF — самоотчётная метрика компании по Advertiser revenue, не GAAP и без аудиторского заверения самого процента; Supply-side в неё не входит вовсе.</figcaption>
+    </figure>
+
+    <div class="stats">
+      <div class="stat" style="--sc:var(--s3)"><div class="v">$3,17 млн</div><div class="k">годовая выручка Media Rating Council, аудирующего около 110 продуктов</div><div class="n">FY2024, форма 990</div></div>
+      <div class="stat"><div class="v">×15</div><div class="k">во столько раз весь бюджет арбитра меньше GAAP-прибыли одного DoubleVerify</div><div class="n">FY2025</div></div>
+      <div class="stat"><div class="v">94,5%</div><div class="k">выручки MRC — взносы 162 членов, то есть измеряемых</div><div class="n">аудит оплачивает аудируемый</div></div>
+      <div class="stat"><div class="v">32 → 18</div><div class="k">сжатие числа значимых SSP за три года</div><div class="n">2023 → 2026</div></div>
+    </div>
+
+    <div class="fact">
+      <h4>Кто голосует в институте, который всех судит</h4>
+      <p>В членах MRC — Google, Meta, Amazon Ads, Netflix, X. Нет ни DoubleVerify, ни IAS, ни Nielsen, ни Comscore, ни HUMAN. То есть голосуют измеряемые, а не измеряющие; аудит при этом оплачивает сам аудируемый, а надзора уровня PCAOB над этим нет.</p>
+      <div class="src">MRC, форма 990 FY2024 · Audit and Accreditation Process · chan:primary · cred:primary-confirmed</div>
+    </div>
+
+    <div class="corr">
+      <div class="tag">Поправка по первоисточнику</div>
+      <p style="font-size:.92rem;margin-bottom:12px">Пресс-релиз о покупке DoubleVerify компанией Nielsen был отозван и переиздан через сутки: форма 8-K/A от 07.08.2026 подана «solely to correct the press release». Правки не косметические.</p>
+      <table>
+        <tr><td class="was">«unanimously approved by the Boards»</td><td class="now">«approved by the Boards»</td></tr>
+        <tr><td class="was">закрытие «by the end of the fourth quarter of 2026»</td><td class="now">закрытие «by the first quarter of 2027»</td></tr>
+        <tr><td class="was">«$240 billion segment, tripling its TAM»</td><td class="now">то же предложение без «tripling its TAM»</td></tr>
+        <tr><td class="was">«will maintain the independence of both operating structures»</td><td class="now">предложение удалено целиком</td></tr>
+        <tr><td class="was">стандарты, «that underpin trust across the advertising ecosystem»</td><td class="now">стандарты, «that are highly valued by global advertisers»</td></tr>
+      </table>
+      <div class="src">SEC EDGAR · accession 0001104659-26-092121 против 0001104659-26-092753 · обе редакции сохранены в архиве проекта</div>
+    </div>
+
+    <figure>
+      <div class="ftitle">Размер рынка рекламной верификации за 2024 год</div>
+      <div class="fsub">Синдицированная оценка против счёта снизу по отчётности</div>
+      <div class="scroll"><div style="min-width:460px">
+        <div class="prop" style="margin-bottom:8px"><span style="background:var(--s2);width:100%"></span></div>
+        <div class="plab" style="margin-bottom:16px"><span style="--c:var(--s2)"><i></i>Синдицированная оценка — <b>$4,82 млрд</b>, метод не раскрыт</span></div>
+        <div class="prop"><span style="background:var(--s1);width:24.7%"></span><span style="background:var(--surface-2);width:75.3%"></span></div>
+        <div class="plab"><span style="--c:var(--s1)"><i></i>Счёт снизу по отчётности — <b>$1,19 млрд</b></span><span style="color:var(--ink-2)">разрыв <b>~4×</b></span></div>
+      </div></div>
+      <figcaption>Счёт снизу — сумма выручки двух публичных верификаторов за 2024: DoubleVerify $656,8 млн плюс IAS $530,1 млн. У синдицированной оценки <b>метод не раскрыт</b>, а тот же издательский контур параллельно публикует $1,26 млрд для смежного определения того же рынка — разброс почти вчетверо между двумя собственными периметрами. В периметр включены закрытые и смежные компании: Moat/Oracle, Sizmek, Adometry, Nielsen, Comscore, Adjust. За 2025 такой счёт невозможен в принципе: IAS не подавала 10-K за FY2025, её годовая выручка непублична.</figcaption>
+    </figure>
+
+    
+    <figure>
+      <div class="ftitle">Одно и то же мошенничество, четыре разных числа</div>
+      <div class="fsub">Methbot и 3ve: что заявил вендор, что вменил Минюст, что взыскал суд</div>
+      <div class="scroll"><div style="min-width:520px">
+        <div class="prop" style="margin-bottom:8px"><span style="background:var(--s2);width:100%"></span></div>
+        <div class="plab" style="margin-bottom:20px"><span style="--c:var(--s2)"><i></i>Отраслевой канон — <b>$180 млн</b>. В пресс-релизе White Ops этого числа нет: ноль вхождений</span></div>
+        <div class="prop" style="margin-bottom:8px"><span style="background:var(--s1);width:20%"></span><span style="background:var(--surface-2);width:80%"></span></div>
+        <div class="plab" style="margin-bottom:20px"><span style="--c:var(--s1)"><i></i>Вменено Минюстом США — <b>$36 млн</b> ($7 млн Methbot + $29 млн 3ve)</span></div>
+        <div class="prop" style="margin-bottom:8px"><span style="background:var(--s3);width:2.1%"></span><span style="background:var(--surface-2);width:97.9%"></span></div>
+        <div class="plab"><span style="--c:var(--s3)"><i></i>Взыскано судом при приговоре — <b>$3 827 493</b></span></div>
+      </div></div>
+      <figcaption>Релиз White Ops от 20.12.2016 заявлял <b>«$3–5 млн в день»</b> — суточную скорость, а не итог; годовая экстраполяция этой скорости и превратилась в канонические «$180 млн», которых в самом релизе нет. Обвинительное заключение большого жюри Восточного округа Нью-Йорка от 27.11.2018 (<span class="mono">1:18-cr-00633-ERK</span>) вменяет $7 млн по Methbot и $29 млн по 3ve. Приговор Жукову 10.11.2021 — десять лет и конфискация $3 827 493. <b>Числа не сопоставимы напрямую</b>: заявленное, вменённое и присуждённое меряют разные вещи и разный периметр. Но именно первое из них — то, которого нет в первоисточнике, — десять лет ходит по отрасли как размер ущерба.</figcaption>
+    </figure>
+
+    <div class="note">В сделке, где корень <span class="mono">independen*</span> встречается девять раз, эмитент за сутки убрал единственное конкретное <b>обязательство</b> сохранить независимость операционных структур, а обоснование поддержки открытых стандартов сместил с общественного блага на предпочтение клиентов. Счётчик «девять раз» при этом верен только для исправленной редакции: в исходной корень встречается десять раз — <b>счётчик по документу с двумя редакциями надо датировать редакцией</b>.</div>
+  </div>
+</section>
+
+
+
+<section style="--ac:var(--s3)">
+  <div class="wrap">
+    <div class="sec-head"><span class="act">Между слоями</span><h2>Новые стены: продавец инвентаря стал измерителем результата</h2></div>
+    <div class="col">
+      <p>Пока перестраивались труба и идентичность, рядом выросли два канала, устроенные принципиально иначе: <b>retail media и стриминг с рекламой</b>. В обоих владелец инвентаря сам считает результат, а идентификатор у него собственный — логин, карта лояльности, аккаунт устройства. Внешний арбитр здесь не предусмотрен конструкцией.</p>
+    </div>
+
+    <div class="tl">
+      <div class="ev" style="--lc:var(--s3)"><div class="d mono">2021-01-28</div><div class="st">вступило в силу</div><div class="t">Walmart Media Group переименован в Walmart Connect<em>Ребрендинг и расширение, а не запуск: 170 000 экранов в 4500+ магазинах.</em></div></div>
+      <div class="ev" style="--lc:var(--s3)"><div class="d mono">2021-06-02</div><div class="st">вступило в силу</div><div class="t">HBO Max включает рекламный тариф $9,99 — первый в новой волне<em>Анонс 19.05.2021, включение 02.06.2021.</em></div></div>
+      <div class="ev" style="--lc:var(--s3)"><div class="d mono">2022-02-03</div><div class="st">раскрыто впервые</div><div class="t">Amazon впервые выводит «Advertising services» отдельной строкой<em>Q4 2021 — $9 716 млн, +32% г/г; за весь 2021 — $31 160 млн. До этого реклама пряталась в строке «Other».</em></div></div>
+      <div class="ev" style="--lc:var(--s3)"><div class="d mono">2022-11-01…10</div><div class="st">ступенчато</div><div class="t">Netflix запускает Basic with Ads в 12 странах — не одним днём<em>01.11 Канада и Мексика, 03.11 США ($6,99), Британия, Бразилия, Франция, Германия, Италия, Япония, Корея; 04.11 Австралия по местной дате; 10.11 Испания. $6,99 — цена только для США. Верификация DoubleVerify и IAS на запуске не действовала, была лишь обещана.</em></div></div>
+      <div class="ev" style="--lc:var(--s3)"><div class="d mono">2022-12-08</div><div class="st">вступило в силу</div><div class="t">Disney+ с рекламой в США, $7,99<em>Намерение объявлено 04.03.2022 — разрыв до запуска девять месяцев.</em></div></div>
+      <div class="ev" style="--lc:var(--s3)"><div class="d mono">2023-05-17</div><div class="st">объявлено на Upfront</div><div class="t">Первое число рекламного Netflix — около 5 млн MAU, <b>не подписчиков</b><em>Грег Питерс прямо противопоставил MAU подписке как «метрике, которая действительно важна рекламодателям».</em></div></div>
+      <div class="ev" style="--lc:var(--s3)"><div class="d mono">2024-01-29</div><div class="st">применяется по умолчанию</div><div class="t">Реклама в Prime Video включена действующим подписчикам; отказ — $2,99/мес<em>Единственный из крупных стримингов, включивший рекламу по умолчанию, а не новым тарифом.</em></div></div>
+      <div class="ev" style="--lc:var(--s3)"><div class="d mono">2024-12-03</div><div class="st">сделка закрыта</div><div class="t">Walmart закрывает покупку VIZIO: $11,50 за акцию, чистыми $1,9 млрд<em>Подписано 19.02.2024, Second Request от FTC 29.04.2024 — почти год до закрытия.</em></div></div>
+    </div>
+
+    <div class="note"><b>Как читать размер этого рынка.</b> По отчёту IAB, выполненному PwC, интернет-реклама США за 2025 год — $294,6 млрд (+13,9%), из них commerce media $63,4 млрд (+18,0%) и цифровое видео вместе с CTV $78,0 млрд (+25,4%). Но опубликованные доли категорий в сумме дают около 155%: это <b>пересекающиеся срезы, а не разбиение</b>, и складывать их нельзя. Отдельная ловушка в самих США: по ASC 705-20 возмещение от вендора по умолчанию идёт не в выручку, а в уменьшение себестоимости — сноска Walmart, дословно та же у Target и Best Buy, говорит «recorded in either net sales or as a reduction to cost of sales, depending on the nature of the advertising arrangement».</div>
+  </div>
+</section>
+
+<section style="--ac:var(--s4)">
+  <div class="wrap">
+    <div class="sec-head"><span class="act">Слой 4</span><h2>Интерфейс: видимость обнуляется</h2></div>
+    <div class="col">
+      <p>Четвёртый переход идёт прямо сейчас, и он отличается от трёх предыдущих: меняется не способ доставки рекламы, а <b>способ, которым человек задаёт вопрос</b>. Первый ценз-замер видимости в ответах ассистентов показывает, что происходит с бизнесом, которого в ответе нет.</p>
+    </div>
+
+    <figure>
+      <div class="ftitle">Сплошная перепись рынка: кого AI не рекомендует никогда</div>
+      <div class="fsub">4 776 кафе, ресторанов и баров в двух районах Бали · 2 208 прогонов · четыре системы</div>
+      <div class="scroll"><div style="min-width:460px">
+        <div class="prop"><span style="background:var(--s4);width:85.6%"></span><span style="background:var(--s3);width:14.4%"></span></div>
+        <div class="plab"><span style="--c:var(--s4)"><i></i>Не рекомендованы ни разу — <b>85,6%</b> (4 087 из 4 776)</span><span style="--c:var(--s3)"><i></i>Попали хотя бы в один ответ — <b>14,4%</b> (689)</span></div>
+      </div></div>
+      <figcaption>4 087 заведений из 4 776 не были рекомендованы <b>ни одной</b> из четырёх систем (OpenAI, Claude, Gemini, Perplexity — через поисковые API). Все 9 791 выданные рекомендации вместе покрыли лишь 689 заведений. Среди заведений с 50 и более оценками не рекомендованы 72,6% — <b>популярность от невидимости не спасает</b>. Авторы называют 85,6% полом, а не оценкой: заведение, не попавшее в перепись, почти наверняка тоже не рекомендуется. Оговорка о провенансе: исследование профинансировано и выполнено компанией, продающей инструменты AI-видимости; конфликт раскрыт авторами.</figcaption>
+    </figure>
+
+    <div class="fact">
+      <h4>Практический режим отказа — устаревание, а не выдумка</h4>
+      <p>Прямое выдумывание почти отсутствует: одно неверифицируемое название на 12 439 валидных упоминаний, то есть 0,08%. Зато системы рекомендовали <b>окончательно закрытые заведения 93 раза</b> по 14 подтверждённо закрытым точкам. Механизм простой: отзывы и упоминания закрытого кафе никуда не деваются, а сигнал о закрытии распространяется много медленнее сигнала о репутации.</p>
+      <div class="src">arXiv:2608.07069 · препринт, рецензирование не пройдено · chan:primary · num:sourced</div>
+    </div>
+
+    <div class="fact">
+      <h4>Два порога видимости вознаграждают противоположное</h4>
+      <p>Попадание в ответ предсказывает <b>документированность</b>: собственный сайт (OR 1,92), объём отзывов (1,64), указанная цена (1,54), сторонние упоминания (1,44) — а звёздный рейтинг не даёт ничего (0,89). Внутри же ответа картина переворачивается: among рекомендованных первую позицию предсказывает именно рейтинг (1,17), а эффект сайта падает до номинальных 1,33.</p>
+      <div class="src">arXiv:2608.07069, case-control, модель M1, поправка Benjamini-Hochberg · chan:primary</div>
+    </div>
+
+    <div class="note"><b>Кто держит дверь.</b> К 15.09.2026 у Cloudflare привязан план дефолтов, по которому у всех новых доменов категории Training и Agent блокируются на страницах с рекламой. На 31.08.2026 сосуществуют два несогласованных объявления компании, и <b>ни одно ещё не применяется</b>: июльский план стоит в документации неправленым, августовский пост объявляет другую конструкцию и сентябрь не упоминает вовсе. Допуск агента к сайту решает CDN — не мерчант и не пользователь.</div>
+
+    <div class="stats">
+      <div class="stat" style="--sc:var(--s4)"><div class="v">16 : 0</div><div class="k">ответов за адопшн против возражений на первом call for adoption Web Bot Auth в IETF</div><div class="n">окно закрылось 01.09.2026</div></div>
+      <div class="stat"><div class="v">0</div><div class="k">принятых WG-документов у группы webbotauth на 30.08.2026</div><div class="n">пространство draft-ietf-webbotauth пусто</div></div>
+      <div class="stat"><div class="v">31</div><div class="k">европейский рынок, на которые OpenAI расширила рекламу в ChatGPT</div><div class="n">с недели 24.08.2026</div></div>
+      <div class="stat"><div class="v">4,47%</div><div class="k">запросов США с рекламой в ChatGPT — <b>доля в панели скрейпов вендора</b>, а не в реальном потоке</div><div class="n">14.03–26.05.2026</div></div>
+    </div>
+  </div>
+</section>
+
+<section style="--ac:var(--s2)">
+  <div class="wrap">
+    <div class="sec-head"><span class="act">Поперёк слоёв</span><h2>Регуляторика: у каждого акта четыре разные даты</h2></div>
+    <div class="col">
+      <p>Норма над рекламными данными почти никогда не начинает действовать тогда, когда о ней пишут. У европейского акта <b>четыре разные даты</b> — подписания, публикации, вступления в силу и начала применения, — и между крайними проходят годы. Планировать можно только по последней.</p>
+    </div>
+
+    <div class="tl">
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2009-11-25</div><div class="st">принято</div><div class="t">Директива 2009/136/EC меняет ст. 5(3) ePrivacy с opt-out на согласие<em>Основание всех куки-баннеров. В силе с 19.12.2009, но прямого действия нет — работает через национальное право.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2016-04-27</div><div class="st">подписан</div><div class="t">GDPR подписан<em>Опубликован 04.05.2016, в силе с 24.05.2016 — а применяется только с 25.05.2018. Между подписанием и применением два года и месяц.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2017-01-10</div><div class="st">внесено · отозвано</div><div class="t">Регламент ePrivacy предложен — и снят без принятия<em>Должен был заменить директиву 2002/58/EC. Восемь лет в процедуре, статус «Procedure lapsed or withdrawn», публикация отзыва 06.10.2025. В силу не вступал никогда.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2018-06-28</div><div class="st">принят и подписан</div><div class="t">CCPA принят за один день как сделка о снятии инициативы с бюллетеня<em>Сенат 36-0, Ассамблея 73-0, подпись губернатора — всё 28 июня. Вступил в силу 01.01.2019, но operative — с 01.01.2020.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2020-11-03</div><div class="st">принято избирателями</div><div class="t">CPRA одобрена на референдуме: 56,2% голосов по мере<em>Operative с 01.01.2023, правоприменение — только с 01.07.2023. Доля считана от голосов по самой мере: 1 095 095 бюллетеней остались по ней пустыми.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2022-02-02</div><div class="st">решение по существу</div><div class="t">Бельгийский регулятор признаёт TCF нарушающим GDPR: штраф 250 000 евро<em>Дело DOS-2019-01377 против IAB Europe — по фреймворку согласия, на котором стоит вся европейская программатика.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2022-09-14</div><div class="st">принят</div><div class="t">DMA: в силе с 01.11.2022, применяется с 02.05.2023, к gatekeepers — позже<em>Части статей включаются на четырёх разных датах.</em></div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2022-10-19</div><div class="st">принят</div><div class="t">DSA: в силе с 16.11.2022, к очень крупным платформам — с августа 2023, ко всем — с 17.02.2024</div></div>
+      <div class="ev" style="--lc:var(--s2)"><div class="d mono">2025-05-14</div><div class="st">апелляция</div><div class="t">Суд подтверждает: TC String — персональные данные, IAB Europe — совместный контролёр<em>Штраф устоял, решение регулятора аннулировано процедурно.</em></div></div>
+    </div>
+
+    <div class="note"><b>Три года на один акт — это норма, а не задержка.</b> GDPR: от подписания до применения два года и месяц. DSA: от принятия до применения ко всем — год и четыре месяца, и внутри ещё две промежуточные даты. А регламент ePrivacy, который должен был отдельно закрыть вопрос куки-баннеров, восемь лет пролежал в процедуре и был снят, так и не вступив в силу ни на один день.</div>
+  </div>
+</section>
+
+<section style="--ac:var(--s1)">
+  <div class="wrap">
+    <div class="sec-head"><span class="act">Регуляторный такт</span><h2>Антитраст: от иска до исполнения — шесть лет</h2></div>
+    <div class="tl">
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2020-10-20</div><div class="st">иск подан</div><div class="t">DOJ против Google по поисковому рынку<em>D.D.C., № 1:20-cv-03010</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2023-01-24</div><div class="st">иск подан</div><div class="t">DOJ против Google по adtech<em>E.D. Va., № 1:23-cv-00108</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2024-08-05</div><div class="st">решение по существу</div><div class="t">Судья Мехта: Google — монополист на двух поисковых рынках<em>По третьему рынку DOJ проиграл. Ремедии на эту дату не определены.</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2025-04-17</div><div class="st">решение по существу</div><div class="t">Судья Бринкема: монополизация publisher ad server и ad exchange, связка DFP+AdX<em>Count III отклонён. Ремедии не определены.</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2025-09-02</div><div class="st">мнение суда</div><div class="t">Ремедии по поиску: без продажи Chrome и Android, но с принудительным шерингом данных<em>Final Judgment ещё не подписан — ничего пока не применяется.</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2025-12-05</div><div class="st">принято</div><div class="t">Мехта подписал Final Judgment (ECF 1462): срок шесть лет от даты вступления<em>§ VIII: вступает через 60 дней после внесения, кроме § VII.A — тот действует немедленно. 60 дней дают 03.02.2026.</em></div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2026-02-03</div><div class="st">вступило в силу</div><div class="t">Final Judgment по поиску действует; обе стороны ушли в апелляцию D.C. Circuit</div></div>
+      <div class="ev" style="--lc:var(--s1)"><div class="d mono">2026-08-31</div><div class="st">статус</div><div class="t">По поиску исполнение идёт под апелляцией. По adtech ремедии не вынесены<em>Договорные ремедии § III действуют с 03.02.2026 — Google уведомил истцов 27.02.2026, что считает их исполненными. Разделы IV–VI, включая шеринг данных и синдикацию, ещё не применяются (ECF 1512).</em></div></div>
+    </div>
+    <div class="note">Пять лет и три месяца от подачи иска до вступления решения в силу — и это по делу, которое DOJ выиграл. По второму делу, где монополия установлена в апреле 2025, <b>ремедий нет до сих пор</b>. Планировать по дате решения нельзя; планировать можно только по дате применения.</div>
+  </div>
+</section>
+
+<section style="--ac:var(--s3)">
+  <div class="wrap">
+    <div class="sec-head"><h2>Что не изменилось за пятнадцать лет</h2></div>
+    <div class="col">
+      <p>Технологические слои сменились четыре раза. Привычки отрасли — ни разу.</p>
+      <ul class="tight">
+        <li><b>Объявленное выдают за действующее.</b> Отмена кук, дефолты Cloudflare, пороги YouTube, ремедии по adtech — везде дата объявления живёт в отраслевом разговоре как дата события.</li>
+        <li><b>Число публикуют без метода.</b> Размер рынка верификации, доля программатика, «5× токенов на задачу», «94% сети верифицированы» — во всех случаях метод не назван, а часто и база сравнения тоже.</li>
+        <li><b>Число живёт дольше документа, из которого его взяли.</b> Канонические «$180 млн ущерба от Methbot» отсутствуют в релизе White Ops; там суточная скорость «$3–5 млн в день». Суд десять лет спустя взыскал $3,83 млн. Проверять надо не пересказ, а первоисточник — и не только цифру, но и то, что именно ею меряли.</li>
+        <li><b>Счётчик считает не то, что написано на этикетке.</b> «Реклама на 4,47% запросов» — доля в панели скрейпов вендора. «$6,4 млрд Walmart Connect» — вся глобальная реклама Walmart, включая VIZIO. Первое число рекламного Netflix — 5 млн MAU, а не подписчиков, и компания сама это подчеркнула.</li>
+        <li><b>Арбитра финансирует тот, кого он судит.</b> В MRC голосуют измеряемые, аудит оплачивает аудируемый, и весь бюджет института в пятнадцать раз меньше прибыли одной аудируемой компании.</li>
+        <li><b>Продавец инвентаря — он же измеритель результата.</b> Верно для retail media, для CTV, а после покупки DoubleVerify компанией Nielsen — и для самого слоя верификации.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section style="--ac:var(--s4);border-bottom:0">
+  <div class="wrap">
+    <div class="sec-head"><h2>Что смотреть дальше</h2></div>
+    <div class="tl">
+      <div class="ev" style="--lc:var(--s4)"><div class="d mono">10.09.2026</div><div class="st">срок эмитента</div><div class="t">DoubleVerify обещала подать merger-proxy<em>Собственный слайд в филинге DEFA14A: «Proxy Statement | SUBMIT BY SEPT 10». На 30.08 не подана.</em></div></div>
+      <div class="ev" style="--lc:var(--s4)"><div class="d mono">15.09.2026</div><div class="st">дата плана</div><div class="t">Что фактически включится у Cloudflare<em>Июльский режим, августовский или ни один.</em></div></div>
+      <div class="ev" style="--lc:var(--s4)"><div class="d mono">12.11.2026</div><div class="st">только по прессе</div><div class="t">Атрибуционный фреймворк IAB<em>Дата известна из Digiday; в документах IAB её нет. На 29.08 фреймворк не опубликован.</em></div></div>
+      <div class="ev" style="--lc:var(--s4)"><div class="d mono">23.12.2026</div><div class="st">истекает</div><div class="t">Шестимесячный хиатус аккредитации Nielsen Audio Diary<em>Вернётся в аккредитованные или тихо исчезнет из списка.</em></div></div>
+      <div class="ev" style="--lc:var(--s4)"><div class="d mono">Q1 2027</div><div class="st">ожидается</div><div class="t">Закрытие сделки Nielsen — DoubleVerify<em>Внешняя дата 06.05.2027 с автопродлением до 06.08.2027.</em></div></div>
+      <div class="ev" style="--lc:var(--s4)"><div class="d mono">01.02.2027</div><div class="st">объявлено</div><div class="t">YouTube вдвое поднимает порог входа в партнёрскую программу<em>На 29.08.2026 действующая справка показывает старые пороги.</em></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap col">
+    <p>Собрано агентом gid из накопленной памяти проекта — 1408 записей с провенансом по пяти осям — и первоисточников, скачанных и сохранённых в локальный архив. Каждая цифра здесь либо взята из документа эмитента, регулятора или суда, либо помечена как вендорская оценка без раскрытого метода.</p>
+    <p>Каждая дата в таймлайнах несёт свой статус: <span class="mono">объявлено</span>, <span class="mono">принято</span>, <span class="mono">вступило в силу</span> или <span class="mono">фактически применяется</span>. Это не педантизм — смешение этих четырёх состояний оказалось самой частой ошибкой во всех проверенных источниках, включая пресс-релизы самих компаний.</p>
+    <p style="color:var(--ink-3);font-size:.82rem">Все шесть тематических кластеров прошли адверсариальную проверку по первоисточникам: 30 опорных точек отданы верификаторам с установкой опровергать, семь опровергнуты и переписаны — включая дату выкладки Prebid.js, ступенчатость запуска Netflix и operative-дату CCPA. Первоисточники сохранены локально: <span class="mono">docs/sources/</span> с указателем и sha256 каждого исходного файла.</p>
+  </div>
+</footer>

@@ -1,0 +1,420 @@
+<title>Идентичность после Privacy Sandbox</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --mark:#B4540A; --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1040px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.1rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.38rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:72ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:40px}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:78ch; margin:6px 0 16px; font-size:.92rem}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.85em; background:var(--chip-bg); padding:1px 5px; border-radius:3px}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:74ch}
+  .bars{display:grid; gap:10px}
+  .brow{display:grid; grid-template-columns:minmax(150px,280px) 1fr 104px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:17px}
+  .bar{height:17px; border-radius:2px 4px 4px 2px; background:var(--c)}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .pair{display:grid; gap:3px}
+  .pair .track{height:11px}
+  .pair .bar{height:11px}
+  .pv{font-size:.77rem; font-variant-numeric:tabular-nums; text-align:right; line-height:1.35}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:440px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:82ch}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:80ch}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:800px}
+  th{text-align:left; font-size:.71rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
+  td{padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.85rem}
+  tr:last-child td{border-bottom:none}
+  .nd{color:var(--faint); font-style:italic}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:800px){ .cons{grid-template-columns:1fr} .brow{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px; border-top:3px solid var(--cc,var(--accent))}
+  .box h3{margin:0 0 8px}
+  .box ul,.box ol{margin:0; padding-left:19px}
+  .box li{margin-bottom:7px; font-size:.88rem}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:82ch}
+</style>
+<main>
+  <h1>Идентичность после Privacy Sandbox</h1>
+  <p class="lede">Отрасль семь лет готовилась к смерти третьесторонней куки. Исчезло ровно противоположное: куки живы, а умерла их замена — вместе с надзором, который её сопровождал. Что осталось в браузере, чего стоят альтернативные идентификаторы, и что происходит с идентичностью, когда покупатель не человек.</p>
+  <p class="meta">Ресёрч gid · 26.08.2026 · пять срезов, адверсариальная верификация: 23 правки. Приоритет — спецификации, телеметрия Chrome, тексты решений регуляторов, репозитории</p>
+
+  <div class="eyebrow">01 · Парадокс</div>
+  <h2>Куки не умерли, умерла их замена</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 250" role="img" aria-label="Что произошло 17 октября 2025 года и что это значит">
+      <g font-size="11.5">
+        <rect x="0" y="20" width="300" height="86" rx="6" fill="var(--card)" stroke="var(--s4)" stroke-width="2"/>
+        <text x="20" y="44" fill="var(--s4)" font-size="12.5" font-weight="600">КУКИ ЖИВЫ</text>
+        <text x="20" y="66" fill="var(--ink)">22.04.2025 — депрекейт отменён</text>
+        <text x="20" y="84" fill="var(--muted)">«will not be rolling out a new</text>
+        <text x="20" y="99" fill="var(--muted)">standalone prompt»</text>
+
+        <rect x="320" y="20" width="300" height="86" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="340" y="44" fill="var(--mark)" font-size="12.5" font-weight="600">ЗАМЕНА МЕРТВА</text>
+        <text x="340" y="66" fill="var(--ink)">17.10.2025 — вывод 10 технологий</text>
+        <text x="340" y="84" fill="var(--muted)">причина названа прямо:</text>
+        <text x="340" y="99" fill="var(--muted)">«low levels of adoption»</text>
+
+        <rect x="640" y="20" width="300" height="86" rx="6" fill="var(--card)" stroke="var(--s3)" stroke-width="2"/>
+        <text x="660" y="44" fill="var(--s3)" font-size="12.5" font-weight="600">НАДЗОР СНЯТ</text>
+        <text x="660" y="66" fill="var(--ink)">17.10.2025 — тот же день</text>
+        <text x="660" y="84" fill="var(--muted)">CMA освободила Google от</text>
+        <text x="660" y="99" fill="var(--muted)">обязательств по Privacy Sandbox</text>
+
+        <path d="M150 106 L150 126 M470 106 L470 126 M790 106 L790 126" stroke="var(--line)" stroke-width="2"/>
+        <path d="M150 126 L790 126 M470 126 L470 146" stroke="var(--line)" stroke-width="2"/>
+
+        <rect x="0" y="146" width="940" height="94" rx="6" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="20" y="170" fill="var(--ink)" font-size="13" font-weight="600">Слой идентичности остался прежним и одновременно лишился замены, надзора и браузерного ограничителя вероятностного матчинга.</text>
+        <text x="20" y="194" fill="var(--muted)" font-size="12">IP Protection — единственная из десяти технологий, целившаяся в сетевой слой, — свёрнута, репозиторий архивирован. То есть маскирование IP убито ровно тогда,</text>
+        <text x="20" y="211" fill="var(--muted)" font-size="12">когда рекламный контур начал использовать IP как идентификатор: у Google в GVL v164 (18.06.2026) задекларирована Feature 3 «Identify devices based on</text>
+        <text x="20" y="228" fill="var(--muted)" font-size="12">information transmitted automatically» — то есть идентификация по IP в EEA, UK и Швейцарии на основании согласия.</text>
+      </g>
+    </svg>
+    <figcaption><b>Кто выиграл:</b> Google (обязательства сняты, фингерпринтинг для пользователей его рекламных продуктов разрешён); те, кто ничего не делал — их куки продолжают работать; владельцы логина — retail media, CTV, платформы; и фингерпринтеры. <b>Кто потратил зря:</b> все, кто строил на Protected Audience. Сама запись chromestatus об удалении формулирует это без дипломатии — «virtually no interest», join упал «by almost 100x», а у аукционов «virtually none of them have winners».</figcaption>
+  </figure>
+  <p class="note"><b>Цена вопроса измерена один раз.</b> Единственная рецензируемая рандомизированная рыночная оценка — Gu, Johnson, Kobayashi, PNAS 123(19), онлайн 05.05.2026: эксперимент с января 2024, 2% eligible Chrome users (около 60 млн), выборка Raptive 207,2 млн показов. Удаление третьесторонних кук — <b>−29,1% выручки паблишера</b>; Privacy Sandbox возвращает 4,2% потерянного. Обе цифры имеют ловушки, и обе снимает сама статья: 29,1% — это <i>остаточная</i> потеря уже после работы альтернативных идентификаторов (в ЕС, где их применяют меньше из-за строгого консента, ATET −66,4% против −32,6% в США), а 4,2% — замер при фактически низком адопшне, а не потолок Sandbox. Конфликты интересов раскрыты в статье и обязаны цитироваться вместе с числами. Повторить эксперимент негде: режим, его породивший, ликвидирован.</p>
+
+  <div class="eyebrow">02 · Браузер</div>
+  <h2>Что физически осталось — и главная ловушка счётчиков</h2>
+  <div class="viz">
+    <h3>Зонтичные счётчики против атомарных: расхождение на порядки</h3>
+    <p class="sub">Chrome use counters, доля page loads на 24.08.2026. Верхняя полоса пары — зонтичный счётчик, нижняя — фактический вызов API.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Protected Audience<em>«1.1% of page loads» — цифра, которой Google обосновывал безопасность удаления</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:100%; --c:var(--s2)"></div></div>
+          <div class="track"><div class="bar" style="width:0.43%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="pv">1,07 %<br>0,0046 %</div>
+        <div class="tip">Зонтичный <code>Fledge</code> — это регистрация permissions-policy и фича-детект. Фактические вызовы <code>joinAdInterestGroup</code> и <code>runAdAuction</code> идут в <b>230–380 раз реже</b>. Два датируемых обрыва: 3,38% → 0,053% между июнем и октябрём 2025 (рынок вышел сразу после отмены депрекейта кук) и 0,068% → 0,0047% ровно на границе M150 (30.06.2026).</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Attribution Reporting<em>зонтичный против атомарного</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:100%; --c:var(--s2)"></div></div>
+          <div class="track"><div class="bar" style="width:9.7%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="pv">14,75 %<br>1,43 %</div>
+        <div class="tip">14,75% выглядит как огромная поверхность поломки при удалении — но это счётчик того же зонтичного класса, а атомарный <code>AttributionReportingXhr</code> даёт 1,43%. Тезис «PAAPI можно выключить бесследно, а ARA на 15% загрузок — нельзя» опирается на число, которое сам же аргумент дисквалифицирует.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">CHIPS<em>счётчик Chrome против независимого замера</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:100%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:10.5%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="pv">29,61 %<br>≤3,1 %</div>
+        <div class="tip">29,61% page loads звучит как массовый адопшн. Но HTTP Archive (PAM 2025) даёт не более 0,5% tracking-доменов, полностью перешедших на партиционированные куки, и ≤3,1% использующих оба типа; у doubleclick — около 5% страниц своего присутствия. Разгадка: счётчик зажигается, если на странице есть хоть одна партиционированная кука, а десяток сверх-распространённых эмбедов освещает треть веба.</div>
+      </div>
+    </div>
+    <p class="vizfoot"><b>Правило:</b> широта охвата не равна глубине миграции. Ни один отраслевой обзор эти пары чисел рядом не ставит — и это удобно обоим направлениям аргументации: одна цифра оправдывает удаление, другая рассказывает об успехе.</p>
+  </div>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Календарь остатка</h3>
+      <ul>
+        <li><b>Chrome 152</b> (stable 25.08.2026) удалил из Privacy Sandbox ровно одну позицию — Private Aggregation API. Ни PA, ни ARA, ни Shared Storage там нет</li>
+        <li>Остальное вынесено на <b>M153 (08.09.2026)</b> и <b>M154 (22.09.2026)</b> — Chrome перешёл на двухнедельную каденцию, так что весь остаток уходит за три недели</li>
+        <li><b>Статус всех записей на chromestatus до сих пор <code>Proposed</code>, не <code>Removed</code></b>. Механизм отката встроен в процедуру: при LGTM оговорено право «pause the removal if this amount of page loads does not decrease substantially»</li>
+        <li>Ходовая формула «Chrome 150 / июль 2026» неверна дважды: M150 вышел 30.06.2026 и удалил не код, а UI-поверхности через field trial</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Сохранённое: три технологии, три реальности</h3>
+      <ul>
+        <li><b>CHIPS</b> — широкий счётчик при мелкой фактической миграции (см. выше)</li>
+        <li><b>FedCM</b> — 2,04% page loads, рост вдвое за год, но драйвер механический: Google Identity Services сделал FedCM обязательным после августа 2025, так что заметная доля — это «Sign in with Google», где интегратор даже не знает, что использует FedCM</li>
+        <li><b>Private State Tokens</b> — 0,45%, плоская линия три года. Исторический пик 12,02% в апреле 2022 был экспериментом. Формально сохранена, практически мертва</li>
+        <li>Блокируют 3p-куки по умолчанию: <b>~20% браузеров в мире, ~38% в США</b>. Edge не входит — его Tracking Prevention режет трекеры с непосещённых сайтов, но не все куки</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Смысл всей картины:</b> браузерный identity-слой не исчез — он переехал из рекламного контура в аутентификационный. Fenced Frames удаляются, а Digital Credentials шипятся (формат mdoc ISO/IEC 18013-5 с selective disclosure, presentation support есть и в WebKit). Вопрос браузера сменился с «кто этот аноним, чтобы показать ему баннер» на «это настоящий залогиненный человек или уполномоченный агент, и можно ли ему дать доступ». Единственное, что Chrome добавляет под прямым законодательным принуждением, — Global Privacy Control, и тот пока в статусе <code>Proposed</code> без shipped-милстоуна.</p>
+
+  <div class="eyebrow">03 · Реестр</div>
+  <h2>Заявленный охват против измеримого</h2>
+  <p class="note">Прежде чем таблица — про метрики, иначе цифры несопоставимы. Есть <b>четыре уровня адопшна</b>, и разрыв между ними на порядки: (1) наличие модуля в кодовой базе Prebid — меряется тривиально, не значит ничего; (2) конфигурация у паблишера — краул страницы; (3) <b>absorption</b> — доля случаев, когда ID реально попал в исходящий бид-реквест из числа доступных; (4) <b>transaction</b> — доля бидов, где покупатель реально решил на основании этого ID. Четвёртый уровень <b>не меряется никем</b>: The Trade Desk на прямой вопрос (07.05.2026) ответила, что не может дать паблишерам такую отчётность «из-за огромного числа разных сигналов в каждом бид-реквесте».</p>
+  <div class="viz">
+    <h3>Absorption rate: доля случаев, когда ID доехал до бид-реквеста</h3>
+    <p class="sub">Замер Sincera, 2022 — более свежего публичного не существует.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">RampID / LiveRamp<em>детерминированный, authenticated traffic</em></div>
+        <div class="track"><div class="bar" style="width:70%; --c:var(--s4)"></div></div>
+        <div class="bval">~70 %</div>
+        <div class="tip">Лидер с большим отрывом. Но: LiveRamp перестаёт быть публичной компанией — соглашение от 16.05.2026 с дочкой Publicis, $38,50 за акцию, закрытие до конца 2026. После этого 10-K не будет вовсе, а RampID переезжает внутрь рекламного холдинга — позиционирование ATS как нейтрального ID истекает.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">ID5<em>вероятностный/гибридный</em></div>
+        <div class="track"><div class="bar" style="width:50%; --c:var(--s1)"></div></div>
+        <div class="bval">~50 %</div>
+        <div class="tip">Единственный с раскрытой моделью монетизации: паблишерам бесплатно, платят DSP, SSP и вендоры — flat fee с корзинами. UK-дочка подаёт total exemption full accounts без P&L. Отдельная дыра: модуль умеет эмитить EUID из чужого source — один вендор вставляет в бидстрим идентификатор другого, и для покупателя это неотличимо от вставки самим паблишером.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">CriteoID<em>детерминированный/гибрид</em></div>
+        <div class="track"><div class="bar" style="width:50%; --c:var(--s1)"></div></div>
+        <div class="bval">~50 %</div>
+        <div class="tip">Редкий случай измеренного эффекта: Publift на 374 паблишерских аккаунтах — 81% с положительным результатом, средний прирост выручки <b>+1,5%</b>. Против вендорских «+30–200%». Сравнивать напрямую нельзя — знаменатели разные, но порядок величины показателен.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">UID2 / The Trade Desk<em>детерминированный, hashed email</em></div>
+        <div class="track"><div class="bar" style="width:38%; --c:var(--s2)"></div></div>
+        <div class="bval">38 %</div>
+        <div class="tip">Заявленный адопшн — «critical mass» (Jeff Green, 2024), без единой цифры. Показательный кейс: CTV-паблишер три месяца отдавал <b>битые</b> UID2-токены — TTD не заметила, а после починки выручка не изменилась ни вверх, ни вниз. Один вторичный источник, анонимный паблишер.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Panorama ID / Lotame → Publicis<em>вероятностный</em></div>
+        <div class="track"><div class="bar" style="width:35%; --c:var(--s2)"></div></div>
+        <div class="bval">~35 %</div>
+        <div class="tip">Куплен Publicis 06.03.2025, находится в Epsilon.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Merkury / dentsu<em>граф</em></div>
+        <div class="track"><div class="bar" style="width:25%; --c:var(--mark)"></div></div>
+        <div class="bval">~25 %</div>
+        <div class="tip">—</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Zeotap<em>граф</em></div>
+        <div class="track"><div class="bar" style="width:15%; --c:var(--mark)"></div></div>
+        <div class="bval">~15 %</div>
+        <div class="tip">Data-подразделение продано Roqad в сентябре 2025.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Fabrick / TransUnion<em>граф; EID source до сих пор neustar.biz</em></div>
+        <div class="track"><div class="bar" style="width:10%; --c:var(--mark)"></div></div>
+        <div class="bval">~10 %</div>
+        <div class="tip">—</div>
+      </div>
+    </div>
+    <p class="vizfoot">В Prebid.js master на 26.08.2026 — <b>66 userId-модулей и 511 bid-адаптеров</b>, а в документации лежит 68 страниц сабмодулей, включая давно удалённые britepool, floc, parrable, dmd, quantcast. Кто считает адопшн по докам Prebid, считает мёртвых; удаления модулей фиксируют смерти лучше пресс-релизов.</p>
+  </div>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Идентификатор</th><th>Чей</th><th>Заявленный охват</th><th>Измеримый</th></tr></thead>
+      <tbody>
+        <tr><td><b>Yahoo ConnectID</b></td><td>Yahoo</td><td>232 млн залогиненных в США, ~50 тыс. доменов, «почти 90% расходов Yahoo DSP»</td><td class="nd">независимых нет</td></tr>
+        <tr><td><b>Utiq</b></td><td>Консорциум телекомов (DT, Orange, Telefónica, Vodafone), Брюссель</td><td>70 млн consentpass, 30+ операторов, 300+ паблишеров, 6 рынков (15.11.2025)</td><td class="nd">нет. «Consentpass» — счётчик <b>выданных согласий</b>, не уникальный охват</td></tr>
+        <tr><td><b>Amazon Authenticated Graph</b></td><td>Amazon</td><td>«детерминированно достаёт 90% домохозяйств США» — дословно повторено с ноября 2025 по май 2026</td><td class="nd"><b>нет и не может быть:</b> методология внутренняя, открытого EID нет, стороннего аудита нет</td></tr>
+        <tr><td><b>Epsilon CORE ID</b></td><td>Publicis</td><td>250 млн+ потребителей США, 8 млрд связок; после Lotame ~4 млрд профилей</td><td class="nd">нет</td></tr>
+        <tr><td><b>Acxiom Real ID</b></td><td>Omnicom</td><td>2,6 млрд «verified global identities»</td><td class="nd">нет. В Prebid-модуле <code>atype</code> объявляется <b>самим модулем</b></td></tr>
+        <tr><td><b>Ozone Identify</b></td><td>Ozone Project (UK)</td><td>«+80% выручки, +50% против куки»</td><td class="nd">нет; выручку не раскрывает</td></tr>
+        <tr><td><b>SharedID</b></td><td>Prebid.org, open-source</td><td>—</td><td>Publift: 82% положительных, средний прирост <b>+3,2%</b> — лучший измеренный результат, и он у бесплатного ID</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Конфликт, меняющий чтение всей таблицы:</b> The Trade Desk купила Sincera (8-K от 12.02.2025). Крупнейший публично доступный краулер рынка идентичности принадлежит крупнейшему DSP, который одновременно администрирует UID2. Доступ при этом не закрыт — OpenSincera бесплатен и отдаёт per-publisher <code>id_absorption_rate</code>. Проблема мягче и хуже одновременно: не доступ, а <b>отсутствие независимой валидации методики, покрытия и самого определения absorption</b>.</p>
+
+  <div class="eyebrow">04 · Механика</div>
+  <h2>Три разные потери, которые сваливают в одно слово</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 240" role="img" aria-label="Три вида потерь в матчинге идентичности">
+      <g font-size="11.5">
+        <rect x="0" y="20" width="300" height="104" rx="6" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="18" y="44" fill="var(--s1)" font-size="12.5" font-weight="600">(а) SYNC LOSS</text>
+        <text x="18" y="66" fill="var(--ink)">пара DSP↔SSP не встретилась</text>
+        <text x="18" y="85" fill="var(--muted)">Матч — расходуемый ресурс с квотой:</text>
+        <text x="18" y="101" fill="var(--muted)">не более 40 байт, протухает за 14 дней,</text>
+        <text x="18" y="117" fill="var(--muted)">при ответах &lt;90% Google троттлит объём</text>
+
+        <rect x="320" y="20" width="300" height="104" rx="6" fill="var(--card)" stroke="var(--s2)" stroke-width="2"/>
+        <text x="338" y="44" fill="var(--s2)" font-size="12.5" font-weight="600">(б) ABSORPTION LOSS</text>
+        <text x="338" y="66" fill="var(--ink)">ID есть, но SSP его не положил</text>
+        <text x="338" y="85" fill="var(--muted)">Невидимо метрике: server-to-server пути,</text>
+        <text x="338" y="101" fill="var(--muted)">сессии за логином, curated deals,</text>
+        <text x="338" y="117" fill="var(--muted)">clean-room-аудитории</text>
+
+        <rect x="640" y="20" width="300" height="104" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="658" y="44" fill="var(--mark)" font-size="12.5" font-weight="600">(в) DECLARATION LOSS</text>
+        <text x="658" y="66" fill="var(--ink)">SSP положил не то</text>
+        <text x="658" y="85" fill="var(--muted)">Bridged и spoofed IDs. Доля бид-реквестов</text>
+        <text x="658" y="101" fill="var(--muted)">с заполненным mm не измерена НИКЕМ,</text>
+        <text x="658" y="117" fill="var(--muted)">включая сам IAB Tech Lab, за два года</text>
+
+        <rect x="0" y="140" width="940" height="46" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="18" y="162" fill="var(--ink)" font-size="12" font-weight="600">Ходовые «31–45% match rate» происходят из платного материала AdExchanger Content Studio (22.09.2023), спонсированного Google Privacy Sandbox,</text>
+        <text x="18" y="179" fill="var(--muted)" font-size="12">и являются опросом руководителей, а не измерением. Четвёртый год цитируются как эмпирика. Пар-специфичных публичных замеров не существует ни одного.</text>
+
+        <rect x="0" y="196" width="940" height="40" rx="5" fill="var(--card)" stroke="var(--s4)" stroke-width="2"/>
+        <text x="18" y="221" fill="var(--s4)" font-size="12" font-weight="600">Единственное наказание за подлог идентичности пришло не от стандарта и не от регулятора, а от двух коммерческих контрагентов за одни сутки.</text>
+      </g>
+    </svg>
+    <figcaption>Adalytics сопоставил параметр <code>tdid</code> в win-пикселях The Trade Desk с фактическим значением куки в браузере: 15 из 16 SSP совпали, Colossus систематически расходился — для одного пользователя декларировались три разных ID. TTD приостановила работу 09.05.2024, BidSwitch — 10.05.2024. У IAB Tech Lab при этом на сегодня ровно три программы соответствия (OM SDK, Podcast Measurement, Data Transparency) — <b>программы по ID Provenance или идентичности не существует</b>: спецификация декларирования есть, аудита поверх неё нет.</figcaption>
+  </figure>
+  <div class="cons">
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Субстрат: всё стоит на IP, и он измерен как плохой</h3>
+      <ul>
+        <li><b>CIMM + Truthset</b> (05.11.2025): IP→почтовый адрес верен в среднем в <b>13%</b> случаев, IP→email — в <b>16%</b>. Шесть коммерческих файлов сходятся на одном адресе лишь в 6,4%</li>
+        <li>Оговорка обязательна: из 6,4% <i>не следует</i> «расходятся в 94%» — это доля полного единогласия шести файлов. И это не независимая работа: эталон предоставлен теми ISP и MVPD, чьи интересы конкурируют с IP-графами</li>
+        <li>Сетевая причина измерена независимо: <b>41,1% IPv4-трафика</b> приходит с massively shared адресов, которых 1,6% активных; рост с 36% (январь 2024) до 45% (октябрь 2025). Это трафик одного CDN, взвешенный по потреблению контента, а не по показам — прямой перенос был бы экстраполяцией</li>
+        <li><b>False merge rate</b> — частота, с которой граф склеивает двух разных людей — <b>не измерена публично ни для одного</b> коммерческого графа. Публичного эталона людей не существует, поэтому точность графов не аудируема даже теоретически</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Clean rooms делают ошибку принципиально неизмеримой</h3>
+      <ul>
+        <li>Чистая комната <b>не создаёт идентичность</b>: джойн требует общего ключа, и ключом остаётся hashed email, RampID или платформенный ID</li>
+        <li>Пороги агрегации (Amazon Marketing Cloud — минимум ~100 пользователей на строку, иначе строка <b>молча выпадает</b>; Google ADH — difference checks ~50, noise ~20) гарантируют, что нельзя вынести индивида</li>
+        <li><b>И ровно поэтому нельзя увидеть, скольких людей джойн склеил неверно.</b> Ошибка идентичности не наблюдаема <i>обеими</i> сторонами одновременно — обе видят только агрегат — и получает вид аудированного результата</li>
+        <li>Косвенно о качестве графов: Neumann, Tucker, Whitfield (Marketing Science 2019) — более 90 валидированных аудиторий у 19+ брокеров, пол угадан в среднем в <b>42,3%</b> случаев, то есть хуже монетки, при наценке за таргетированную закупку около 151%</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Единственное направление реального изменения физики</b> после разворота — миграция от клиентского синка к серверной пересборке. И оно делает слой <b>менее</b> наблюдаемым, а не более. Отсюда сквозной парадокс раунда: декларативной прозрачности стало больше (ID Provenance, TCF v2.3 с обязательным DisclosedVendors, GPP, реестр агентов IAB), а наблюдаемости меньше. Больше заявлений, меньше проверяемости — и это движение в одну сторону, не колебание.</p>
+
+  <div class="eyebrow">05 · Агенты</div>
+  <h2>Что происходит с идентичностью, когда действует агент</h2>
+  <p class="note">У агента нет ничего, на чём стоит нынешний слой: ни DOM, ни обёртки Prebid, ни localStorage паблишера, ни логина, ни consent-баннера, к которому можно привязать законное основание. Но самое жёсткое — не отсутствие таргетинга, а <b>отрицательная ценность</b>: верификаторы классифицируют агентский трафик как GIVT. Кейс Salon показывает цену: после IVT-алярма на всплеске агентского трафика средний байер отключил весь свой бюджет. Человек за агентом не просто нетаргетируем — его визит портит метрики качества трафика паблишера.</p>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 300" role="img" aria-label="Четыре слоя, на которые распадается поведение человека за агентом">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">ПОВЕДЕНИЕ РАСПАДАЕТСЯ НА ЧЕТЫРЕ СЛОЯ, И ПРОДАТЬ МОЖНО НЕ ВСЕ</text>
+        <rect x="0" y="26" width="940" height="58" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="16" y="48" fill="var(--ink)" font-weight="600">1 · Транспортный — Web Bot Auth</text>
+        <text x="290" y="48" fill="var(--muted)">идентичность оператора агента, человека нет по формулировке спеки</text>
+        <text x="16" y="70" fill="var(--mark)" font-weight="600">Продать нечего</text>
+        <text x="290" y="70" fill="var(--muted)">§4.6: «does not authenticate human users, does not define authorization or delegation»</text>
+
+        <rect x="0" y="92" width="940" height="58" rx="5" fill="var(--card)" stroke="var(--s4)" stroke-width="2"/>
+        <text x="16" y="114" fill="var(--ink)" font-weight="600">2 · Коммерческий — ACP и UCP</text>
+        <text x="290" y="114" fill="var(--muted)">идентичность человека есть, и она сильная: email, customer_id, лояльность</text>
+        <text x="16" y="136" fill="var(--s4)" font-weight="600">Приземляется у мерчанта</text>
+        <text x="290" y="136" fill="var(--muted)">first-party, вне бид-стрима. Плюс IntentTrace — причина отказа, сформулированная моделью</text>
+
+        <rect x="0" y="158" width="940" height="58" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="180" fill="var(--ink)" font-weight="600">3 · Фрод-слой — 3DS2</text>
+        <text x="290" y="180" fill="var(--muted)">единственная реальная серая зона: BrowserInfo «required for 3DS2 fingerprinting»</text>
+        <text x="16" y="202" fill="var(--mark)" font-weight="600">Регулятор — карточные схемы</text>
+        <text x="290" y="202" fill="var(--muted)">Channel.type — enum ровно из одного значения «browser». Не-браузерного канала не предусмотрено</text>
+
+        <rect x="0" y="224" width="940" height="58" rx="5" fill="var(--card)" stroke="var(--s3)" stroke-width="2"/>
+        <text x="16" y="246" fill="var(--ink)" font-weight="600">4 · Слой ассистента</text>
+        <text x="290" y="246" fill="var(--muted)">матчинг по теме разговора, прошлым чатам, памяти и прошлой реакции на рекламу</text>
+        <text x="16" y="268" fill="var(--s3)" font-weight="600">Классический walled garden</text>
+        <text x="290" y="268" fill="var(--muted)">поведение принадлежит оператору и не продаётся как данные — продаётся только доступ к нему</text>
+      </g>
+    </svg>
+    <figcaption>Главная находка третьего слоя: <b>фингерпринтинг, вычищенный из рекламного контура приватностью, возвращается через платёжный периметр под ярлыком фрод-контроля</b> — туда, где Privacy Sandbox не стоял никогда. Агент, желающий пройти challenge-поток, вынужден либо не слать <code>channel</code> вовсе, либо выдумать браузерные атрибуты. Рекламное использование этих полей в спеке не запрещено и не разрешено.</figcaption>
+  </figure>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s2)">
+      <h3>Что строится — с поправками к расхожим версиям</h3>
+      <ul>
+        <li><b>Web Bot Auth — не стандарт IETF.</b> Рабочая группа существует, но у неё <b>ноль принятых WG-документов</b>, все 11 — individual submissions, три чартерных милстоуна просрочены, datatracker показывает «RFC stream: (None)»</li>
+        <li><b>Но «канал агент→человек закрыт» — неверно.</b> Делегирование вынесено в отдельную спеку, а не запрещено; нормативность рекомендации не привязывать ключ к человеку <b>снята намеренно</b> в ревизии -02; и Cloudflare уже экспериментирует с передачей сведений о конечном пользователе через заголовок <code>Forwarded</code></li>
+        <li><b>Категория Agent у Cloudflare не самодекларируется</b> — это заявка плюс верификация плюс аудит с санкцией, то есть ровно то, чего нет у <code>mm</code>. И та же классификация питает Pay Per Crawl: механизм трёхпозиционный — block / allow / <b>charge</b></li>
+        <li><b>Agent Registry IAB — справочник, а не допуск:</b> 44 записи, регистрация бесплатная, ничего не открывает и не закрывает. API при этом отдаёт 401 — каталог читается человеком, но программно не enumerable</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s4)">
+      <h3>Почему логин ритейлера устойчивее браузерного ID</h3>
+      <ul>
+        <li>Проникновение: Kroger — <b>96% магазинных продаж</b> по карте лояльности, Tesco — Clubcard свыше <b>82% продаж</b> в UK. Это не match rate против чужого графа, а доля транзакций, у которых идентичность есть <i>на входе</i></li>
+        <li>Источник идентичности — не рекламная технология, а <b>скидка</b>. Её нельзя депрекейтнуть решением вендора браузера; чтобы убрать, надо отменить саму программу лояльности</li>
+        <li>Правовая обвязка собрана один раз при регистрации и живёт в договоре, а не в баннере на чужой странице. Весь энфорсмент бьёт по границе «браузер ↔ первый экран» — у ритейлера этой границы в критическом месте просто нет</li>
+        <li><b>Цена:</b> поведение при этом не поступает на открытый рынок. Оно принадлежит либо мерчанту, либо оператору ассистента</li>
+        <li><b>Обязательная оговорка:</b> публичных независимо измеренных цифр loyalty match rate за 2026 не существует ни в одном источнике. Превосходство подтверждается <i>проникновением логина</i>, а не публикуемой точностью матчинга, которой нет</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Регуляторы: мягкое право, ноль обязательного.</b> У EDPB позиции по агентам нет (совместные с Еврокомиссией guidelines ожидаются к концу 2026). AEPD выпустил 81 страницу — информационное. CNIL и CIANum — исследовательская нота, прямо не нормативная. ICO — отчёт, явно оговаривающий, что не является guidance. FTC с сентября 2024 провела не менее 13 дел на ~$51 млн, <b>но все про обманчивый маркетинг ИИ, ни одно про поведение агента</b>. Единственный документ, отвечающий на вопрос «кому можно продать поведение за агентом», — AI AGENT Act сенатора Уорнера от 29.06.2026 — отвечает «никому»: он вводит неотчуждаемые фидуциарные обязанности, прямо запрещающие использовать данные «for advertising, behavioral profiling, or unrelated secondary commercial purposes». Это <b>discussion draft, не внесённый законопроект, без номера</b>.</p>
+
+  <div class="eyebrow">06 · Развилки</div>
+  <h2>Что не разрешено</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Вопрос</th><th>За</th><th>Против</th></tr></thead>
+      <tbody>
+        <tr><td><b>Хешированный ID — персональные данные?</b></td><td>Суд ЕС C-413/23 P (04.09.2025): достаточно сильно псевдонимизированные данные могут не быть персональными для получателя, не способного реидентифицировать</td><td>Conseil d'État (04.03.2026) применил <b>тот же</b> тест и нашёл, что у Criteo достаточно дополнительных данных — 100% штрафа оставлено. Прецедента, разбирающего именно hashed-email graph, не существует, а EDPB тянет в третью сторону</td></tr>
+        <tr><td><b>Два регуляторных вектора</b></td><td>ЕС и UK строят <b>исключения из согласия</b> для рекламы первой стороны</td><td>США строят <b>обязательную машиночитаемую инфраструктуру отказа</b> — GPC в 12 штатах, обязанность браузеров с 2027. А IAB в пятой редакции MSPA уходит от технических сигналов к контрактно-списочным. Проверить, кто выигрывает, нечем: ни числа подписантов, ни доли GPP в бидстриме не публикуются</td></tr>
+        <tr><td><b>Идентичность агента: замок или пропуск</b></td><td>С 15.09.2026 категория Agent блокируется по дефолту на страницах с рекламой; спека рекомендует не привязывать ключ к человеку</td><td>Та же классификация питает Pay Per Crawl; делегирование не запрещено, а отложено; Cloudflare экспериментирует с передачей сведений о пользователе. <b>Развилка решится не спекой, а тем, кто первым заплатит:</b> если агентский визит начнёт покупаться по цене показа, категория Agent быстро перестанет быть блокируемой</td></tr>
+        <tr><td><b>Предложение alt ID обгоняет спрос</b></td><td>66 модулей против absorption 10–70%; Publift даёт +1,5% и +3,2% против вендорских «+30–200%»; TTD не может отчитаться, на какие сигналы покупатели транзактят</td><td>Бескуковый трафик — уже 21,8% Chrome-показов, а разрыв США (−32,6%) и ЕС (−66,4%) прямо измеряет, чего стоит отсутствие alt ID. Страховка не гипотетическая — просто её издержки несёт паблишер, а опционную стоимость забирает покупатель</td></tr>
+        <tr><td><b>Фингерпринтинг: изгнан или вернулся</b></td><td>Норма формально в силе: EDPB Guidelines 2/2023 прямо включают фингерпринтинг и трекинг «только по IP» в периметр; потолок штрафа по PECR поднят до £17,5 млн или 4%</td><td>Практика обратная: Google снял запрет для пользователей своих продуктов, свернул IP Protection, задекларировал Feature 3 в GVL; ACP делает браузерный канал единственно возможным. За полтора года расследования ICO — <b>ни одного акта энфорсмента</b>. Вопрос не в законности, а в том, будет ли издержка когда-нибудь отлична от нуля</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="eyebrow">07 · Слепые зоны</div>
+  <h2>Чего не публикует никто</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Про адопшн и деньги</h3>
+      <ul>
+        <li><b>Доля бид-реквестов с alt ID после января 2025</b> — нет ни у кого. Последняя точка BidSwitch (35–40% браузерного веба), и она про мир до разворота, а in-app и CTV в неё не попадают вовсе</li>
+        <li><b>Transaction-level:</b> на какие сигналы покупатель реально принимает решение. <i>Удобно DSP: платят за медиа, а не за сигнал, и никто не проверит, использовался ли он</i></li>
+        <li><b>Издержки паблишера на идентичность</b> — вес обёртки, потери на consent-трении, отвал на логин-волле. Все публикуемые кейсы содержат только апсайд</li>
+        <li><b>Финансы вендоров:</b> ID5 подаёт отчётность без P&L, Utiq и Ozone выручку не раскрывают, LiveRamp не выделяет ATS в сегментной отчётности — а после сделки с Publicis 10-K не будет вовсе. <i>Нельзя посчитать, окупается ли слой</i></li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Про качество и достоверность</h3>
+      <ul>
+        <li><b>Доля бид-реквестов с заполненным <code>mm</code></b> — не измерена никем за два года. <i>Удобно SSP, практикующим бриджинг: единственный известный детектор у одного middleware, его методика не опубликована</i></li>
+        <li><b>False merge rate</b> — ни для одного графа. <i>Удобно всем графам без исключения</i></li>
+        <li><b>Точность джойна в clean room</b> — структурно неизмерима обеими сторонами. <i>Удобно walled gardens</i></li>
+        <li><b>Распространённость фингерпринтинга</b> — все публичные оценки заведомо нижние границы: краулеры пропускают около 45% фингерпринтящих сайтов, встречаемых реальными пользователями, и пропускают именно там, где идентичность важнее всего — <b>за логином</b></li>
+        <li><b>Доля подписанных агентов</b> в агентском трафике — нет ни в одном месячном отчёте; публично перечислимого реестра ключей не существует</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">08 · Сигналы</div>
+  <h2>Что смотреть дальше</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Когда</th><th>Что</th><th>Что решается</th></tr></thead>
+      <tbody>
+        <tr><td><b>08.09 – 22.09.2026</b></td><td>Окно M153/M154 в Chrome: сменится ли статус записей с <code>Proposed</code> на <code>Removed</code>, не появится ли ещё один молчаливый сдвиг в поле <code>milestone</code></td><td>Ключевая величина — <code>AttributionReportingAPIAll</code> на 14,75% page loads: это огромная поверхность поломки, а механизм отката записан прямо в процедуру апрува. Календарь двухнедельный, весь остаток Sandbox выносится за три недели</td></tr>
+        <tr><td><b>текущее</b></td><td>Архивы Global Vendor List, поле <code>features</code> у вендоров — единственный машиночитаемый и версионируемый след того, что рекламный контур <b>декларирует</b> о методе идентификации</td><td>У Google флип зафиксирован точно: <code>[1,2]</code> в v163 (11.06.2026) → <code>[1,2,3]</code> в v164 (18.06.2026), на следующий день после уведомления рекламодателей. Пойдут ли за ним другие крупные вендоры — массовый флип означал бы легализацию IP-матчинга как отраслевой нормы в GDPR-юрисдикции</td></tr>
+        <tr><td><b>текущее</b></td><td>Prebid master и релизные теги: получит ли <code>agenticAudienceRtdProvider.js</code> поле <code>gvlid</code> и реальную обработку согласия; появятся ли конкурирующие RTD-модули агентской идентичности</td><td>Вернётся ли агентская идентичность на открытый рынок или останется у мерчанта и ассистента. Параллельный маркер — продвинется ли эксперимент с передачей сведений о конечном пользователе через <code>Forwarded</code> из документации в спецификацию: это ровно тот канал, через который «агент несёт человека» может открыться</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    Собрано агентом gid 26.08.2026: пять research-агентов по независимым срезам, по одному адверсариальному верификатору на срез. Верификатор дал 23 правки, и у него была отдельная задача — проверять статус каждой нормы и спецификации (предложение / принято / в силе / отозвано), потому что в этой теме тексты, написанные до разворота Google, до сих пор циркулируют как актуальные.
+    <br><br>
+    Что снято или уточнено: «Web Bot Auth — стандарт IETF» (ноль принятых WG-документов); «канал агент→человек структурно закрыт» (делегирование отложено, а не запрещено); «категория Agent самодекларируется» (заявка плюс верификация плюс аудит); «модуль agenticAudience обходит consent целиком» (перетянуто — storageManager гейтит доступ); дата снятия запрета на фингерпринтинг 16.02.2025 (первоисточник недоступен, использовать нельзя); «Chrome 150 / июль 2026» (неверно и по номеру, и по дате, и по предмету).
+    <br><br>
+    Отдельная терминологическая ловушка, уже испортившая не один анализ: <b>UCP — это два разных протокола.</b> Universal Commerce Protocol (Google, делегирование доступа к аккаунту через OAuth) и User Context Protocol (LiveRamp, переименован в Agentic Audiences, эмбеддинги идентичности в бидстрим). Путаница меняет вывод на противоположный.
+    <br><br>
+    Полный справочник — <code>docs/identity-after-sandbox.md</code> в репозитории проекта.
+  </footer>
+</main>

@@ -1,0 +1,403 @@
+<title>Монетизация агентного интерфейса</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --accent-ink:#0F4756; --mark:#B4540A;
+    --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --accent-ink:#8CC6D4; --mark:#E08A4A;
+      --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --accent-ink:#8CC6D4; --mark:#E08A4A;
+    --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1000px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.15rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.4rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:70ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:40px}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:74ch; margin:6px 0 16px; font-size:.92rem}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:72ch}
+  .bars{display:grid; gap:10px}
+  .brow{display:grid; grid-template-columns:minmax(150px,265px) 1fr 88px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:16px; position:relative}
+  .bar{height:16px; border-radius:2px 4px 4px 2px; background:var(--c); margin-left:var(--x,0)}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:360px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:78ch}
+  .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(196px,1fr)); gap:10px; margin-top:14px}
+  .tile{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:14px 16px}
+  .tile .big{font-family:"Iowan Old Style",Palatino,Georgia,serif; font-size:1.75rem; line-height:1.1;
+             font-variant-numeric:tabular-nums; color:var(--mark)}
+  .tile .k{font-size:.85rem; margin-top:4px}
+  .tile .why{color:var(--faint); font-size:.76rem; margin-top:4px}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:78ch}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:720px}
+  th{text-align:left; font-size:.72rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 14px; border-bottom:1px solid var(--line)}
+  td{padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.89rem}
+  tr:last-child td{border-bottom:none}
+  .st{display:inline-block; border-radius:4px; padding:1px 8px; font-size:.75rem; white-space:nowrap; font-weight:600}
+  .st.live{background:rgba(78,122,28,.14); color:var(--s4)}
+  .st.beta{background:var(--chip-bg); color:var(--muted)}
+  .st.dead{background:rgba(180,84,10,.14); color:var(--mark)}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:78ch}
+
+  .scen{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; margin-top:14px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 17px; border-top:3px solid var(--cc,var(--accent))}
+  .card .nm{font-family:"Iowan Old Style",Palatino,Georgia,serif; font-size:1.06rem; margin-bottom:4px}
+  .card .ds{color:var(--muted); font-size:.87rem}
+  .card .who{color:var(--faint); font-size:.79rem; margin-top:8px; border-top:1px solid var(--line); padding-top:7px}
+  .card .who b{color:var(--ink); font-weight:600}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:760px){ .cons{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px}
+  .box h3{margin:0 0 8px}
+  .box ul{margin:0; padding-left:18px}
+  .box li{margin-bottom:7px; font-size:.89rem}
+</style>
+<main>
+  <h1>Монетизация агентного интерфейса</h1>
+  <p class="lede">Люди всё чаще спрашивают ассистента вместо поисковика. Вопрос на $114 млрд: чем этот интерфейс зарабатывает — и кто платит, когда между человеком и товаром стоит агент. Состояние на август 2026.</p>
+  <p class="meta">Ресёрч gid · 19.08.2026, ревизит 12.09.2026 · каждый факт помечен статусом (запущено / бета / свёрнуто); 6 из 16 проверенных утверждений скорректированы верификатором, на ревизите — 6 из 6</p>
+
+  <div class="eyebrow">00 · Ревизит 12.09.2026</div>
+  <h2>Что изменилось с 28.08.2026</h2>
+  <p class="note">Дельта за две недели, шесть проверенных утверждений — и все шесть верификатор исправил. Главный тезис страницы устоял, но по другой причине, чем казалось из ленты.</p>
+
+  <p><b>Реклама в ассистенте обзавелась выручкой — и это меняет первый тезис наполовину, а не целиком.</b> OpenAI 31.08.2026 заявила $1 млрд annualized run rate у ChatGPT Ads «менее чем за 200 дней» и «десятки тысяч рекламодателей», в тот же день открыла self-serve в Европе. То есть игрок, который рекламу раньше не продавал, дошёл до миллиарда — формула «работает у тех, кто уже продаёт рекламу» этого не предсказывала. Но база пересчёта run rate не раскрыта, а $32 млрд «рекламы вокруг AI» по-прежнему почти целиком поисковые.</p>
+
+  <p><b>Amazon DSP НЕ подаёт рекламу в ChatGPT — и это ровно та ошибка, которую поймала проверка.</b> Из ленты 10.09 читалось, что Amazon первым из retail-media DSP начал показывать рекламу внутри чат-бота. Первоисточники говорят другое: OpenAI дословно оставляет партнёрам «campaign budgeting, bidding and advertising creative, while OpenAI's ads system controls all delivery decisions». Amazon DSP — точка доступа спроса к чужому инвентарю, показ решает OpenAI. Первенства тоже нет: Criteo, платформа commerce/retail media, подключилась 02.03.2026 и к маю заявляла более 1000 живых брендов, StackAdapt — 05.05.2026. <b>Слой, который агентный интерфейс отдаёт наружу, — закупка, а не доставка.</b></p>
+
+  <p><b>У агентского интерфейса впервые появился регуляторный срок.</b> 31.08.2026 Еврокомиссия обозначила ChatGPT как VLOSE по DSA с дедлайном «by January 2027», и условие статьи 39 («that present advertisements on their online interfaces») уже выполнено — реклама в ChatGPT идёт с 18.08.2026 в 31 европейской стране. Это первая проверяемая точка, распространяется ли режим рекламной прозрачности на ассистента. Охват 159,1 млн MAU в ЕС — самодекларированный, сноска списка гласит «As reported by the provider».</p>
+
+  <p><b>Google закрыл посреднический слой доступа к своей рекламе.</b> Обновлённые 31.08.2026 Google Ads Developer Policies запрещают «third-party hosted interface, secondary API, wrapper service, or MCP server, proxy endpoint» — но норма квалифицирована трижды словами <i>solely</i>, <i>third-party hosted</i> и <i>as an intermediate layer</i>, и рядом стоят три карваута: собственное программное использование, open-source инструменты, которые пользователь запускает сам со своими учётными данными, и заявка на ревью. Запрещён размещённый общий посредник на чужом доступе, а не MCP как класс.</p>
+
+  <p><b>Два прогноза, которые будут цитировать весь год, — оба не замеры.</b> IAB 10.09 поднял прогноз роста рынка США до 12,3% с январских 9,5%, назвав <i>две</i> причины, а не одну: циклические события и ослабление опасений по макро; знаменателя у процента в релизе нет. Madison &amp; Wall дают 12% американской выручки под автоматизированными кампаниями — это прогноз на весь 2026 год, а не замер середины года, и в периметр прямо включены Performance Max, Advantage+, TikTok Smart+ и Pinterest Performance+. Там же сами авторы пишут: «Today, no such agentic advertising solutions exist in the market». Число «2% в 2023», на котором держится весь рост, не встречается ни в одной доступной публикации M&amp;W.</p>
+
+  <p><b>Агенты-покупатели появились, реклама внутри них — нет.</b> Meta запустила Muse 08.09, Instacart представил Clementine 09.09. Ни один релиз не описывает рекламы или спонсорских размещений внутри агента; у Meta сказано только, что Muse не отдаёт разговоры в рекламные системы — это про поток наружу, а не про отсутствие рекламы внутри.</p>
+
+  <p class="note">Проверка ревизита: 6 утверждений, 6 исправлений. Пять пришли фоновой дистилляцией без адверсариальной проверки и несли карантинный тег — после проверки они заменены и погашены. Записи о первенстве Amazon, о «слухе без атрибуции» про $100 млрд (он прослеживается до Axios и The Information от 09.04.2026) и о «замере середины года» у Madison &amp; Wall были неверны и больше не действуют.</p>
+
+  <div class="eyebrow">01 · Главный факт</div>
+  <h2>Деньги пока не в новых моделях, а в старой рекламе рядом с AI-ответом</h2>
+  <p class="note">Разрыв между шумом и выручкой — самое важное в этой теме. Формально «реклама вокруг AI» в США в 2026 году — рынок на $32 млрд. Но если посмотреть, где именно эти деньги, почти всё оказывается обычной поисковой рекламой, которая просто стоит рядом с AI-ответом.</p>
+  <div class="viz">
+    <h3>Рекламные расходы США «вокруг AI», 2026</h3>
+    <p class="sub">Прогноз EMARKETER (04.06.2026). Всего $32,03 млрд — но три категории живут в разных мирах.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Реклама РЯДОМ с AI-ответами<em>обычный поиск возле AI Overviews</em></div>
+        <div class="track"><div class="bar" style="width:81%; --c:var(--s1)"></div></div>
+        <div class="bval">&gt;80 %</div>
+        <div class="tip">Старый добрый search: те же Search/Shopping/PMax-кампании, которым просто досталось место возле AI-ответа. Никакой новой модели монетизации здесь нет.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Реклама в AI-поиске<em>внутри conversational-выдачи</em></div>
+        <div class="track"><div class="bar" style="width:16%; --c:var(--s2)"></div></div>
+        <div class="bval">~16 %</div>
+        <div class="tip">Промежуточная категория: форматы внутри AI Mode и подобных поверхностей. Большинство — в тесте или бете, только США.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Standalone-чатботы<em>ChatGPT, Copilot-приложение</em></div>
+        <div class="track"><div class="bar" style="width:3%; --c:var(--s3)"></div></div>
+        <div class="bval">&lt;$1 млрд</div>
+        <div class="tip">Весь хайп вокруг рекламы в ChatGPT — это менее 3% рынка. К 2030 сегмент вырастет до ~$5 млрд, но пропорция НЕ переворачивается.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Проверено: у EMARKETER три категории, а не две (частая ошибка пересказов). Пропорция сохраняется до 2030 года — агентный интерфейс не вытесняет поиск как источник рекламных денег, он к нему пристраивается.</p>
+  </div>
+
+  <div class="eyebrow">02 · Три модели</div>
+  <h2>Кто на чём зарабатывает</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 920 330" role="img" aria-label="Схема: четыре денежных потока вокруг агента — подписка, реклама, комиссия и лицензии">
+      <g font-size="13" text-anchor="middle">
+        <rect x="360" y="120" width="190" height="70" rx="6" fill="var(--card)" stroke="var(--accent)" stroke-width="2"/>
+        <text x="455" y="150" fill="var(--ink)" font-size="15" font-weight="600">АГЕНТ</text>
+        <text x="455" y="171" fill="var(--faint)" font-size="11.5">ChatGPT · Gemini · Rufus</text>
+        <rect x="20" y="20" width="170" height="52" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="105" y="43" fill="var(--ink)">Пользователь</text><text x="105" y="60" fill="var(--faint)" font-size="11">подписка</text>
+        <rect x="20" y="238" width="170" height="52" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="105" y="261" fill="var(--ink)">Рекламодатель</text><text x="105" y="278" fill="var(--faint)" font-size="11">CPC / CPM</text>
+        <rect x="720" y="20" width="180" height="52" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="810" y="43" fill="var(--ink)">Мерчант</text><text x="810" y="60" fill="var(--faint)" font-size="11">комиссия с покупки</text>
+        <rect x="720" y="238" width="180" height="52" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="810" y="261" fill="var(--ink)">Паблишер</text><text x="810" y="278" fill="var(--faint)" font-size="11">лицензии / rev share</text>
+      </g>
+      <g stroke-width="2" fill="none">
+        <path d="M190 46 L300 46 L300 130 L358 130" stroke="var(--s4)"/>
+        <path d="M190 264 L300 264 L300 180 L358 180" stroke="var(--s2)"/>
+        <path d="M718 46 L620 46 L620 130 L552 130" stroke="var(--mark)" stroke-dasharray="5 4"/>
+        <path d="M552 180 L620 180 L620 264 L718 264" stroke="var(--s3)"/>
+      </g>
+      <g font-size="11.5">
+        <text x="196" y="38" fill="var(--s4)">Подписка — работает: Perplexity сделал ставку</text>
+        <text x="196" y="290" fill="var(--s2)">Реклама — работает у тех, кто уже её продаёт</text>
+        <text x="560" y="38" fill="var(--mark)" text-anchor="start">Комиссия 4% — СВЁРНУТА OpenAI 04.03.2026</text>
+        <text x="560" y="290" fill="var(--s3)" text-anchor="start">Лицензии — ~$816 млн/год на всех</text>
+      </g>
+      <text x="455" y="318" fill="var(--faint)" font-size="11.5" text-anchor="middle">Google, Microsoft и Perplexity комиссию с мерчанта не берут вовсе: где есть чем монетизировать внимание, чекаут отдают бесплатно</text>
+    </svg>
+    <figcaption>Четыре потока сходятся на агенте, но живыми оказались только два с половиной. Комиссия с транзакции — единственная по-настоящему «новая» модель — не пережила первого года: OpenAI брал 4% сверх комиссий Shopify и свернул продукт.</figcaption>
+  </figure>
+
+  <div class="eyebrow">03 · Что запущено, а что умерло</div>
+  <h2>Статусы, а не анонсы</h2>
+  <p class="note">Тема переполнена announcement-driven отчётностью, поэтому здесь только то, где статус проверен.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Продукт</th><th>Статус</th><th>Суть</th></tr>
+    <tr><td><b>Google AI Overviews ads</b></td><td><span class="st live">общедоступно</span></td><td>12 стран, английский; text и Shopping из существующих кампаний. Отдельной отчётности по поверхности нет</td></tr>
+    <tr><td><b>Amazon Sponsored Products в Rufus</b></td><td><span class="st live">GA c 25.03.2026</span></td><td>CPC в рамках текущих кампаний, полный отчёт вплоть до ROAS по тексту промпта</td></tr>
+    <tr><td><b>Реклама в ChatGPT</b></td><td><span class="st live">self-serve, США+</span></td><td>Анонс 16.01.2026 → пилот 09.02 → Ads Manager с CPC. Европа — с конца августа, без персонализации</td></tr>
+    <tr><td><b>Google AI Mode ads</b></td><td><span class="st beta">тест / бета</span></td><td>Conversational Discovery, Highlighted Answers, Business Agent — только США, метрик Google не публикует</td></tr>
+    <tr><td><b>UCP (Google + Shopify)</b></td><td><span class="st live">стандарт де-факто</span></td><td>С 24.04.2026 в Tech Council — Amazon, Meta, Microsoft, Salesforce, Stripe</td></tr>
+    <tr><td><b>MCP-серверы рекламных платформ</b></td><td><span class="st beta">read-only / paused</span></td><td>Google Ads — строго чтение; Meta создаёт сущности сразу paused. Агентам дали читать, но не тратить</td></tr>
+    <tr><td><b>OpenAI Instant Checkout</b></td><td><span class="st dead">свёрнуто 04.03.2026</span></td><td>Конверсия втрое хуже клик-аута (замер Walmart); подключилось ~12 мерчантов</td></tr>
+    <tr><td><b>Perplexity sponsored questions</b></td><td><span class="st dead">откат</span></td><td>Стоп новым рекламодателям с 10.2025; в 02.2026 заявили, что возвращать не планируют</td></tr>
+    <tr><td><b>Cloudflare pay-per-crawl</b></td><td><span class="st dead">не вышла из беты</span></td><td>Через год признана негодной («краул — грубая мера ценности»), заменена экспериментом Pay Per Use</td></tr>
+    <tr><td><b>llms.txt / Web Bot Auth</b></td><td><span class="st dead">не взлетело</span></td><td>7,4% Fortune 500; IETF не принял ни одного документа. «Рекламы для агентов» как формата не существует</td></tr>
+  </table></div>
+
+  <div class="eyebrow">04 · Цена входа</div>
+  <h2>Как рынок нашёл цену за три месяца</h2>
+  <p class="note">Реклама в ChatGPT — редкий случай, когда ценообразование нового канала видно целиком: от премиальных ставок для избранных до самообслуживания без порога.</p>
+  <div class="viz">
+    <h3>ChatGPT ads: CPM и порог входа, февраль → май 2026</h3>
+    <p class="sub">Цена держалась ровно столько, сколько канал был дефицитным.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Старт пилота, 09.02.2026<em>фиксированная ставка, коммит $200–250 тыс.</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--s3)"></div></div>
+        <div class="bval">$60</div>
+        <div class="tip">Закрытый пилот для крупных рекламодателей: фиксированный CPM и обязательный минимальный коммит.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Конец апреля 2026<em>реальные ставки агентств</em></div>
+        <div class="track"><div class="bar" style="width:58%; --c:var(--s2)"></div></div>
+        <div class="bval">$25–45</div>
+        <div class="tip">Данные агентств (Jellyfish, Adthena, закупки через Criteo); отдельные упоминания $15. Минимум снижен до $50 тыс.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Ads Manager, лето 2026<em>self-serve, порог снят</em></div>
+        <div class="track"><div class="bar" style="width:12%; --c:var(--s4)"></div></div>
+        <div class="bval">CPC $3–5</div>
+        <div class="tip">Самообслуживание для любого рекламодателя США: CPC-биддинг, Conversions API, дневные бюджеты, гео и CPA-модель. Порога входа нет.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Плотность рекламы при этом росла: 14% ответов ChatGPT на Free/Go в мае → 26% в июне 2026 (Similarweb, US desktop), CTR 0,50%, две трети показов — со второго промпта и позже.</p>
+  </div>
+
+  <div class="eyebrow">05 · Кто платит за контент</div>
+  <h2>Арифметика паблишера не сходится</h2>
+  <div class="tiles">
+    <div class="tile"><div class="big">68 %</div><div class="k">поисков Google без клика</div><div class="why">июнь 2026; было ~60% в 2024 и 45% в 2016</div></div>
+    <div class="tile"><div class="big">1,6–2,5 %</div><div class="k">реферал от AI Mode</div><div class="why">против 17–19% у обычного поиска — на порядок меньше</div></div>
+    <div class="tile"><div class="big">−32…41 %</div><div class="k">рекламный инвентарь паблишеров</div><div class="why">г/г во II кв. 2026, США и UK</div></div>
+    <div class="tile"><div class="big">$816 млн</div><div class="k">весь рынок AI-лицензий в год</div><div class="why">оценка; порядок одной медиакомпании, не индустрии</div></div>
+  </div>
+  <p class="note">Компенсация есть, но она на два порядка меньше потери и достаётся бренд-корпусу с переговорной силой: News Corp — до $250 млн за пять лет, Reddit — ~$70 млн в год от OpenAI, NYT — $20–25 млн от Amazon. Юридический рычаг тоже пока не сработал: NYT v OpenAI за 2,5 года не дошёл до процесса, а единственная крупная выплата ($1,5 млрд по делу Anthropic) досталась авторам книг, а не паблишерам.</p>
+
+  <div class="eyebrow">06 · Что это значит</div>
+  <h2>Агентный интерфейс не создал нового способа зарабатывать</h2>
+  <p class="note">Он перераспределяет старую ренту. Реклама переезжает внутрь ассистента у тех, кто и так её продавал (Google, Amazon); комиссия с транзакции — единственная действительно новая модель — не выжила; подписка работает только там, где от рекламы сознательно отказались. Проигрывают не рекламные платформы, а те, кто жил на трафике: у паблишеров исчезает клик, а компенсация меньше потери в десятки раз.</p>
+  <p class="note">Три вещи, за которыми стоит следить дальше: <b>кто первым сделает рекламу, которую агент показывает агенту</b> (сейчас формата не существует, а измерять агентный трафик MRC не умеет — IAS и DV считают его GIVT); <b>удержит ли Google долю</b>, когда AI Mode с рефералом 1,6% станет дефолтом вместо поиска с 17%; и <b>найдётся ли для контента модель дороже $816 млн в год</b> — иначе исчезнет то, на чём агенты обучаются и что цитируют.</p>
+
+
+  <div class="eyebrow">07 · Что видят люди</div>
+  <h2>Пять сценариев будущего</h2>
+  <p class="note">Собрано 56 позиций named людей из соцсетей, кейноутов, подкастов и колонок (2025–2026). Спорят не о том, «изменит ли ИИ рекламу», а о трёх совсем других вопросах — и вот к чему сводятся ответы.</p>
+  <div class="scen">
+    <div class="card" style="--cc:var(--s1)">
+      <div class="nm">S1 · Перестройка</div>
+      <div class="ds">Новый стек поверх ИИ: агент бренда и агент продавца договариваются напрямую, решения переезжают на sell-side, открытый веб получает шанс против walled gardens.</div>
+      <div class="who"><b>Brian O'Kelley</b> (Scope3), <b>Rajeev Goel</b> (PubMatic), Йори Вурмсер (EMARKETER)</div>
+    </div>
+    <div class="card" style="--cc:var(--s2)">
+      <div class="nm">S2 · Ремонт кухни</div>
+      <div class="ds">Агентика — надстройка над OpenRTB, а не замена. Реальный шаг 2026 — не автономная закупка, а session-based buy orders и консолидация спенда у доверенных игроков.</div>
+      <div class="who"><b>Anthony Katsur</b> (IAB Tech Lab), <b>Chris Kane</b> (Jounce), <b>Jeff Green</b> (The Trade Desk), Eric Picard (Fluency)</div>
+    </div>
+    <div class="card" style="--cc:var(--s3)">
+      <div class="nm">S3 · Реклама переезжает в ответ</div>
+      <div class="ds">Монетизация уходит внутрь ассистента, импрешн уступает исходу, комиссии или цитированию. Дисплей открытого веба сдувается.</div>
+      <div class="who"><b>Vidhya Srinivasan</b> (Google): «лучшая реклама должна быть ответом»; <b>Eric Seufert</b>, Scott Messer (Sponsored Citation), Emily Pfeiffer (Forrester: −30% display)</div>
+    </div>
+    <div class="card" style="--cc:var(--s4)">
+      <div class="nm">S4 · Стены</div>
+      <div class="ds">Автономная коммерция — мираж: ритейл закрывает агентам доступ, данные дороже комиссии, выигрывают Amazon и Shopify со своими агентами внутри своих стен.</div>
+      <div class="who"><b>Eric Seufert</b> («agentic commerce — мираж»), Эндрю Липсман («коллективная галлюцинация»), Criteo, Andy Jassy</div>
+    </div>
+    <div class="card" style="--cc:var(--mark)">
+      <div class="nm">S5 · Тот же водопровод, только темнее</div>
+      <div class="ds">Агентика не чинит цепочку, а надстраивает ещё один непрозрачный слой: скрытые take rate, галлюцинации там, где деньги, автоматизация сломанного вместо перепроектирования.</div>
+      <div class="who"><b>Augustine Fou</b>, <b>Nick Manning</b>, Craig Tuck (Ozone), Randall Rothenberg (95% пилотов без эффекта на P&amp;L)</div>
+    </div>
+  </div>
+
+  <div class="eyebrow">08 · Линии раскола</div>
+  <h2>По каким вопросам люди реально расходятся</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 920 340" role="img" aria-label="Три оси спора об агентской рекламе с расстановкой участников">
+      <g font-size="12">
+        <text x="0" y="16" fill="var(--accent)" font-size="12.5" font-weight="600">ОСЬ A — чинить или строить заново</text>
+        <line x1="150" y1="44" x2="800" y2="44" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="150" cy="44" r="5" fill="var(--s2)"/><circle cx="800" cy="44" r="5" fill="var(--s1)"/>
+        <circle cx="475" cy="44" r="4" fill="var(--faint)"/>
+        <text x="145" y="34" fill="var(--s2)" text-anchor="end" font-weight="600">надстройка</text>
+        <text x="806" y="34" fill="var(--s1)" font-weight="600">новый протокол</text>
+        <text x="145" y="62" fill="var(--muted)" text-anchor="end">Katsur · Kane · Picard</text>
+        <text x="806" y="62" fill="var(--muted)">O'Kelley · Goel</text>
+        <text x="475" y="62" fill="var(--faint)" text-anchor="middle">Casale: «суп из путаницы»</text>
+
+        <text x="0" y="126" fill="var(--accent)" font-size="12.5" font-weight="600">ОСЬ B — кому достанется рента</text>
+        <line x1="150" y1="154" x2="800" y2="154" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="150" cy="154" r="5" fill="var(--mark)"/><circle cx="800" cy="154" r="5" fill="var(--s1)"/>
+        <circle cx="475" cy="154" r="4" fill="var(--faint)"/>
+        <text x="145" y="144" fill="var(--mark)" text-anchor="end" font-weight="600">ещё один слой комиссий</text>
+        <text x="806" y="144" fill="var(--s1)" font-weight="600">срежут посредников</text>
+        <text x="145" y="172" fill="var(--muted)" text-anchor="end">Fou · Manning · Tuck · паблишеры</text>
+        <text x="806" y="172" fill="var(--muted)">O'Kelley · Goel · Bannister</text>
+        <text x="475" y="172" fill="var(--faint)" text-anchor="middle">Paparo · Kane · Green: посредник сместится к крупным</text>
+
+        <text x="0" y="236" fill="var(--accent)" font-size="12.5" font-weight="600">ОСЬ C — кто действует (самая острая)</text>
+        <line x1="150" y1="264" x2="800" y2="264" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="150" cy="264" r="5" fill="var(--s4)"/><circle cx="800" cy="264" r="5" fill="var(--s3)"/>
+        <text x="145" y="254" fill="var(--s4)" text-anchor="end" font-weight="600">агент — инструмент человека</text>
+        <text x="806" y="254" fill="var(--s3)" font-weight="600">агент — самостоятельный покупатель</text>
+        <text x="145" y="282" fill="var(--muted)" text-anchor="end">Seufert · Липсман · Picard · Wieser</text>
+        <text x="806" y="282" fill="var(--muted)">Scheibenreif (Gartner) · Pfeiffer · Morgan Stanley</text>
+      </g>
+      <text x="0" y="322" fill="var(--faint)" font-size="11.5">Производный и самый острый вопрос оси C: возможна ли реклама, адресованная агенту? Seufert — нет структурно, Hassabis — нет нормативно, эксперимент HBR — нет эмпирически; Paparo и Srinivasan — да</text>
+    </svg>
+    <figcaption>Расстановка — прочтение по документированным высказываниям, а не самоописание участников. Обратите внимание: Seufert стоит слева на оси C (реклама агенту невозможна) и одновременно предсказывает ChatGPT $100 млрд рекламной выручки — потому что это реклама человеку в интерфейсе ассистента, а не агенту.</figcaption>
+  </figure>
+
+  <div class="eyebrow">09 · Согласие и молчание</div>
+  <h2>В чём сходятся все и о чём не говорит почти никто</h2>
+  <div class="cons">
+    <div class="box">
+      <h3>Консенсус — этого не оспаривает никто</h3>
+      <ul>
+        <li><b>Нынешний programmatic сломан.</b> Расхождение только в лечении: «аукционный хаос» у Triscari, непрозрачность у Fou и Manning</li>
+        <li><b>Выигрывает крупное и доверенное.</b> Ни один участник дискуссии не предсказывает выигрыш мелкого паблишера — совпадают и промоутеры, и скептики</li>
+        <li><b>Полной автономии не будет</b> — гардрейлы, лимиты трат и утверждение остаются за людьми; это говорит даже сама AAO</li>
+        <li><b>Деньги требуют детерминизма.</b> «CPM-галлюцинация» признана всеми, включая стандартизаторов: в AAMP 2.3 появилось pricing provenance — «агент должен уметь сказать, что не знает цену»</li>
+        <li><b>Выручки пока нет ни у кого:</b> 95% пилотов без эффекта на P&amp;L, Criteo не закладывает агентский доход в гайденс</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Слепые зоны — вопросы, которые не задают</h3>
+      <ul>
+        <li><b>Чей агент и в чьих интересах торгуется.</b> Индустрия спорит, кому достанется take rate, и почти не спрашивает, что получает человек. Вопрос ставят только люди вне рекламного бизнеса — Hassabis, Berners-Lee, Erickson о фидуциарности</li>
+        <li><b>Экономика равновесия,</b> когда оптимизируют обе стороны. Единственная модель — у Triscari (matching по Гейлу–Шепли + clearing). Никто не спрашивает про алгоритмический сговор и антимонопольную рамку</li>
+        <li><b>Ответственность за убыток от действия агента.</b> Вопрос Schreurs — «Это ChatGPT или Claude? Или тот, кто лицензирует user-agent, или биржа?» — задан один раз, ответа нет ни в AdCP, ни в AAMP</li>
+        <li><b>Чем измерять успех агентской закупки,</b> если инструмент измерения тоже агентский</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Симптоматично, где звучит самая жёсткая критика: на собрании Agentic Advertising Organization 06.05.2026 — то есть на площадке главного промоутера — Rothenberg говорил про 95% бесполезных пилотов, а Schreurs задавал вопрос об ответственности. Лагерь скептиков расколот симметрично: Seufert одновременно хоронит рекламу агентам и предсказывает ChatGPT $100 млрд.</p>
+
+
+  <div class="eyebrow">10 · Проверка на конкретике</div>
+  <h2>UCP и Shopify Agents: рабочий стандарт или красивый фреймворк</h2>
+  <p class="note">Все сценарии выше опираются на допущение, что протокольный слой агентной коммерции реально строится. Проверили самый громкий из протоколов — <b>UCP</b> (Google + Shopify + Stripe + Target) и его самую отгруженную реализацию, <b>Shopify Agents</b>. Смотрели не на пресс-релизы, а на коммиты, депрекации, статусы в доках и независимые сканы.</p>
+  <figure class="diagram">
+    <svg viewBox="0 0 920 300" role="img" aria-label="Таймлайн UCP 2026: что отгружено сверху, что блокирует снизу">
+      <g font-size="11.5">
+        <line x1="60" y1="170" x2="880" y2="170" stroke="var(--line)" stroke-width="2"/>
+        <g fill="var(--faint)" font-size="10.5" text-anchor="middle">
+          <text x="111" y="188">янв</text><text x="214" y="188">фев</text><text x="316" y="188">мар</text><text x="419" y="188">апр</text>
+          <text x="521" y="188">май</text><text x="624" y="188">июн</text><text x="726" y="188">июл</text><text x="829" y="188">авг</text>
+        </g>
+        <text x="60" y="24" fill="var(--s4)" font-size="12" font-weight="600">ОТГРУЖЕНО</text>
+        <g stroke="var(--s4)" stroke-width="1.5">
+          <line x1="94" y1="164" x2="94" y2="140"/><line x1="327" y1="164" x2="327" y2="140"/>
+          <line x1="435" y1="164" x2="435" y2="140"/><line x1="639" y1="164" x2="639" y2="140"/>
+        </g>
+        <g fill="var(--s4)"><circle cx="94" cy="170" r="5"/><circle cx="327" cy="170" r="5"/><circle cx="435" cy="170" r="5"/><circle cx="639" cy="170" r="5"/></g>
+        <g text-anchor="middle" fill="var(--ink)" font-weight="600">
+          <text x="94" y="132">11.01</text><text x="327" y="132">19.03</text><text x="435" y="132">21.04</text><text x="639" y="132">17 и 24.06</text>
+        </g>
+        <g text-anchor="middle" fill="var(--muted)" font-size="11">
+          <text x="94" y="116">первый релиз</text><text x="94" y="102">спеки</text>
+          <text x="327" y="116">онбординг через</text><text x="327" y="102">Merchant Center</text>
+          <text x="435" y="116">Microsoft: UCP-фиды</text><text x="435" y="102">GA, Target в Copilot</text>
+          <text x="639" y="116">UCP включён на всех</text><text x="639" y="102">Shopify; ломают свои</text><text x="639" y="88">API ради UCP</text>
+        </g>
+        <text x="60" y="292" fill="var(--mark)" font-size="12" font-weight="600">НЕ ХВАТАЕТ</text>
+        <g stroke="var(--mark)" stroke-width="1.5">
+          <line x1="232" y1="176" x2="232" y2="200"/><line x1="537" y1="176" x2="537" y2="200"/>
+          <line x1="726" y1="176" x2="726" y2="200"/><line x1="839" y1="176" x2="839" y2="200"/>
+        </g>
+        <g fill="var(--mark)"><circle cx="232" cy="170" r="5"/><circle cx="537" cy="170" r="5"/><circle cx="726" cy="170" r="5"/><circle cx="839" cy="170" r="5"/></g>
+        <g text-anchor="middle" fill="var(--ink)" font-weight="600">
+          <text x="232" y="216">21.02</text><text x="537" y="216">21.05</text><text x="726" y="216">10.07</text><text x="839" y="216">19.08</text>
+        </g>
+        <g text-anchor="middle" fill="var(--muted)" font-size="11">
+          <text x="232" y="232">партнёры отдают</text><text x="232" y="246">эндпоинты только</text><text x="232" y="260">агентам Google</text>
+          <text x="537" y="232">скан даёт 26, но метод</text><text x="537" y="246">не видит /.well-known/;</text><text x="537" y="260">счёта адопшна нет ни у кого</text>
+          <text x="726" y="232">последний протокол</text><text x="726" y="246">Tech Council</text>
+          <text x="839" y="232">спека всё ещё 0.x,</text><text x="839" y="246">2 живых мерчанта,</text><text x="839" y="260">0 цифр GMV</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption>Верх — то, что реально поставлено в прод; низ — то, чего за семь месяцев так и не появилось. Обратите внимание на асимметрию: сторона предложения отгружена массово (UCP включён по умолчанию на каждом Shopify-магазине), сторона спроса — waitlist по одобрению Google.</figcaption>
+  </figure>
+  <div class="cons">
+    <div class="box">
+      <h3>Против «это витрина»</h3>
+      <ul>
+        <li><b>Репозиторий живой:</b> 3319★, 53 контрибьютора, 279 смёрдженных PR, 32 коммита за последние 4 недели, пуш в день замера. У конкурирующего ACP за те же 4 недели — <b>один</b> коммит</li>
+        <li><b>Управление публичное:</b> 22 протокола Tech Council с поимённым составом — Google, Shopify, Stripe, Target</li>
+        <li><b>Ломают собственные продакшн-API по расписанию</b> — три депрекации подряд. Ломают только то, чем пользуются</li>
+        <li><b>Кто-то пишет код:</b> 19 820 загрузок npm-SDK в месяц, 7 729 — PyPI</li>
+        <li><b>Платят деньги за компетенцию:</b> Target нанимает Sr Engineer Agentic Commerce ($98–176k) с прямым «instant checkout through UCP integrations»</li>
+        <li><b>Вклад шире ядра:</b> спек-предложения от команд из Пекина и по требованиям Латинской Америки</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Против «это рабочий стандарт»</h3>
+      <ul>
+        <li><b>Двое живых мерчантов за семь месяцев.</b> Шиндлер (Alphabet) на Q2 2026: «Target and Steve Madden now live». Nike, Sephora, Ulta, Walmart, Wayfair — в будущем времени</li>
+        <li><b>Публичного счёта адопшна не существует вообще.</b> Скан Originality.ai «26 реализаций» меряет не то: PublicWWW индексирует исходный код страниц, а профиль <code>/.well-known/ucp</code> — отдельный JSON, которому незачем упоминаться в HTML, поэтому корректное внедрение для него невидимо. Встречные 14 576 «verified stores» у UCP Checker — самопополняемый watch-лист, а видимые в нём домены (cowhideshop.com, himalayanmart.com, press-ink.com) — хвост мелких магазинов, то есть платформенное автовключение, а не решение мерчанта</li>
+        <li><b>«Открытый» стандарт закрыт allow-листом.</b> Из дискуссии в самом репозитории UCP: партнёры «only exposing UCP endpoints to Google's AI Mode and Gemini»</li>
+        <li><b>Ноль транзакционных метрик.</b> Ни GMV, ни числа заказов — ни у Google, ни у Shopify, ни у Etsy, ни у Target. Только «втрое год к году» и «менее 1% трафика»</li>
+        <li><b>Нет 1.0.</b> Три тегированных релиза, последний старше четырёх месяцев при 101 коммите в main — реализаторы строят против движущегося main</li>
+        <li><b>Аналитики его не видят:</b> обзор Forrester по агентной коммерции не упоминает ни UCP, ни ACP вообще</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Вердикт:</b> ранний, но живой инженерный проект. Не витрина и точно не мёртвый документ — но и не стандарт с доказанным внедрением. Узкое место не в готовности мерчантов, а в допуске к чекауту, то есть у Google. UCP выглядит здоровее ACP не потому, что лучше спроектирован, а потому, что у него есть вторая независимая покупательская поверхность (Microsoft Copilot) и многовендорный совет. Планка низкая — UCP её перешагивает.</p>
+  <p class="note">И структурный потолок над всем этим: 89% мерчантов «активно готовятся», но лишь 3% транзакций вовлекают агента; 65% потребителей доверят ИИ сравнить цены и только 14% — оформить заказ. BTIG ждёт распространения автономных платежей «late next year or in 2028». Даже идеальный протокол упирается в это.</p>
+
+  <footer>
+    <p><b>Достоверность.</b> 60 фактов из первоисточников (блоги и справки платформ, отчётность, судебные решения, IAB Tech Lab, Similarweb, Adobe, EMARKETER). Верификатор проверил 16 числовых и статусных утверждений: 10 подтверждены, 6 скорректированы — в том числе приписанная менеджменту Alphabet формулировка о монетизации, состав категорий EMARKETER, даты публикации данных Similarweb и метрика Rufus (250–300 млн — пользователи за год, не MAU).</p>
+    <p>Ресёрч gid, 19.08.2026. Смежная карта индустрии — «Карта юрлиц онлайн-рекламы».</p>
+  </footer>
+</main>

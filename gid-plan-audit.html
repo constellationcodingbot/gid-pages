@@ -1,0 +1,476 @@
+<title>План после замера</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#F1F4F7; --surface:#FFFFFF; --surface-2:#F7F9FB; --surface-3:#EDF1F6;
+  --ink:#141A23; --ink-2:#4E5966; --ink-3:#79838F;
+  --rule:#DCE2E9; --rule-2:#EAEEF3; --accent:#27406B;
+  --s-on:#0F7350; --s-part:#B87214; --s-off:#A32749; --s-dead:#6E4E9C; --s-nil:#6B7480;
+  --s-on-bg:#E4F0EA; --s-part-bg:#F7EEDF; --s-off-bg:#F7E6EB; --s-dead-bg:#EEE9F5; --s-nil-bg:#ECEFF2;
+  --fd:'Alegreya', Georgia, 'Times New Roman', serif;
+  --fb:'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fm:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --maxw:1120px; --readw:70ch;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ground:#0F1319; --surface:#171C24; --surface-2:#1D232C; --surface-3:#232A34;
+  --ink:#E4E9F0; --ink-2:#9BA6B5; --ink-3:#6D7787;
+  --rule:#2A313C; --rule-2:#222831; --accent:#8FAFDD;
+  --s-on:#2E9C72; --s-part:#BF8A22; --s-off:#D95C7C; --s-dead:#9880CC; --s-nil:#8A94A1;
+  --s-on-bg:#12281F; --s-part-bg:#2A2211; --s-off-bg:#2C1720; --s-dead-bg:#211C2E; --s-nil-bg:#1F242C;
+}}
+:root[data-theme="dark"]{
+  --ground:#0F1319; --surface:#171C24; --surface-2:#1D232C; --surface-3:#232A34;
+  --ink:#E4E9F0; --ink-2:#9BA6B5; --ink-3:#6D7787;
+  --rule:#2A313C; --rule-2:#222831; --accent:#8FAFDD;
+  --s-on:#2E9C72; --s-part:#BF8A22; --s-off:#D95C7C; --s-dead:#9880CC; --s-nil:#8A94A1;
+  --s-on-bg:#12281F; --s-part-bg:#2A2211; --s-off-bg:#2C1720; --s-dead-bg:#211C2E; --s-nil-bg:#1F242C;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px 96px}
+.read{max-width:var(--readw)}
+p{margin:0 0 1.05em}
+a{color:var(--accent)}
+strong{font-weight:600}
+code,.mono{font-family:var(--fm);font-size:0.87em}
+h1,h2,h3{font-family:var(--fd);text-wrap:balance;margin:0}
+h1{font-size:clamp(2.5rem,6vw,4rem);font-weight:800;line-height:1.02;letter-spacing:-0.02em}
+h2{font-size:clamp(1.6rem,3vw,2.15rem);font-weight:700;line-height:1.12}
+h3{font-size:1.16rem;font-weight:700;line-height:1.25}
+.eyebrow{font-family:var(--fm);font-size:0.72rem;font-weight:500;letter-spacing:0.13em;text-transform:uppercase;color:var(--ink-3)}
+
+/* шапка */
+header{padding:72px 0 40px;border-bottom:2px solid var(--ink)}
+.dek{font-size:1.16rem;line-height:1.6;color:var(--ink-2);max-width:64ch;margin-top:22px}
+.dek b{color:var(--ink);font-weight:600}
+
+/* полоса замеров */
+.band{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--rule);border-bottom:1px solid var(--rule)}
+.tile{background:var(--surface);padding:22px 20px}
+.tile .n{font-family:var(--fm);font-size:2.05rem;font-weight:600;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.tile .n.bad{color:var(--s-off)}
+.tile .l{font-size:0.83rem;color:var(--ink-2);margin-top:9px;line-height:1.42}
+
+section{padding:60px 0 0}
+.lede{font-size:1.05rem;color:var(--ink-2)}
+h2+.lede{margin-top:14px}
+
+/* фигуры */
+figure{margin:34px 0 0;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:22px 22px 16px;overflow-x:auto}
+figcaption{margin-top:14px;font-size:0.87rem;color:var(--ink-2);line-height:1.5;max-width:78ch}
+figcaption b{color:var(--ink)}
+.legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:14px;font-size:0.82rem;color:var(--ink-2);font-family:var(--fm)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:12px;height:12px;border-radius:2.5px;display:inline-block}
+
+details{margin-top:14px;font-size:0.85rem}
+summary{cursor:pointer;color:var(--ink-2);font-family:var(--fm);font-size:0.78rem;letter-spacing:0.04em}
+summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+
+/* таблицы */
+.tw{overflow-x:auto;margin-top:30px;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:0.9rem}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+thead th{font-family:var(--fm);font-size:0.7rem;letter-spacing:0.09em;text-transform:uppercase;color:var(--ink-3);font-weight:500;background:var(--surface-2);border-bottom:1px solid var(--rule);position:sticky;top:0}
+tbody tr:last-child td{border-bottom:0}
+td.num{font-family:var(--fm);font-variant-numeric:tabular-nums;color:var(--ink-2);white-space:nowrap}
+td.what{min-width:210px}
+td.what b{display:block;font-weight:600}
+td.what span{color:var(--ink-2);font-size:0.88em}
+td.meas{color:var(--ink-2);min-width:300px}
+
+/* фишки состояния */
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:0.7rem;font-weight:500;letter-spacing:0.04em;padding:3px 9px;border-radius:3px;white-space:nowrap;text-transform:uppercase}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.c-on{color:var(--s-on);background:var(--s-on-bg)}
+.c-part{color:var(--s-part);background:var(--s-part-bg)}
+.c-off{color:var(--s-off);background:var(--s-off-bg)}
+.c-dead{color:var(--s-dead);background:var(--s-dead-bg)}
+.c-nil{color:var(--s-nil);background:var(--s-nil-bg)}
+
+/* ступени работ */
+.tiers{display:flex;flex-direction:column;gap:18px;margin-top:32px}
+.tier{background:var(--surface);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.tier-h{display:flex;align-items:baseline;gap:14px;padding:16px 22px;background:var(--surface-2);border-bottom:1px solid var(--rule);flex-wrap:wrap}
+.tier-n{font-family:var(--fm);font-size:0.75rem;font-weight:600;letter-spacing:0.1em;color:var(--surface);background:var(--ink);padding:3px 9px;border-radius:3px}
+.tier.now .tier-n{background:var(--s-off);color:var(--ground)}
+.tier-t{font-family:var(--fd);font-size:1.24rem;font-weight:700}
+.tier-w{margin-left:auto;font-family:var(--fm);font-size:0.76rem;color:var(--ink-3);letter-spacing:0.03em}
+.tier-b{padding:6px 22px 20px}
+.job{padding:16px 0;border-bottom:1px solid var(--rule-2)}
+.job:last-child{border-bottom:0}
+.job h3{margin-bottom:6px}
+.job p{margin:0;color:var(--ink-2);font-size:0.94rem}
+.job p+p{margin-top:7px}
+.why{display:inline-block;margin-top:9px;font-family:var(--fm);font-size:0.75rem;color:var(--ink-3);border-left:2px solid var(--rule);padding-left:10px;line-height:1.5}
+.why b{color:var(--ink-2);font-weight:500}
+
+ul{margin:0 0 1em;padding-left:1.15em}
+li{margin-bottom:0.5em;color:var(--ink-2)}
+li b{color:var(--ink)}
+
+footer{margin-top:76px;padding-top:26px;border-top:2px solid var(--ink);font-size:0.87rem;color:var(--ink-2)}
+footer h3{margin-bottom:12px}
+@media (max-width:640px){
+  header{padding:48px 0 30px}
+  .tier-w{margin-left:0;width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Аудит репозитория · 10.09.2026 · 13 агентов · 82 проверки · 44 поправки</div>
+  <h1>План после замера</h1>
+  <p class="dek">План развития gid лежит в <span class="mono">oss-landscape-2.md</span> §6: шесть пунктов на неделю, восемь на месяц. Документы проекта считали позицию <b>6 из 6</b> и <b>1 из 8</b>. Шесть агентов померили каждый пункт по файлам и базе, шесть других пытались их опровергнуть. Позиция по плану оказалась близка к записанной — <b>но план мерит не то, что сломано</b>. Три вещи, которых в нём нет вовсе, стоят дороже любого его пункта.</p>
+</header>
+</div>
+
+<div class="band">
+  <div class="tile"><div class="n bad">0</div><div class="l">фактов дала автоматическая дистилляция за 25 дней. Тег <span class="mono">distill-unverified</span> — 0 записей из 2809</div></div>
+  <div class="tile"><div class="n bad">0</div><div class="l">вызовов <span class="mono">recall</span> в раунде 10.09, который записал 229 фактов. Шаг 1 основного цикла</div></div>
+  <div class="tile"><div class="n bad">68%</div><div class="l">живых записей (1681 из 2457) не извлекались ни разу. <span class="mono">times_useful</span> = 0 у всех 2809</div></div>
+  <div class="tile"><div class="n">53%</div><div class="l">проверок аудита закончились поправкой (44 из 82). Опровержений — ни одного</div></div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <div class="eyebrow">Что план не видит</div>
+  <h2>Накопительная петля разорвана в двух местах</h2>
+  <p class="lede read">Проект строился как машина накопления: гейты приносят материал, дистилляция кладёт его в память, следующий раунд начинает с памяти и достраивает известное. Из трёх звеньев работает одно.</p>
+
+  <figure>
+    <svg viewBox="0 0 920 330" role="img" aria-label="Схема накопительной петли gid: сбор фидов работает, дистилляция в память не даёт фактов, обратный путь из памяти в раунд через recall не вызывается" style="width:100%;height:auto">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+    </marker>
+    <marker id="ahx" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--s-off)"/>
+    </marker>
+    <marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="var(--s-on)"/>
+    </marker>
+  </defs>
+  <g font-family="var(--fb)" color="currentColor">
+
+    <rect x="24" y="44" width="138" height="56" rx="5" fill="var(--surface-2)" stroke="var(--rule)"/>
+    <text x="93" y="68" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">Источники</text>
+    <text x="93" y="86" text-anchor="middle" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">7 фидов</text>
+
+    <rect x="206" y="44" width="138" height="56" rx="5" fill="var(--surface-2)" stroke="var(--rule)"/>
+    <text x="275" y="68" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">inbox.jsonl</text>
+    <text x="275" y="86" text-anchor="middle" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">146 → 0</text>
+
+    <rect x="388" y="44" width="150" height="56" rx="5" fill="var(--surface-2)" stroke="var(--rule)"/>
+    <text x="463" y="68" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">distill.sh</text>
+    <text x="463" y="86" text-anchor="middle" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">11 запусков</text>
+
+    <rect x="620" y="40" width="164" height="64" rx="5" fill="var(--surface-3)" stroke="var(--ink-3)" stroke-width="1.5"/>
+    <text x="702" y="66" text-anchor="middle" font-size="13.5" font-weight="700" fill="var(--ink)">Память Vestige</text>
+    <text x="702" y="85" text-anchor="middle" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">2 457 живых</text>
+
+    <rect x="206" y="210" width="332" height="58" rx="5" fill="var(--surface-2)" stroke="var(--rule)"/>
+    <text x="372" y="235" text-anchor="middle" font-size="13" font-weight="600" fill="var(--ink)">Раунд в сессии</text>
+    <text x="372" y="253" text-anchor="middle" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">research-агенты + верификатор</text>
+
+    <line x1="162" y1="72" x2="200" y2="72" stroke="currentColor" stroke-width="1.6" marker-end="url(#ah)"/>
+    <text x="181" y="62" text-anchor="middle" font-size="10" fill="var(--ink-3)" font-family="var(--fm)">08:00</text>
+
+    <line x1="344" y1="72" x2="382" y2="72" stroke="currentColor" stroke-width="1.6" marker-end="url(#ah)"/>
+    <text x="363" y="62" text-anchor="middle" font-size="10" fill="var(--ink-3)" font-family="var(--fm)">08:40</text>
+
+    <line x1="538" y1="72" x2="614" y2="72" stroke="var(--s-off)" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#ahx)"/>
+    <circle cx="576" cy="72" r="10" fill="var(--surface)"/>
+    <line x1="570" y1="66" x2="582" y2="78" stroke="var(--s-off)" stroke-width="2.2"/>
+    <line x1="582" y1="66" x2="570" y2="78" stroke="var(--s-off)" stroke-width="2.2"/>
+    <text x="576" y="26" text-anchor="middle" font-size="11" font-weight="600" fill="var(--s-off)" font-family="var(--fm)">0 фактов за 25 дней</text>
+
+    <polyline points="538,239 700,239 700,110" fill="none" stroke="var(--s-on)" stroke-width="1.8" marker-end="url(#ahg)"/>
+    <text x="712" y="180" font-size="11" fill="var(--s-on)" font-family="var(--fm)">smart_ingest</text>
+    <text x="712" y="196" font-size="11" fill="var(--s-on)" font-family="var(--fm)">229 фактов 10.09</text>
+
+    <polyline points="648,110 648,300 372,300 372,274" fill="none" stroke="var(--s-off)" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#ahx)" color="var(--s-off)"/>
+    <circle cx="510" cy="300" r="10" fill="var(--surface)"/>
+    <line x1="504" y1="294" x2="516" y2="306" stroke="var(--s-off)" stroke-width="2.2"/>
+    <line x1="516" y1="294" x2="504" y2="306" stroke="var(--s-off)" stroke-width="2.2"/>
+    <text x="510" y="322" text-anchor="middle" font-size="11" font-weight="600" fill="var(--s-off)" font-family="var(--fm)">recall · шаг 1 · 0 вызовов</text>
+  </g>
+</svg>
+
+    <figcaption><b>Сбор работает, оба остальных звена — нет.</b> Сборщик отрабатывает по расписанию и наполняет inbox. Дистилляция запускалась 11 раз и не дала <b>ни одного факта за всё время существования проекта</b>: строки успеха в логе нет ни разу, карантинный тег, который она обязана вешать на каждую свою запись, отсутствует у всех 2809 записей базы. Обратный путь — «начни раунд с памяти» — тоже мёртв: раунд 10.09 сделал 24 вызова ингеста и ни одного вызова <span class="mono">recall</span>. Работает только ручная запись, то есть проект пишет в память и не читает её.</figcaption>
+  </figure>
+
+  <figure>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--s-off)"></i> recall — чтение памяти</span>
+      <span><i class="sw" style="background:var(--s-part)"></i> smart_ingest — запись в память</span>
+    </div>
+    <svg viewBox="0 0 900 330" role="img" aria-label="Столбиковая диаграмма: вызовы recall падают со 137 до нуля, а вызовы ингеста остаются высокими" style="width:100%;height:auto">
+<line x1="52" y1="252.0" x2="886" y2="252.0" stroke="var(--rule)" stroke-width="1"/>
+<text x="42" y="256.0" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">0</text>
+<line x1="52" y1="195.5" x2="886" y2="195.5" stroke="var(--rule)" stroke-width="1"/>
+<text x="42" y="199.5" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">35</text>
+<line x1="52" y1="139.0" x2="886" y2="139.0" stroke="var(--rule)" stroke-width="1"/>
+<text x="42" y="143.0" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">70</text>
+<line x1="52" y1="82.5" x2="886" y2="82.5" stroke="var(--rule)" stroke-width="1"/>
+<text x="42" y="86.5" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">105</text>
+<line x1="52" y1="26.0" x2="886" y2="26.0" stroke="var(--rule)" stroke-width="1"/>
+<text x="42" y="30.0" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">140</text>
+<rect x="59.3" y="240.7" width="21" height="11.3" rx="3" fill="var(--s-off)"><title>17.08: recall 7</title></rect>
+<rect x="83.3" y="222.9" width="21" height="29.1" rx="3" fill="var(--s-part)"><title>17.08: ингест 18</title></rect>
+<text x="81.8" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">17.08</text>
+<rect x="118.9" y="242.3" width="21" height="9.7" rx="3" fill="var(--s-off)"><title>18.08: recall 6</title></rect>
+<rect x="142.9" y="231.0" width="21" height="21.0" rx="3" fill="var(--s-part)"><title>18.08: ингест 13</title></rect>
+<text x="141.4" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">18.08</text>
+<rect x="178.4" y="193.9" width="21" height="58.1" rx="3" fill="var(--s-off)"><title>19.08: recall 36</title></rect>
+<rect x="202.4" y="219.7" width="21" height="32.3" rx="3" fill="var(--s-part)"><title>19.08: ингест 20</title></rect>
+<text x="200.9" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">19.08</text>
+<rect x="238.0" y="250.4" width="21" height="1.6" rx="3" fill="var(--s-off)"><title>20.08: recall 1</title></rect>
+<rect x="262.0" y="248.8" width="21" height="3.2" rx="3" fill="var(--s-part)"><title>20.08: ингест 2</title></rect>
+<text x="260.5" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">20.08</text>
+<rect x="297.6" y="248.8" width="21" height="3.2" rx="3" fill="var(--s-off)"><title>26.08: recall 2</title></rect>
+<rect x="321.6" y="240.7" width="21" height="11.3" rx="3" fill="var(--s-part)"><title>26.08: ингест 7</title></rect>
+<text x="320.1" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">26.08</text>
+<rect x="357.1" y="248.8" width="21" height="3.2" rx="3" fill="var(--s-off)"><title>27.08: recall 2</title></rect>
+<rect x="381.1" y="242.3" width="21" height="9.7" rx="3" fill="var(--s-part)"><title>27.08: ингест 6</title></rect>
+<text x="379.6" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">27.08</text>
+<rect x="416.7" y="237.5" width="21" height="14.5" rx="3" fill="var(--s-off)"><title>28.08: recall 9</title></rect>
+<rect x="440.7" y="205.2" width="21" height="46.8" rx="3" fill="var(--s-part)"><title>28.08: ингест 29</title></rect>
+<text x="439.2" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">28.08</text>
+<rect x="476.3" y="30.8" width="21" height="221.2" rx="3" fill="var(--s-off)"><title>29.08: recall 137</title></rect>
+<rect x="500.3" y="221.3" width="21" height="30.7" rx="3" fill="var(--s-part)"><title>29.08: ингест 19</title></rect>
+<text x="498.8" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">29.08</text>
+<rect x="535.9" y="226.2" width="21" height="25.8" rx="3" fill="var(--s-off)"><title>30.08: recall 16</title></rect>
+<rect x="559.9" y="214.9" width="21" height="37.1" rx="3" fill="var(--s-part)"><title>30.08: ингест 23</title></rect>
+<text x="558.4" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">30.08</text>
+<rect x="595.4" y="239.1" width="21" height="12.9" rx="3" fill="var(--s-off)"><title>31.08: recall 8</title></rect>
+<text x="617.9" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">31.08</text>
+<rect x="655.0" y="181.0" width="21" height="71.0" rx="3" fill="var(--s-off)"><title>01.09: recall 44</title></rect>
+<rect x="679.0" y="161.6" width="21" height="90.4" rx="3" fill="var(--s-part)"><title>01.09: ингест 56</title></rect>
+<text x="677.5" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">01.09</text>
+<rect x="714.6" y="235.9" width="21" height="16.1" rx="3" fill="var(--s-off)"><title>02.09: recall 10</title></rect>
+<rect x="738.6" y="156.8" width="21" height="95.2" rx="3" fill="var(--s-part)"><title>02.09: ингест 59</title></rect>
+<text x="737.1" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">02.09</text>
+<rect x="774.1" y="250.4" width="21" height="1.6" rx="3" fill="var(--s-off)"><title>03.09: recall 1</title></rect>
+<rect x="798.1" y="242.3" width="21" height="9.7" rx="3" fill="var(--s-part)"><title>03.09: ингест 6</title></rect>
+<text x="796.6" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">03.09</text>
+<rect x="833.7" y="249" width="21" height="3" rx="1.5" fill="var(--s-off)" opacity="0.45"><title>10.09: recall 0</title></rect>
+<rect x="857.7" y="213.3" width="21" height="38.7" rx="3" fill="var(--s-part)"><title>10.09: ингест 24</title></rect>
+<text x="856.2" y="270" text-anchor="middle" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">10.09</text>
+<line x1="52" y1="252" x2="886" y2="252" stroke="var(--ink-3)" stroke-width="1.5"/>
+<text x="486.8" y="22.8" text-anchor="middle" font-size="12" font-weight="600" fill="var(--s-off)" font-family="var(--fm)">137</text>
+<text x="844.2" y="240.0" text-anchor="middle" font-size="12" font-weight="600" fill="var(--s-off)" font-family="var(--fm)">0</text>
+<text x="868.2" y="205.3" text-anchor="middle" font-size="12" font-weight="600" fill="var(--s-part)" font-family="var(--fm)">24</text>
+<text x="42" y="18" text-anchor="end" font-size="10" fill="var(--ink-3)" font-family="var(--fm)">вызовов</text>
+</svg>
+    <figcaption><b>Чтение памяти угасает, запись — нет.</b> По сессионным дням (календарные дни без работы пропущены). Пик 137 вызовов 29.08 — разбор бэклога фидов, когда каждый факт сверялся с базой. Дальше 44 → 10 → 1 → 0, при том что запись держится на 24–59 вызовах. Это и есть механическая причина того, что база растёт параллельными слоями: раунд, который не спрашивает память до похода в веб, физически не может привязать находку к известному факту.</figcaption>
+    <details>
+      <summary>Показать числа</summary>
+      <div class="tw" style="margin-top:10px"><table>
+        <thead><tr><th>День</th><th>recall</th><th>ингест</th><th>День</th><th>recall</th><th>ингест</th></tr></thead>
+        <tbody>
+          <tr><td class="num">17.08</td><td class="num">7</td><td class="num">18</td><td class="num">29.08</td><td class="num">137</td><td class="num">19</td></tr>
+          <tr><td class="num">18.08</td><td class="num">6</td><td class="num">13</td><td class="num">30.08</td><td class="num">16</td><td class="num">23</td></tr>
+          <tr><td class="num">19.08</td><td class="num">36</td><td class="num">20</td><td class="num">31.08</td><td class="num">8</td><td class="num">0</td></tr>
+          <tr><td class="num">20.08</td><td class="num">1</td><td class="num">2</td><td class="num">01.09</td><td class="num">44</td><td class="num">56</td></tr>
+          <tr><td class="num">26.08</td><td class="num">2</td><td class="num">7</td><td class="num">02.09</td><td class="num">10</td><td class="num">59</td></tr>
+          <tr><td class="num">27.08</td><td class="num">2</td><td class="num">6</td><td class="num">03.09</td><td class="num">1</td><td class="num">6</td></tr>
+          <tr><td class="num">28.08</td><td class="num">9</td><td class="num">29</td><td class="num">10.09</td><td class="num">0</td><td class="num">24</td></tr>
+        </tbody>
+      </table></div>
+    </details>
+  </figure>
+</section>
+
+<section>
+  <div class="eyebrow">Что план не видит</div>
+  <h2>Половина приборов показывает не то, что написано на шкале</h2>
+  <p class="lede read">Проект гордится тем, что мерит себя. Аудит проверил сами приборы.</p>
+  <div class="read" style="margin-top:22px">
+  <ul>
+    <li><b>Целевая метрика не может быть получена заявленным способом.</b> CLAUDE.md обещает, что <span class="mono">recall</span> с <span class="mono">tag_prefix="chan:primary"</span> «печатает долю фактов с первоисточником». По схеме самого инструмента это пост-фильтр внутри семантически ранжированного окна с лимитом 10 и порогом сходства 0,5 — доля базы так не считается и никогда не считалась. Все опубликованные доли (69,3% / 78,1% / 86,4% / 89,4%) получены SQL-ом. Хуже: ложное утверждение переехало в код — им обоснован линтер в собственном докстринге.</li>
+    <li><b>Сигнала полезности нет вовсе.</b> <span class="mono">times_useful</span> = 0 и <span class="mono">utility_score</span> = 0 у всех 2809 записей. Шаг 5 основного цикла («подкрепляй полезное») исполнялся 26 раз на 2457 живых записей и не оставляет следа ни в одном поле, которое называется «полезность». Отличить нужную запись от балласта нечем.</li>
+    <li><b>Утверждение о <span class="mono">promote</span> в CLAUDE.md неверно в деталях.</b> Замер: <span class="mono">promote</span> поднимает <span class="mono">stability</span> (2,75 → 4,14), а <span class="mono">retention_strength</span> не поднимает никто и никогда — записей со значением выше единицы в базе нет ни одной.</li>
+    <li><b>Периметр субагентов держится на тексте промпта, а не на конфиге.</b> У обоих профилей есть <span class="mono">Bash</span>, страж ловит только <span class="mono">Write|Edit</span> и только в корне, сравнивает путь строкой — <span class="mono">docs/../dump.html</span> проходит, — в воркти не работает вовсе, а <span class="mono">.mcp.json</span> с четырьмя замками консолидации сам стоит в его белом списке. Пункт 8 CLAUDE.md («невыполнимыми технически») замером не подтверждается.</li>
+    <li><b>Вторая система памяти, о которой не знает ни один документ проекта.</b> <span class="mono">~/.claude/projects/…/memory/</span> подгружается в каждую сессию наравне с CLAUDE.md, дублирует факты, уже лежащие в Vestige, не подчиняется ни одной конвенции провенанса и не попадает ни в одну метрику.</li>
+  </ul>
+  </div>
+</section>
+<section>
+  <div class="eyebrow">Позиция</div>
+  <h2>Четырнадцать пунктов плана по замеру</h2>
+  <p class="lede read">Статус здесь — не галочка из документа, а результат открытия файла и запроса к базе. Расхождения с документами вынесены в последний раздел.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>№</th><th>Пункт</th><th>Замер</th><th>Состояние</th></tr></thead>
+      <tbody>
+        <tr><td class="num">1</td><td class="what"><b>Замки консолидации</b><span>неделя</span></td><td class="meas">Все четыре переменные несёт живой процесс сервера, продублированы во всех трёх копиях <span class="mono">.mcp.json</span>. Удаления держит только <span class="mono">AUTO_CONSOLIDATE_MERGE=0</span>; замок по интервалу декоративен — прогоны шли через 8 и 3 дня при выставленных 8760 часах.</td><td><span class="chip c-on">сделано</span></td></tr>
+        <tr><td class="num">2</td><td class="what"><b>Профили субагентов</b><span>неделя</span></td><td class="meas">Две позиции из пяти: аллоулист без MCP-инструментов и рабочий страж. Нет <span class="mono">isolation: worktree</span>, нет <span class="mono">maxTurns</span> (обе строки текущий CLI понимает), нет <span class="mono">--append-subagent-system-prompt</span> в headless. Периметр дырявый — см. выше.</td><td><span class="chip c-part">частично</span></td></tr>
+        <tr><td class="num">3</td><td class="what"><b>Провенанс + линтер на ингесте</b><span>неделя</span></td><td class="meas">Схема перевыполнена: из 2457 живых записей ни одной без осей <span class="mono">chan:</span>, <span class="mono">num:</span>, <span class="mono">cred:</span>, ни одной с пустым <span class="mono">source</span>. Вторая половина пункта — линтер <b>на ингесте</b> — не сделана: линтер работает постфактум и не вызывается ничем, в CLAUDE.md не упомянут ни разу.</td><td><span class="chip c-part">частично</span></td></tr>
+        <tr><td class="num">4</td><td class="what"><b>Правило лестницы счёта</b><span>неделя</span></td><td class="meas">Правило и защищённая запись метода есть. Соблюдение — нет: из 203 живых записей с посчитанным числом у 89 нет тега метода, и приток идёт (11 таких записей создано 10.09). Из них 54 — настоящий долг, 32 — расхождение тега со слотом, 3 — соблюдение конвенции.</td><td><span class="chip c-part">частично</span></td></tr>
+        <tr><td class="num">5</td><td class="what"><b>Реестр резолверов</b><span>неделя</span></td><td class="meas">Пять резолверов и три класса без резолвера; все пять эндпоинтов перепроверены 10.09 и живы, включая честный 404 CELLAR на выдуманный CELEX. Но реестр — список для чтения моделью: ни один исполняемый файл его не открывает.</td><td><span class="chip c-on">сделано</span></td></tr>
+        <tr><td class="num">6</td><td class="what"><b>Ретроразметка [MERGED]</b><span>неделя</span></td><td class="meas">Выполнено буквально: у всех 58 погашенных записей с маркером стоят все три оси. Живых записей с маркером восемь, и все восемь его цитируют — это мета-записи об инциденте.</td><td><span class="chip c-on">сделано</span></td></tr>
+
+        <tr><td class="num">7</td><td class="what"><b>gate-archive + archive.py</b><span>месяц</span></td><td class="meas">Нет ни скилла, ни скрипта — и не было ни в одном коммите ни одной ветки. Из шести названных пакетов не установлен ни один, включая <span class="mono">requests</span>. Ручная работа, которую он закрыл бы, видна прямо: 152 живые записи с <span class="mono">chan:archive</span>, сырая выдача CDX-API, снятая руками, снятые заголовки филинга.</td><td><span class="chip c-off">не сделано</span></td></tr>
+        <tr><td class="num">8</td><td class="what"><b>Хранение исходного текста</b><span>месяц</span></td><td class="meas">Ручной архив цел и честен: 108 документов, манифест сходится побайтно, SHA-256 совпал у всех 92 записей режима <span class="mono">orig</span>. Но покрытие 8,1% первоисточников, у 75% архива вместо URL стоит заглушка, и практика оборвалась: 283 записи со слотом <span class="mono">archive=</span> из 812 на 01.09 → 5 из 341 → 0 из 19 → 1 из 229.</td><td><span class="chip c-part">частично</span></td></tr>
+        <tr><td class="num">9</td><td class="what"><b>Патч SourceEnvelope</b><span>месяц</span></td><td class="meas">Патча нет, тулчейна для сборки нет. Пункт вдобавок неверно нацелен: план говорит про шесть серверных фильтров — их восемь, а названного <span class="mono">sourceUrl</span> среди них нет вовсе. Девять колонок конверта уже существуют в схеме и пусты у 2809 из 2809 — не хватает пути записи, а не полей.</td><td><span class="chip c-dead">снять</span></td></tr>
+        <tr><td class="num">10</td><td class="what"><b>entities.csv + normalize.py</b><span>месяц</span></td><td class="meas">Ни реестра, ни канонизатора, ни журнала склеек. Тегов <span class="mono">ent:</span>/<span class="mono">lei:</span>/<span class="mono">cik:</span>/<span class="mono">wd:</span> — ноль на всю базу, при том что идентификаторы собираются активно: слот <span class="mono">id=</span> есть у 1058 записей, вперемешку свободным текстом.</td><td><span class="chip c-off">не сделано</span></td></tr>
+        <tr><td class="num">11</td><td class="what"><b>promptfoo + золотой набор</b><span>месяц</span></td><td class="meas">Не установлен, конфига нет. Но пилотный набор уже лежит готовым и аудитор его сначала проглядел: <span class="mono">gates/pending/facts-15y-retro.json</span> — 65 элементов с машиночитаемыми <span class="mono">verified</span>/<span class="mono">refuted</span>, 30 подтверждённых и 7 опровергнутых. Парсер прозы не нужен.</td><td><span class="chip c-off">не сделано</span></td></tr>
+        <tr><td class="num">12</td><td class="what"><b>OTLP + arize-phoenix</b><span>месяц</span></td><td class="meas">Ни одной переменной <span class="mono">OTEL_*</span> нигде: ни в настройках проекта, ни в профилях оболочки, ни в launchd. Это измерительный прибор — пока его нет, все обещания плана в процентах времени («−25–35% на раунд») непроверяемы по построению.</td><td><span class="chip c-off">не сделано</span></td></tr>
+        <tr><td class="num">13</td><td class="what"><b>Замер LettuceDetect</b><span>месяц</span></td><td class="meas">Замера нет, внедрения тоже — запрет плана соблюдён. Но формулировка не соответствует данным: пар «русский premise + русская hypothesis» в проекте почти не существует, факты пишутся по-русски, а документы англоязычные. И пункт заблокирован пунктом 8: премис брать неоткуда.</td><td><span class="chip c-dead">переписать</span></td></tr>
+        <tr><td class="num">14</td><td class="what"><b>Отбор проверяемых утверждений</b><span>месяц</span></td><td class="meas">Стадии отбора в профиле research-агента нет вовсе. Единственная относящаяся строка про самодостаточность фактов стоит в файле с его создания и наследует конвенцию, которая старше плана, — то есть засчитывать её за прогресс нельзя.</td><td><span class="chip c-off">не сделано</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Порядок работ</div>
+  <h2>Что делаем и в каком порядке</h2>
+  <p class="lede read">Ступени упорядочены не по важности пунктов плана, а по тому, что чем разблокируется. Ступень 0 уже выполнена в этой сессии.</p>
+
+  <div class="tiers">
+
+    <div class="tier now">
+      <div class="tier-h"><span class="tier-n">Ступень 0</span><span class="tier-t">Обезвредить инструкции, которые портят память</span><span class="tier-w">сделано 10.09 · минуты</span></div>
+      <div class="tier-b">
+        <div class="job">
+          <h3>Четыре файла с ложными предписаниями</h3>
+          <p>Это не документационный долг: файлы загружаются в контекст и выполняются. Скилл <span class="mono">revisit</span> советовал <span class="mono">batchMergePolicy="smart"</span> для партии — ровно то, что 10.09 уничтожило 9 фактов из 10. Он же и промпт фоновой дистилляции велели ставить <span class="mono">validUntil</span>, которого у инструмента нет: неизвестный ключ проглатывается молча, и срок жизни считался бы проставленным. Скилл <span class="mono">gate-web</span> обещал склейку версий в батче, которой батч не делает никогда. Справочник <span class="mono">vestige-reference.md</span>, на который CLAUDE.md ссылается как на полный, нёс опровергнутое утверждение о <span class="mono">validFrom</span>/<span class="mono">validUntil</span> и подавал <span class="mono">maintain consolidate</span> как обычное действие — единственное такое место в проекте.</p>
+          <span class="why"><b>Почему первым:</b> цена бездействия измерена — один вызов, девять испорченных фактов, час на восстановление из ответа инструмента.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-h"><span class="tier-n">Ступень 1</span><span class="tier-t">Оживить петлю</span><span class="tier-w">полдня–день</span></div>
+      <div class="tier-b">
+        <div class="job">
+          <h3>Довести дистилляцию до первого успешного прогона</h3>
+          <p>Починенная 10.09 редакция скрипта ещё ни разу не отрабатывала: расписанный прогон в 08:40 шёл на старом файле, за три часа до правки. Прогнать вручную при закрытой сессии и убедиться по базе, а не по коду возврата.</p>
+          <p>Заодно закрыть три пути в обход маркера <span class="mono">BROKEN</span>: ветка «CLI не найден» выходит без маркера, штатный выход при пустом inbox маркер не снимает, <span class="mono">trap ERR</span> не стоит. И заменить критерий успеха: сейчас предложенный признак жизни — отсутствие файла <span class="mono">BROKEN</span> — даёт ложный положительный, потому что старая редакция его вообще не писала.</p>
+          <span class="why"><b>Разблокирует:</b> автоматическое плечо накопления, которое не работало ни дня. <b>Критерий:</b> прирост записей <span class="mono">gate:feeds</span> в базе до и после прогона.</span>
+        </div>
+        <div class="job">
+          <h3>Вернуть шаг 1 основного цикла</h3>
+          <p>Правило «сначала память» записано в CLAUDE.md и не исполняется: 137 → 44 → 10 → 1 → 0 вызовов по раундам. Это самая дешёвая из структурных починок — она протокольная, а не инженерная, и у неё есть готовая точка контроля: счётчик вызовов <span class="mono">recall</span> в <span class="mono">agent_traces</span> за день раунда.</p>
+          <p>Сильнее версия — сделать это проверяемым, а не декларативным: хук на <span class="mono">smart_ingest</span>, который отказывает, если в этой сессии не было ни одного <span class="mono">recall</span>.</p>
+          <span class="why"><b>Разблокирует:</b> компаундирование. Раунд, который не читает память, не может достроить известный факт — отсюда параллельные слои.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-h"><span class="tier-n">Ступень 2</span><span class="tier-t">Починить приборы</span><span class="tier-w">полдня</span></div>
+      <div class="tier-b">
+        <div class="job">
+          <h3>Подключить линтер к процессу</h3>
+          <p>Классический третий случай: вещь есть, работает, делает ровно заявленное и не вызывается ничем. Строка в основном цикле CLAUDE.md плюс вызов в конце <span class="mono">distill.sh</span> — и метрика перестаёт деградировать молча. Сейчас долг 122 нарушения на 2457 записей (5,0%), и партия 10.09 добавила 12 в тот же день, когда долг был записан как посчитанный.</p>
+          <span class="why"><b>Дёшево и с известным уловом:</b> 89 чисел без метода, 25 счётчиков без даты снимка, 14 наоборот, 4 расхождения тега со слотом.</span>
+        </div>
+        <div class="job">
+          <h3>Заменить ложную формулировку целевой метрики</h3>
+          <p>Убрать из CLAUDE.md обещание, что <span class="mono">recall</span> с <span class="mono">tag_prefix</span> печатает долю базы, и записать вместо него SQL, которым доли считались на самом деле. Тот же текст поправить в докстринге линтера — сейчас инструмент обоснован несуществующей метрикой.</p>
+          <span class="why"><b>Почему не косметика:</b> это ровно тот класс ошибки, который проект ловит у чужих документов — объявленное принято за действующее.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="tier">
+      <div class="tier-h"><span class="tier-n">Ступень 3</span><span class="tier-t">Пункты плана — в переставленном порядке</span><span class="tier-w">от дня до недели каждый</span></div>
+      <div class="tier-b">
+        <div class="job">
+          <h3>П.11 — золотой набор. Первым, потому что он уже почти собран</h3>
+          <p>Аудит нашёл готовый пилотный набор там, где его не искали: <span class="mono">gates/pending/facts-15y-retro.json</span>, 65 элементов с полями <span class="mono">verified</span>/<span class="mono">refuted</span> и провенансом. Это пары «утверждение → вердикт верификатора» без единой строки парсера.</p>
+          <span class="why"><b>Разблокирует:</b> ответ на вопрос «стало лучше или хуже после правки промпта» — сегодня он ощущение. И без него нельзя оценить п.14: отбор утверждений может срезать ровно те, на которых верификатор ловит преобладающий класс ошибки.</span>
+        </div>
+        <div class="job">
+          <h3>П.7 — gate-archive. Главный оставшийся рычаг по существу</h3>
+          <p>Доля фактов с первоисточником — целевая метрика проекта, и архивный канал единственный, который её двигает, когда сайт отдаёт 403. Сейчас каждый снимок Wayback, каждый CDX-запрос и каждый разбор PDF делаются заново руками и не переиспользуются.</p>
+          <span class="why"><b>Оговорка:</b> обещание «−25–35% времени на раунд» проверить нечем, пока не сделан п.12. Брать пункт ради доли первоисточников, а не ради процентов времени.</span>
+        </div>
+        <div class="job">
+          <h3>П.8 — разделить на два пункта, иначе он не закроется никогда</h3>
+          <p>Сейчас в один пункт слиты разные дела: ручной архив первоисточников (сделан, 108 документов, манифест проверяется программно) и автоматическое сохранение снимка при добыче (не начато). Первое закрыть и записать как закрытое; второе — оставить в работе с честным нулём.</p>
+          <span class="why"><b>Заодно:</b> у 75% архива вместо URL стоит заглушка, поэтому заявленная функция SHA-256 «проверить, изменился ли документ на сервере» для них неисполнима — перекачивать нечего.</span>
+        </div>
+        <div class="job">
+          <h3>П.10 и П.12 — по мере надобности</h3>
+          <p>Реестр сущностей (п.10) окупается, когда счётчики начнут расходиться между раундами; пока расхождение одно и известное. Телеметрия (п.12) — это прибор, без которого все временны́е обещания плана остаются словами, но сам по себе он ничего не улучшает.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<section>
+  <div class="eyebrow">Решения, а не задачи</div>
+  <h2>Что снимаем, переписываем и решаем явно</h2>
+  <p class="lede read">Три позиции требуют не работы, а решения. Пункт без решения — это не отложенный пункт, а забытый.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Позиция</th><th>Что показал замер</th><th>Решение</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="what"><b>П.9 SourceEnvelope</b><span>месячный план</span></td>
+          <td class="meas">Пункт нацелен мимо. Фильтров не шесть, а восемь; названного <span class="mono">sourceUrl</span> среди них нет; девять колонок конверта уже есть в схеме и пусты у 2809 из 2809. Не хватает <b>пути записи, а не полей</b>. Цена владения — поставить Rust, склонировать AGPL-репозиторий и держать патч в синхроне с релизами; тулчейна на машине нет.</td>
+          <td><span class="chip c-dead">снять</span></td>
+        </tr>
+        <tr>
+          <td class="what"><b>П.13 LettuceDetect</b><span>месячный план</span></td>
+          <td class="meas">Предпосылка пункта не соответствует данным: русских пар (premise, hypothesis) в проекте почти нет — факты по-русски, документы англоязычные, значит замер по факту кросс-язычный. И премисы брать неоткуда, пока не сделан п.8.</td>
+          <td><span class="chip c-dead">переписать</span></td>
+        </tr>
+        <tr>
+          <td class="what"><b>Миграция памяти</b><span>отложено сознательно</span></td>
+          <td class="meas">Стоп-сигнал «база за 2000 записей» сработал и перевыполнен — 2809 всего, 2457 живых, — а оба документа держат пункт отложенным без пометки, что порог наступил. Остальные три сигнала (доля запросов «на дату», простой апстрима, параллельная запись) не сработали.</td>
+          <td><span class="chip c-part">решить явно</span></td>
+        </tr>
+        <tr>
+          <td class="what"><b>П.11–14 в HANDOFF</b><span>учёт плана</span></td>
+          <td class="meas">Месячная часть существует в двух несовпадающих редакциях: в плане восемь пунктов, в хэндоффе четыре, и там же строкой ниже написано «месячная — один пункт из восьми». Знаменатель есть, а четыре позиции не перечислены и не помечены. Учёт при этом ведётся — но в датированном снимке <span class="mono">gid-checkpoint.html</span> и перифразами без имён инструментов, поэтому поиск по «promptfoo» даёт ложный вывод «забыли».</td>
+          <td><span class="chip c-part">свести</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Долг</div>
+  <h2>Где документы расходятся с базой</h2>
+  <p class="lede read">Пятнадцать мест, где документ проекта утверждает о проекте неправду. Все проверены запросом; здесь только те, что меняют выводы или действия.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Где</th><th>Записано</th><th>Замер 10.09</th></tr></thead>
+      <tbody>
+        <tr><td class="what"><b>HANDOFF.md</b><span>строка 49</span></td><td class="meas">«Текущее состояние всей живой базы (1326 записей)»</td><td class="meas">2457 живых из 2809. В одном документе два взаимоисключающих «текущих состояния», и второе опровергает главный вывод первого.</td></tr>
+        <tr><td class="what"><b>HANDOFF.md</b><span>строка 19</span></td><td class="meas">«17 HTML и 14 markdown, шесть страниц идут без пары»; «main на коммите 97a0fb1»</td><td class="meas">Страниц без пары восемь, и было восемь уже в момент написания. main ушёл на два коммита вперёд. Плюс конвенции «HTML + markdown каждому» в CLAUDE.md нет вовсе — документ мерит нарушение несуществующего правила.</td></tr>
+        <tr><td class="what"><b>HANDOFF.md</b><span>строка 405</span></td><td class="meas">«Признак того, что петля жива: файла BROKEN нет»</td><td class="meas">Даёт ложный положительный: старая редакция скрипта маркер не писала вовсе, поэтому его отсутствие не отличает успех от падения.</td></tr>
+        <tr><td class="what"><b>CLAUDE.md</b><span>строка 9</span></td><td class="meas">«630 записей gate:feeds в базе»</td><td class="meas">859 после партии 10.09. И ни один из трёх документов не оговаривает, считает он созданные записи или живые, — правило <span class="mono">cnt:asof</span> проект применяет к памяти и не применяет к себе.</td></tr>
+        <tr><td class="what"><b>CLAUDE.md</b><span>конвенции</span></td><td class="meas">«recall с tag_prefix печатает долю фактов с первоисточником»</td><td class="meas">Пост-фильтр внутри ранжированного окна с лимитом 10. Доля базы так не считается; все опубликованные доли получены SQL-ом.</td></tr>
+        <tr><td class="what"><b>CLAUDE.md</b><span>пункт 8</span></td><td class="meas">«Пункты 7 и 9 стали невыполнимыми технически»</td><td class="meas">Технически заблокирован только <span class="mono">Write/Edit</span> в корень. У обоих профилей есть <span class="mono">Bash</span>, у <span class="mono">bin/vestige</span> есть подкоманда <span class="mono">ingest</span>.</td></tr>
+        <tr><td class="what"><b>CLAUDE.md</b><span>подача результата</span></td><td class="meas">«Прогонять палитру через <span class="mono">node scripts/validate_palette.js</span>»</td><td class="meas">Путь версионный и на диске между вызовами не существует: сегодня скилл распаковался в каталог сборки 2.1.255, вчерашняя ссылка вела в 2.1.229. Правило исполнимо только через вызов скилла, и формулировку надо привязать к нему, а не к пути.</td></tr>
+        <tr><td class="what"><b>litigation-ladder.html</b><span>календарь</span></td><td class="meas">08.09.2026 подана как предстоящая дата</td><td class="meas">Вопрос закрыт в памяти 10.09. Ревизит обновляет память и не обновляет опубликованный календарь — справочник печатает как открытое то, что закрыто.</td></tr>
+        <tr><td class="what"><b>merge-restored</b><span>три документа</span></td><td class="meas">250 / 252 / 249 — три числа одной величины</td><td class="meas">252 создано, 249 живых. Формула на замену одна для всех трёх мест.</td></tr>
+        <tr><td class="what"><b>litigation-15y</b><span>HANDOFF</span></td><td class="meas">«184 записи»</td><td class="meas">Тег стоит на 325 живых: все 141 записей <span class="mono">litigation-gaps</span> несут оба тега. 184 — живой остаток первого прохода, а не результат запроса по тегу.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <h3>Как это померено</h3>
+  <p>Воркфлоу из тринадцати агентов, запущен 10.09.2026. Шесть аудиторов разобрали по срезу — недельный план, месячный 7–10, месячный 11–14, гейты как исполняемый код, память как накопительная система, гигиена репозитория; шесть верификаторов перепроверяли каждый срез собственными командами с установкой опровергнуть; последний искал дыры в самом аудите. Итог: <b>82 проверки, 44 поправки (53%), ни одного опровержения</b> — то есть аудит был точен по направлению и систематически неточен в числах, что и есть обычный результат этого проекта.</p>
+  <p>Все числа на этой странице — снимок на 10.09.2026 и меняются следующим же ингестом. Правило <span class="mono">cnt:asof</span>, которого проект требует от записей памяти, к собственным документам он до сих пор не применял; здесь дата снимка названа один раз и относится ко всему.</p>
+</footer>
+
+</div>

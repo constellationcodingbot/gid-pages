@@ -1,0 +1,375 @@
+<title>Сентябрьский срез</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#F1F4F7; --surface:#FFFFFF; --surface-2:#F7F9FB; --surface-3:#EDF1F6;
+  --ink:#141A23; --ink-2:#4E5966; --ink-3:#79838F;
+  --rule:#DCE2E9; --rule-2:#EAEEF3; --accent:#27406B;
+  --s-on:#0F7350; --s-part:#B87214; --s-off:#A32749; --s-dead:#6E4E9C; --s-nil:#6B7480;
+  --s-on-bg:#E4F0EA; --s-part-bg:#F7EEDF; --s-off-bg:#F7E6EB; --s-dead-bg:#EEE9F5; --s-nil-bg:#ECEFF2;
+  --p1:#22395F; --p2:#5C82B8; --p3:#AFC6E0;
+  --on-p1:#FFFFFF; --on-p3:#17233A;
+  --acc:#B87214;
+  --fd:'Alegreya', Georgia, 'Times New Roman', serif;
+  --fb:'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fm:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --maxw:1120px; --readw:70ch;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ground:#0F1319; --surface:#171C24; --surface-2:#1D232C; --surface-3:#232A34;
+  --ink:#E4E9F0; --ink-2:#9BA6B5; --ink-3:#6D7787;
+  --rule:#2A313C; --rule-2:#222831; --accent:#8FAFDD;
+  --s-on:#2E9C72; --s-part:#BF8A22; --s-off:#D95C7C; --s-dead:#9880CC; --s-nil:#8A94A1;
+  --s-on-bg:#12281F; --s-part-bg:#2A2211; --s-off-bg:#2C1720; --s-dead-bg:#211C2E; --s-nil-bg:#1F242C;
+  --p1:#D8E4F2; --p2:#8AAAD8; --p3:#4A6B99;
+  --on-p1:#12161D; --on-p3:#EAF0F8;
+  --acc:#BF8A22;
+}}
+:root[data-theme="dark"]{
+  --ground:#0F1319; --surface:#171C24; --surface-2:#1D232C; --surface-3:#232A34;
+  --ink:#E4E9F0; --ink-2:#9BA6B5; --ink-3:#6D7787;
+  --rule:#2A313C; --rule-2:#222831; --accent:#8FAFDD;
+  --s-on:#2E9C72; --s-part:#BF8A22; --s-off:#D95C7C; --s-dead:#9880CC; --s-nil:#8A94A1;
+  --s-on-bg:#12281F; --s-part-bg:#2A2211; --s-off-bg:#2C1720; --s-dead-bg:#211C2E; --s-nil-bg:#1F242C;
+  --p1:#D8E4F2; --p2:#8AAAD8; --p3:#4A6B99;
+  --on-p1:#12161D; --on-p3:#EAF0F8;
+  --acc:#BF8A22;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--fb);font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px 96px}
+.read{max-width:var(--readw)}
+p{margin:0 0 1.05em}
+strong{font-weight:600}
+code,.mono{font-family:var(--fm);font-size:0.87em}
+h1,h2,h3{font-family:var(--fd);text-wrap:balance;margin:0}
+h1{font-size:clamp(2.5rem,6vw,4rem);font-weight:800;line-height:1.02;letter-spacing:-0.02em}
+h2{font-size:clamp(1.6rem,3vw,2.15rem);font-weight:700;line-height:1.12}
+h3{font-size:1.14rem;font-weight:700;line-height:1.25}
+.eyebrow{font-family:var(--fm);font-size:0.72rem;font-weight:500;letter-spacing:0.13em;text-transform:uppercase;color:var(--ink-3)}
+header{padding:72px 0 40px;border-bottom:2px solid var(--ink)}
+.dek{font-size:1.16rem;line-height:1.6;color:var(--ink-2);max-width:64ch;margin-top:22px}
+.dek b{color:var(--ink);font-weight:600}
+.band{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));gap:1px;background:var(--rule);border-bottom:1px solid var(--rule)}
+.tile{background:var(--surface);padding:22px 20px}
+.tile .n{font-family:var(--fm);font-size:2rem;font-weight:600;line-height:1;letter-spacing:-0.02em;font-variant-numeric:tabular-nums}
+.tile .n.good{color:var(--s-on)}
+.tile .l{font-size:0.83rem;color:var(--ink-2);margin-top:9px;line-height:1.42}
+section{padding:60px 0 0}
+.lede{font-size:1.05rem;color:var(--ink-2)}
+h2+.lede{margin-top:14px}
+figure{margin:32px 0 0;background:var(--surface);border:1px solid var(--rule);border-radius:6px;padding:22px 22px 16px;overflow-x:auto}
+figcaption{margin-top:14px;font-size:0.87rem;color:var(--ink-2);line-height:1.5;max-width:80ch}
+figcaption b{color:var(--ink)}
+.legend{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:6px;font-size:0.82rem;color:var(--ink-2);font-family:var(--fm)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:12px;height:12px;border-radius:2.5px;display:inline-block;flex:none}
+details{margin-top:14px;font-size:0.85rem}
+summary{cursor:pointer;color:var(--ink-2);font-family:var(--fm);font-size:0.78rem;letter-spacing:0.04em}
+summary:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.tw{overflow-x:auto;margin-top:28px;border:1px solid var(--rule);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:0.9rem}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+thead th{font-family:var(--fm);font-size:0.7rem;letter-spacing:0.09em;text-transform:uppercase;color:var(--ink-3);font-weight:500;background:var(--surface-2);border-bottom:1px solid var(--rule)}
+tbody tr:last-child td{border-bottom:0}
+td.num,th.num{font-family:var(--fm);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.k{min-width:190px}
+td.k b{display:block;font-weight:600}
+td.v{color:var(--ink-2);min-width:280px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--fm);font-size:0.68rem;font-weight:500;letter-spacing:0.04em;padding:3px 8px;border-radius:3px;white-space:nowrap;text-transform:uppercase}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.c-prim{color:var(--s-on);background:var(--s-on-bg)}
+.c-press{color:var(--s-part);background:var(--s-part-bg)}
+.c-quar{color:var(--s-dead);background:var(--s-dead-bg)}
+.c-meas{color:var(--s-nil);background:var(--s-nil-bg)}
+/* таймлайн */
+.tl{margin-top:34px;border-left:2px solid var(--rule);padding-left:0}
+.day{position:relative;padding:0 0 4px 28px}
+.day::before{content:"";position:absolute;left:-7px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--ink-3)}
+.day.hot::before{background:var(--s-off);border-color:var(--s-off)}
+.day-d{font-family:var(--fm);font-size:0.78rem;font-weight:600;letter-spacing:0.06em;color:var(--ink-3);padding-top:4px}
+.ev{padding:10px 0 16px;border-bottom:1px solid var(--rule-2)}
+.day:last-child .ev:last-child{border-bottom:0}
+.ev-h{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.ev-t{font-weight:600;font-size:0.97rem;flex:1 1 300px}
+.ev p{margin:6px 0 0;font-size:0.9rem;color:var(--ink-2)}
+ul{margin:0 0 1em;padding-left:1.15em}
+li{margin-bottom:0.5em;color:var(--ink-2)}
+li b{color:var(--ink)}
+footer{margin-top:76px;padding-top:26px;border-top:2px solid var(--ink);font-size:0.87rem;color:var(--ink-2)}
+footer h3{margin-bottom:12px}
+@media (max-width:640px){header{padding:48px 0 30px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+<div class="wrap">
+<header>
+  <div class="eyebrow">Память gid · окно 26.08 — 11.09.2026 · снимок 11.09.2026</div>
+  <h1>Сентябрьский срез</h1>
+  <p class="dek">Две недели рынка онлайн-рекламы, как они легли в память: <b>240 новых записей</b>, из которых 234 прошли адверсариальную проверку (186 исправлений на 229 утверждений), а 6 пришли ночью от фоновой дистилляции — <b>первой успешной за всё существование проекта</b>. Ниже — что произошло по дням и насколько твёрдо стоит каждое утверждение. Второе важнее первого: почти каждое крупное число этих двух недель лежит в первоисточнике и не объяснено в нём.</p>
+</header>
+</div>
+
+<div class="band">
+  <div class="tile"><div class="n">240</div><div class="l">новых записей за 10–11.09. Всего в базе 2820, живых 2468</div></div>
+  <div class="tile"><div class="n">81%</div><div class="l">утверждений раунда 10.09 верификатор исправил — 186 из 229, рекорд проекта</div></div>
+  <div class="tile"><div class="n">26,1%</div><div class="l">записей раунда несут число неизвестного происхождения. Базовая линия — 21,8%</div></div>
+  <div class="tile"><div class="n good">+6</div><div class="l">первые факты от автоматической дистилляции за 25 дней молчания</div></div>
+</div>
+
+<div class="wrap">
+
+<section>
+  <div class="eyebrow">Хроника</div>
+  <h2>Что произошло, день за днём</h2>
+  <p class="lede read">Метка у каждого события — не важность, а канал: дошли ли мы до самого документа, или знаем о событии со слов издания. Карантин означает, что запись пришла фоновой дистилляцией и адверсариальной проверки не проходила.</p>
+
+  <div class="tl">
+
+    <div class="day"><div class="day-d">26.08 · среда</div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Google перевёл ссылки выдачи на сквозной редирект <span class="mono">google.com/goto</span></div><span class="chip c-press">пресса</span></div>
+        <p>Подтверждено компанией Search Engine Roundtable; тесты шли с июля. Документации параметра нет нигде — ни в Search Central, ни в blog.google. Побочный эффект: съём позиций подорожал, по оценке основателя Nozzle — 500–1 000 запросов, чтобы разрешить ссылки одного пятистраничного съёма.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Трибунал по конкуренции: приказ по урегулированию Google Play на £260 млн</div><span class="chip c-prim">первоисточник</span></div>
+        <p>Дело 1673/7/7/24. На 10.09 урегулирование <b>не утверждено</b>. В уведомлении записано, что нераспределённый остаток класса может уйти финансистам процесса.</p></div>
+    </div>
+
+    <div class="day"><div class="day-d">28.08 · пятница</div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">SerpApi подала встречный антимонопольный иск к Reddit</div><span class="chip c-prim">первоисточник</span></div>
+        <p>ECF 119 на 63 страницах по §2 Sherman Act. Заголовки «Reddit faces antitrust counterclaims» скрывают, что дело <i>Reddit, Inc. v. SerpApi LLC</i> возбудил сам Reddit — по авторскому праву.</p></div>
+    </div>
+
+    <div class="day hot"><div class="day-d">31.08 · понедельник</div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">FTC и 22 юрисдикции подали иск к Amazon о ценообразовании рекламных аукционов</div><span class="chip c-prim">первоисточник</span></div>
+        <p>№ 2:26-cv-03097 (W.D. Wash.), 181 страница, голосование Комиссии 2–0. Дело <b>не антимонопольное</b> — пять счётов по §5(a) FTC Act, то есть обман. Разбор ниже.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Еврокомиссия обозначила ChatGPT как VLOSE, Reddit и Roblox — как VLOP</div><span class="chip c-prim">первоисточник</span></div>
+        <p>Срок исполнения — «by January 2027». Охват (ChatGPT 159,1 млн MAU в ЕС) самодекларирован: сноска списка гласит «as reported by the provider». Пресс-релиз существует минимум в двух редакциях, и что исправлено — не сообщает ни одна.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">OpenAI открыла self-serve доступ к ChatGPT Ads в Европе и заявила $1 млрд run rate</div><span class="chip c-prim">первоисточник</span></div>
+        <p>Обещание «later this summer» исполнено ровно в срок. «$1 billion in annualized revenue run rate менее чем за 200 дней» — база пересчёта не раскрыта. Реклама показывается только планам Free и Go.</p></div>
+    </div>
+
+    <div class="day"><div class="day-d">01.09 · вторник</div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">IETF: рабочая группа приняла черновик Web Bot Auth как документ WG</div><span class="chip c-prim">первоисточник</span></div>
+        <p>17 ответов от 17 отправителей, все «за», возражений ноль. От объявления адопшна до опубликованного <span class="mono">draft-ietf-webbotauth-httpsig-protocol-00</span> прошёл 21 минута. Авторы — Cloudflare и Google. Это <b>отменяет прежнюю запись памяти</b> о том, что спецификация остаётся индивидуальным черновиком.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Ströer увела Multi-ID Audiences с чужого DMP на собственную платформу OSDX</div><span class="chip c-press">пресса</span></div></div>
+    </div>
+
+    <div class="day hot"><div class="day-d">02.09 · среда</div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Бринкема отказала во всех трёх структурных мерах по adtech-делу против Google</div><span class="chip c-prim">первоисточник</span></div>
+        <p>Приказ ECF 1857 на двух страницах. Дивестиция AdX, раскрытие логики аукциона DFP и условная дивестиция DFP Remainder — «be and are REJECTED». Поведенческие меры приняты «as modified by this Court» <b>без перечня</b>: какие именно и как изменены, публично неизвестно. Дата приказа — 02.09, а не 03.09, как читается по прессе.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">NIQ и Similarweb объявили сотрудничество по измерению агентской коммерции</div><span class="chip c-press">пресса</span></div></div>
+    </div>
+
+    <div class="day"><div class="day-d">04.09 · пятница</div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Meta подала больше десятка пост-судебных ходатайств по детскому делу Нью-Мексико</div><span class="chip c-prim">первоисточник</span></div>
+        <p>Часть подана после 22:00 в пятницу перед Днём труда. Оспаривается практически каждый содержательный вывод; отдельно — просьба пересчитать абатементный фонд <b>с 567 млн примерно до 60 млн</b>. Апелляция при этом не подана.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">OpenAI и Microsoft подали ходатайства о суммарном решении в MDL по искам издателей</div><span class="chip c-prim">первоисточник</span></div></div>
+    </div>
+
+    <div class="day"><div class="day-d">05.09 · суббота</div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">YouTube добавил креаторам метрику Views (Co-viewed)</div><span class="chip c-prim">первоисточник</span></div>
+        <p>Модельная оценка со-зрителей на телеэкране. Справка платформы происхождение оценки не описывает — ни панели, ни модели. Утверждение, что метрика не меняет денежный контур, принадлежит PPC Land, а не YouTube.</p></div>
+    </div>
+
+    <div class="day hot"><div class="day-d">08.09 · понедельник</div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Начался процесс Нью-Мексико против Facebook о приватности</div><span class="chip c-prim">первоисточник</span></div>
+        <p>Дело D-101-CV-2021-00132, отбор присяжных 08.09, вступительные заявления 09.09. Приказ требует завершить к 02.10. Заявлено «до 62,85 млрд» — из 10-Q самой Meta, где сказано «indicated that they intend to seek», без раскрытия расчёта.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Google выкатил в Европе перестроенную выдачу Поиска</div><span class="chip c-press">пресса</span></div>
+        <p>Один специализированный поисковик наверху, два под ним, карусель без цен в реальном времени. <b>Google не опубликовал это ни в одной из четырёх собственных лент</b> — единственным каналом был эксклюзив Reuters.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Meta запустила Muse — агента, покупающего от имени пользователя</div><span class="chip c-prim">первоисточник</span></div>
+        <p>О рекламе в релизе сказано ровно одно: Muse не отдаёт разговоры и данные в рекламные системы Meta. Это про поток данных наружу, а не про отсутствие рекламы внутри агента.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">FTC подала иск к платёжному процессору Humboldt Merchant Services</div><span class="chip c-prim">первоисточник</span></div>
+        <p>Предложенный согласованный приказ — 12 млн долларов. «Performance Marketing» в жалобе оказывается внутренним названием процессора для категории мерчантов, а не отраслевым термином.</p></div>
+    </div>
+
+    <div class="day"><div class="day-d">09.09 · вторник</div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Instacart представил ассистента Clementine</div><span class="chip c-prim">первоисточник</span></div>
+        <p>Пять платформенных счётчиков стоят в одном предложении релиза и ни один не датирован. Рекламы внутри ассистента релиз не описывает.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">FTC отозвала своё заявление 2021 года об утечках у health-приложений</div><span class="chip c-prim">первоисточник</span></div>
+        <p>Пять оснований, каждое объявлено самодостаточным. В Federal Register отзыв не публиковался — проверено сплошным перебором всех документов FTC с 15.08.</p></div>
+    </div>
+
+    <div class="day hot"><div class="day-d">10.09 · среда</div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Amazon DSP начал пилот показа рекламы внутри ChatGPT</div><span class="chip c-quar">карантин</span></div>
+        <p>Первый крупный retail-media DSP, подключившийся к чат-боту. Параллельно OpenAI подключил Criteo и StackAdapt — ChatGPT Ads переходит от собственного self-serve к многоканальной программатик-закупке.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Prebid.org впервые сделал президентство штатной оплачиваемой должностью</div><span class="chip c-quar">карантин</span></div>
+        <p>Назначен Гарретт Макграт — тот самый, кто пять лет был председателем совета и ушёл в июне вместе с Расичем и Джанелли. <b>Это ответ на открытый вопрос памяти, пришедший на месяц раньше даты проверки</b> — и пришедший из гейта, а не из плановой ревизии.</p></div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">IAB поднял прогноз роста рынка США на 2026 год до 12,3% с 9,5%</div><span class="chip c-quar">карантин</span></div>
+        <p>Причины — Олимпиада в Милане и чемпионат мира по футболу. Рядом Madison &amp; Wall оценивает долю AI-управляемых кампаний в 12% расходов против 2% в 2023 году.</p></div>
+    </div>
+
+    <div class="day"><div class="day-d">11.09 · четверг</div>
+      <div class="ev"><div class="ev-h"><div class="ev-t">Накопительная петля замкнулась впервые за жизнь проекта</div><span class="chip c-meas">замер</span></div>
+        <p>Фоновая дистилляция в 08:40 разобрала 24 материала, сохранила 6 фактов и оставила в inbox 2, которые не смогла взять из-за 403. Критерий успеха — прирост записей в базе, а не код возврата: <span class="mono">+6 записей (было 2814, стало 2820)</span>.</p></div>
+    </div>
+
+  </div>
+</section>
+<section>
+  <div class="eyebrow">Провенанс</div>
+  <h2>Насколько твёрдо это стоит</h2>
+  <p class="lede read">У каждой записи в памяти три ортогональные оси: откуда взято (<span class="mono">chan:</span>), откуда взялось число внутри (<span class="mono">num:</span>) и чем подтверждено (<span class="mono">cred:</span>). Разведены они потому, что издание может быть первоклассным, а число в его статье — ничьим.</p>
+
+  <figure>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--p1)"></i> первоисточник — сам документ</span>
+      <span><i class="sw" style="background:var(--p2)"></i> архивный снимок документа</span>
+      <span><i class="sw" style="background:var(--p3)"></i> остальные каналы</span>
+    </div>
+    <svg viewBox="0 0 880 300" role="img" aria-label="Доля фактов с первоисточником по четырём популяциям: базовая линия 69,3 процента, вся живая база 72,5, адверсариальный раунд 78,2, фоновая дистилляция ноль" style="width:100%;height:auto">
+<text x="190" y="26" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">дистанция до источника, % записей</text>
+<text x="176" y="68" text-anchor="end" font-size="12.5" font-weight="500" fill="var(--ink)" font-family="var(--fb)">Базовая линия 28.08</text>
+<text x="176" y="83" text-anchor="end" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">n=472</text>
+<rect x="190.0" y="54" width="415.2" height="32" rx="3" fill="var(--p1)"><title>Базовая линия 28.08: первоисточник 69.3%</title></rect>
+<text x="397.6" y="75" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--on-p1)" font-family="var(--fm)">69.3</text>
+<rect x="607.2" y="54" width="5.8" height="32" rx="3" fill="var(--p2)"><title>Базовая линия 28.08: архивный снимок 1.3%</title></rect>
+<rect x="615.0" y="54" width="175.0" height="32" rx="3" fill="var(--p3)"><title>Базовая линия 28.08: остальные каналы 29.4%</title></rect>
+<text x="702.5" y="75" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--on-p3)" font-family="var(--fm)">29.4</text>
+<text x="176" y="134" text-anchor="end" font-size="12.5" font-weight="500" fill="var(--ink)" font-family="var(--fb)">Вся живая база</text>
+<text x="176" y="149" text-anchor="end" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">n=2468</text>
+<rect x="190.0" y="120" width="434.4" height="32" rx="3" fill="var(--p1)"><title>Вся живая база: первоисточник 72.5%</title></rect>
+<text x="407.2" y="141" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--on-p1)" font-family="var(--fm)">72.5</text>
+<rect x="626.5" y="120" width="35.3" height="32" rx="3" fill="var(--p2)"><title>Вся живая база: архивный снимок 6.2%</title></rect>
+<rect x="663.8" y="120" width="126.2" height="32" rx="3" fill="var(--p3)"><title>Вся живая база: остальные каналы 21.3%</title></rect>
+<text x="726.9" y="141" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--on-p3)" font-family="var(--fm)">21.3</text>
+<text x="176" y="200" text-anchor="end" font-size="12.5" font-weight="500" fill="var(--ink)" font-family="var(--fb)">Раунд 10.09</text>
+<text x="176" y="215" text-anchor="end" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">n=234</text>
+<rect x="190.0" y="186" width="468.8" height="32" rx="3" fill="var(--p1)"><title>Раунд 10.09: первоисточник 78.2%</title></rect>
+<text x="424.4" y="207" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--on-p1)" font-family="var(--fm)">78.2</text>
+<rect x="660.8" y="186" width="18.5" height="32" rx="3" fill="var(--p2)"><title>Раунд 10.09: архивный снимок 3.4%</title></rect>
+<rect x="681.2" y="186" width="108.8" height="32" rx="3" fill="var(--p3)"><title>Раунд 10.09: остальные каналы 18.4%</title></rect>
+<text x="735.6" y="207" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--on-p3)" font-family="var(--fm)">18.4</text>
+<text x="176" y="266" text-anchor="end" font-size="12.5" font-weight="500" fill="var(--ink)" font-family="var(--fb)">Дистилляция 11.09</text>
+<text x="176" y="281" text-anchor="end" font-size="10.5" fill="var(--ink-3)" font-family="var(--fm)">n=6</text>
+<rect x="190.0" y="252" width="600.0" height="32" rx="3" fill="var(--p3)"><title>Дистилляция 11.09: остальные каналы 100.0%</title></rect>
+<text x="490.0" y="273" text-anchor="middle" font-size="11.5" font-weight="600" fill="var(--on-p3)" font-family="var(--fm)">100.0</text>
+</svg>
+    <figcaption><b>Два плеча петли дают материал разного качества, и разрыв полный.</b> Адверсариальный раунд довёл долю первоисточников до 78,2% — лучше базовой линии на девять пунктов. Фоновая дистилляция за ту же ночь дала <b>ноль первоисточников</b>: все шесть записей — пересказ торговой прессы, у одной из шести достоверность <span class="mono">cred:rumor</span>. Ради этого и заведён карантинный тег: фоновый прогон идёт без верификатора, и по построению слабее. Выборка в шесть записей мала — это первая ночь работы, не тенденция.</figcaption>
+    <details>
+      <summary>Показать полную разбивку</summary>
+      <div class="tw" style="margin-top:10px"><table>
+        <thead><tr><th>Популяция</th><th class="num">n</th><th>chan:</th><th>num:</th><th>cred:</th></tr></thead>
+        <tbody>
+          <tr><td>Базовая линия 28.08</td><td class="num">472</td><td>primary 69,3% · press 10,6% · inferred 10,0% · secondhand 4,2% · user 2,8% · aggregator 1,9% · archive 1,3%</td><td>na 39,0% · sourced 29,2% · unsourced 21,8% · derived 7,2% · normalized 2,8%</td><td>primary-confirmed 62,7% · single 21,4% · inferred 12,7% · two-independent 2,8% · rumor 0,4%</td></tr>
+          <tr><td>Вся живая база</td><td class="num">2468</td><td>primary 72,5% · press 9,3% · inferred 6,8% · archive 6,2% · secondhand 4,0% · user 0,9% · aggregator 0,4%</td><td>na 48,3% · sourced 22,9% · unsourced 20,5% · derived 7,3% · normalized 1,1%</td><td>primary-confirmed 71,5% · single 18,1% · inferred 6,9% · two-independent 3,4% · rumor 0,2%</td></tr>
+          <tr><td>Раунд 10.09</td><td class="num">234</td><td>primary 78,2% · press 13,7% · inferred 4,3% · archive 3,4% · secondhand 0,4%</td><td>na 46,2% · unsourced 26,1% · sourced 15,4% · derived 10,7% · normalized 1,7%</td><td>primary-confirmed 79,1% · single 14,5% · inferred 3,8% · two-independent 2,6%</td></tr>
+          <tr><td>Дистилляция 11.09</td><td class="num">6</td><td>press 100%</td><td>unsourced 66,7% · na 33,3%</td><td>single 83,3% · rumor 16,7%</td></tr>
+        </tbody>
+      </table></div>
+    </details>
+  </figure>
+
+  <figure>
+    <svg viewBox="0 0 880 290" role="img" aria-label="Доля чисел неизвестного происхождения по партиям: от 8,7 процента в судебном раунде до 66,7 в фоновой дистилляции" style="width:100%;height:auto">
+<line x1="52" y1="208.0" x2="852" y2="208.0" stroke="var(--rule)" stroke-width="1"/>
+<text x="42" y="212.0" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">0</text>
+<line x1="52" y1="164.0" x2="852" y2="164.0" stroke="var(--rule)" stroke-width="1"/>
+<text x="42" y="168.0" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">17.5</text>
+<line x1="52" y1="120.0" x2="852" y2="120.0" stroke="var(--rule)" stroke-width="1"/>
+<text x="42" y="124.0" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">35</text>
+<line x1="52" y1="76.0" x2="852" y2="76.0" stroke="var(--rule)" stroke-width="1"/>
+<text x="42" y="80.0" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">52.5</text>
+<line x1="52" y1="32.0" x2="852" y2="32.0" stroke="var(--rule)" stroke-width="1"/>
+<text x="42" y="36.0" text-anchor="end" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">70</text>
+<rect x="81.1" y="153.2" width="56" height="54.8" rx="4" fill="var(--acc)"><title>базовая линия (28.08): 21.8%</title></rect>
+<text x="109.1" y="145.2" text-anchor="middle" font-size="12" font-weight="600" fill="var(--acc)" font-family="var(--fm)">21.8</text>
+<text x="109.1" y="228" text-anchor="middle" font-size="10.5" fill="var(--ink-2)" font-family="var(--fb)">базовая линия</text>
+<text x="109.1" y="243" text-anchor="middle" font-size="10" fill="var(--ink-3)" font-family="var(--fm)">28.08</text>
+<rect x="195.4" y="161.0" width="56" height="47.0" rx="4" fill="var(--acc)"><title>фиды (30.08): 18.7%</title></rect>
+<text x="223.4" y="153.0" text-anchor="middle" font-size="12" font-weight="600" fill="var(--acc)" font-family="var(--fm)">18.7</text>
+<text x="223.4" y="228" text-anchor="middle" font-size="10.5" fill="var(--ink-2)" font-family="var(--fb)">фиды</text>
+<text x="223.4" y="243" text-anchor="middle" font-size="10" fill="var(--ink-3)" font-family="var(--fm)">30.08</text>
+<rect x="309.7" y="184.9" width="56" height="23.1" rx="4" fill="var(--acc)"><title>retro-15y (01.09): 9.2%</title></rect>
+<text x="337.7" y="176.9" text-anchor="middle" font-size="12" font-weight="600" fill="var(--acc)" font-family="var(--fm)">9.2</text>
+<text x="337.7" y="228" text-anchor="middle" font-size="10.5" fill="var(--ink-2)" font-family="var(--fb)">retro-15y</text>
+<text x="337.7" y="243" text-anchor="middle" font-size="10" fill="var(--ink-3)" font-family="var(--fm)">01.09</text>
+<rect x="424.0" y="186.1" width="56" height="21.9" rx="4" fill="var(--acc)"><title>litigation-15y (01–02.09): 8.7%</title></rect>
+<text x="452.0" y="178.1" text-anchor="middle" font-size="12" font-weight="600" fill="var(--acc)" font-family="var(--fm)">8.7</text>
+<text x="452.0" y="228" text-anchor="middle" font-size="10.5" fill="var(--ink-2)" font-family="var(--fb)">litigation-15y</text>
+<text x="452.0" y="243" text-anchor="middle" font-size="10" fill="var(--ink-3)" font-family="var(--fm)">01–02.09</text>
+<rect x="538.3" y="158.0" width="56" height="50.0" rx="4" fill="var(--acc)"><title>litigation-gaps (02.09): 19.9%</title></rect>
+<text x="566.3" y="150.0" text-anchor="middle" font-size="12" font-weight="600" fill="var(--acc)" font-family="var(--fm)">19.9</text>
+<text x="566.3" y="228" text-anchor="middle" font-size="10.5" fill="var(--ink-2)" font-family="var(--fb)">litigation-gaps</text>
+<text x="566.3" y="243" text-anchor="middle" font-size="10" fill="var(--ink-3)" font-family="var(--fm)">02.09</text>
+<rect x="652.6" y="142.4" width="56" height="65.6" rx="4" fill="var(--acc)"><title>раунд (10.09): 26.1%</title></rect>
+<text x="680.6" y="134.4" text-anchor="middle" font-size="12" font-weight="600" fill="var(--acc)" font-family="var(--fm)">26.1</text>
+<text x="680.6" y="228" text-anchor="middle" font-size="10.5" fill="var(--ink-2)" font-family="var(--fb)">раунд</text>
+<text x="680.6" y="243" text-anchor="middle" font-size="10" fill="var(--ink-3)" font-family="var(--fm)">10.09</text>
+<rect x="766.9" y="40.3" width="56" height="167.7" rx="4" fill="var(--acc)"><title>дистилляция (11.09): 66.7%</title></rect>
+<text x="794.9" y="32.3" text-anchor="middle" font-size="12" font-weight="600" fill="var(--acc)" font-family="var(--fm)">66.7</text>
+<text x="794.9" y="228" text-anchor="middle" font-size="10.5" fill="var(--ink-2)" font-family="var(--fb)">дистилляция</text>
+<text x="794.9" y="243" text-anchor="middle" font-size="10" fill="var(--ink-3)" font-family="var(--fm)">11.09</text>
+<line x1="52" y1="208" x2="852" y2="208" stroke="var(--ink-3)" stroke-width="1.5"/>
+<text x="52" y="20" font-size="11" fill="var(--ink-3)" font-family="var(--fm)">num:unsourced, % записей партии</text>
+</svg>
+    <figcaption><b>Эту кривую нельзя читать как качество работы.</b> Доля <span class="mono">num:unsourced</span> измеряет не аккуратность раунда, а то, насколько глубоко он копал под цифру. Судебные партии дают 8–9%, потому что в решении суда число обычно выводится тут же; сентябрьский раунд даёт 26,1%, потому что гнался за происхождением сумм и раз за разом упирался в документ, который число называет и не объясняет. Фоновая дистилляция даёт 66,7% по той же причине, что и ноль первоисточников: торговая пресса цитирует числа, не спрашивая, откуда они.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <div class="eyebrow">Главное поперёк тем</div>
+  <h2>Числа без родословной</h2>
+  <p class="lede read">Пять величин, которыми эти две недели будут цитировать весь следующий год. Все пять лежат в первоисточнике — и ни одна в нём не объяснена.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Число</th><th>Где лежит</th><th>Что с методом</th></tr></thead>
+      <tbody>
+        <tr><td class="k"><b>&gt; $20 млрд</b><span class="mono">изъято у рекламодателей Amazon</span></td>
+            <td class="v">¶1 жалобы FTC, с квалификатором «likely illegally». Во всех 181 странице встречается <b>ровно один раз</b>.</td>
+            <td class="v">Единственное обоснование — «Based on numerous internal documents». Ставки надбавки, на которых оценка держится, вымараны. Пресс-релиз того же дня даёт «tens of billions» — другая величина.</td></tr>
+        <tr><td class="k"><b>до $62,85 млрд</b><span class="mono">требование Нью-Мексико к Meta</span></td>
+            <td class="v">10-Q Meta от 30.07.2026, раздел «Privacy and Related Matters».</td>
+            <td class="v">Дословно: «has indicated that they intend to seek up to $62.85 billion in penalties». Как посчитано — не раскрыто ни одной стороной.</td></tr>
+        <tr><td class="k"><b>159,1 млн</b><span class="mono">MAU ChatGPT в ЕС</span></td>
+            <td class="v">Список designated VLOP/VLOSE Еврокомиссии.</td>
+            <td class="v">Сноска: «as reported by the provider». Соседние строки того же списка считают иначе — LinkedIn публикует две величины, Zalando тоже. Это не единый счётчик.</td></tr>
+        <tr><td class="k"><b>$1 млрд</b><span class="mono">run rate ChatGPT Ads</span></td>
+            <td class="v">Собственный пост OpenAI от 31.08.2026.</td>
+            <td class="v">«Annualized revenue run rate» менее чем за 200 дней. Ни база пересчёта, ни состав выручки не названы.</td></tr>
+        <tr><td class="k"><b>12,3%</b><span class="mono">рост рынка США по IAB</span></td>
+            <td class="v">Пересмотр прогноза 10.09.2026, пришёл фоновой дистилляцией.</td>
+            <td class="v">Карантин: запись не проходила адверсариальной проверки. Прежняя оценка IAB — 9,5% — построена «на данных более 200 брендов», состав выборки не раскрыт.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="read" style="margin-top:26px">
+    <p>Рядом — три случая, где пресса разошлась с документом, и проверка это поймала:</p>
+    <ul>
+      <li><b>Дата приказа Бринкемы.</b> Приказ и опиния подписаны 02.09, а не 03.09, как читается по дате публикации Digiday.</li>
+      <li><b>«Боты дают больше половины веб-запросов».</b> В сентябре это подаётся как измеренный факт со ссылкой на Cloudflare. Происходит из маркетингового пресс-релиза Cloudflare от 01.07.2026, где приведено одной фразой без метода.</li>
+      <li><b>«CPM вырос на 20% из-за ботов».</b> Заголовки Digiday и PPC Land от 08.09 построены на словах одного человека — президента медиаагентства GoFish о клиентах собственного агентства.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">Что дальше</div>
+  <h2>Календарь протухания</h2>
+  <p class="lede read">Отрицание тухнет быстрее утверждения: «решения нет», «апелляция не подана», «в отчётности не упоминается» верны только на дату среза. Каждая строка заведена в памяти напоминанием с датой.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th class="num">Дата</th><th>Что проверяем</th><th>Почему именно тогда</th></tr></thead>
+      <tbody>
+        <tr><td class="num">14.09</td><td class="v">Подана ли предварительная прокси DoubleVerify по сделке с Nielsen</td><td class="v">Собственная дата компании — «SUBMIT BY SEPT 10», договорный срок по §5.17(a) — 25-й рабочий день, то есть 11.09. Судить можно только по дневному индексу EDGAR за 11.09, который выходит 14.09.</td></tr>
+        <tr><td class="num">16–17.09</td><td class="v">Раскрыта ли мотивировочная опиния по ремедиям adtech-дела</td><td class="v">14 дней с 02.09 — это <b>развилка, а не публикация</b>: если ходатайств об изъятиях не подано, опиния раскрывается целиком; если поданы и суд согласится, выйдет отредактированная версия.</td></tr>
+        <tr><td class="num">21–22.09</td><td class="v">Окно исполнения решений ЕК по DMA; слушание о запечатывании жалобы FTC к Amazon</td><td class="v">От слушания зависит, станут ли публичными вымаранные ставки надбавки — без них арифметику «$20 млрд» воспроизвести нельзя.</td></tr>
+        <tr><td class="num">05.10</td><td class="v">Оба дела Нью-Мексико против Meta</td><td class="v">Приватностный процесс приказано завершить к 02.10; в детском деле — разрешены ли пост-судебные ходатайства и залог на 1,8 млрд.</td></tr>
+        <tr><td class="num">20.10</td><td class="v">Обновлена ли страница совета Prebid.org</td><td class="v">Первая половина вопроса закрыта досрочно и пришла из гейта. На 29.08 страница всё ещё числила прежнего президента — источник первичный, но неактуальный.</td></tr>
+        <tr><td class="num">10.12</td><td class="v">Истекают согласованные отрицания по Web Bot Auth</td><td class="v">Формулировка напоминания устарела 01.09, когда черновик стал документом рабочей группы. Проверять теперь другое: появился ли у CDN режим допуска по подписи и объявил ли поддержку хоть один крупный агент.</td></tr>
+        <tr><td class="num">15.01.2027</td><td class="v">Репозиторий объявлений OpenAI по статье 39 DSA</td><td class="v">Условие статьи уже выполнено: реклама в ChatGPT показывается с 18.08. Это первая проверяемая точка того, распространяется ли режим рекламной прозрачности DSA на агентский интерфейс.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<footer>
+  <h3>Как это собрано</h3>
+  <p>Материал пришёл двумя путями. 229 фактов — полный раунд 10.09: восемь срезов research-агентами по накопленному бэклогу фидов, затем адверсариальный верификатор на каждое утверждение по отдельности; 186 исправлений на 229 проверенных. Ещё 6 — фоновая дистилляция ночью 11.09, без верификатора и без человека, поэтому все шесть несут карантинный тег <span class="mono">distill-unverified</span> и на этой странице помечены как карантин.</p>
+  <p>Все доли посчитаны прямым SQL по базе на 11.09.2026 и меняются следующим же ингестом. Палитра оси <span class="mono">chan:</span> — последовательная шкала одного тона, потому что ось ординальная: это дистанция до источника, а не набор равноправных категорий; обе темы прогнаны через валидатор.</p>
+</footer>
+
+</div>

@@ -1,0 +1,451 @@
+<title>Карта норм над рекламными деньгами</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --mark:#B4540A; --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1060px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.1rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.38rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:72ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:16px}
+  .key{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:12px 16px; margin-bottom:40px;
+       font-size:.82rem; color:var(--muted)}
+  .key b{color:var(--ink)}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:80ch; margin:6px 0 16px; font-size:.92rem}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.85em; background:var(--chip-bg); padding:1px 5px; border-radius:3px}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:76ch}
+  .bars{display:grid; gap:10px}
+  .brow{display:grid; grid-template-columns:minmax(150px,250px) 1fr 120px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:17px; position:relative}
+  .bar{height:17px; border-radius:2px 4px 4px 2px; background:var(--c)}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:450px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:84ch}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:82ch}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:880px}
+  th{text-align:left; font-size:.71rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
+  td{padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.845rem}
+  tr:last-child td{border-bottom:none}
+  td.st{white-space:nowrap; font-size:.79rem; font-weight:600}
+  .ok{color:var(--s4)} .later{color:var(--s1)} .prop{color:var(--s2)} .dead{color:var(--mark)}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  .cons3{display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:860px){ .cons,.cons3{grid-template-columns:1fr} .brow{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px; border-top:3px solid var(--cc,var(--accent))}
+  .box h3{margin:0 0 8px}
+  .box ul,.box ol{margin:0; padding-left:19px}
+  .box li{margin-bottom:7px; font-size:.88rem}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:84ch}
+</style>
+<main>
+  <h1>Карта норм над рекламными деньгами</h1>
+  <p class="lede">Какие документы реально управляют рекламным и денежным потоком по регионам, что из них действует именно сегодня, что задаёт маршрут денег — и почему компании регистрируются там, где регистрируются. Ключевой результат раунда: половина ходовых утверждений о статусе норм оказалась неверной, и почти всегда в одну сторону — принятое выдают за применяющееся.</p>
+  <p class="meta">Ресёрч gid · 27.08.2026 · пять срезов, адверсариальная верификация: 50 правок. Первоисточники — EUR-Lex, eCFR, Federal Register, судебные документы, реестры регуляторов, живые выгрузки</p>
+  <div class="key"><b>Обозначения статуса:</b> <span class="ok">В СИЛЕ</span> — применяется сегодня · <span class="later">ПОЗЖЕ</span> — принято, дата применения впереди · <span class="prop">ПРЕДЛОЖЕНО</span> — процедура не завершена · <span class="dead">СНЯТО</span> — отозвано, заблокировано или запрещено к применению судом. <b>(ПИ)</b> — подтверждено первоисточником, <b>(ВИ)</b> — только по вторичному источнику.</div>
+
+  <div class="eyebrow">01 · Главное</div>
+  <h2>Что оказалось неверным</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Четыре опровергнутых утверждения</h3>
+      <ul>
+        <li><b>«AI Act отложили» — неверно ровно в рекламной части.</b> Регламент (ЕС) 2026/1744 сдвинул high-risk (Annex III → 02.12.2027), но внутри ст. 50 изменил <i>только п. 7</i>. Ст. 50 применяется <b>с 02.08.2026</b>: уведомление о взаимодействии с ИИ и <b>машиночитаемая маркировка синтетического аудио, изображения, видео и текста</b>. Legacy-системы приводятся в соответствие до 02.12.2026 — это единственная новая техническая обязанность 2026 года, которая ложится прямо на производство креатива</li>
+        <li><b>«Суд аннулировал Regulation II целиком» — неверно.</b> Решение D.N.D. 07.08.2025 вакировало регламент, но суд <b>27.10.2025 изменил решение</b>, сузив вакацию до § 235.3(b) и приостановив её до апелляции — дословно чтобы межбанковские комиссии «не превратились в полностью нерегулируемый рынок». Апелляция аргументирована 13.05.2026, решения нет</li>
+        <li><b>«Италия отменила пороги DST» — неверно.</b> Отменён только внутренний порог €5,5 млн; глобальный <b>€750 млн сохранён</b>. И база — не всякая реклама, а «pubblicità <b>mirata</b>», таргетированная</li>
+        <li><b>«Индия жёстче COPPA и GDPR по детям» — на сегодня неверно.</b> S.9 DPDP вступает <b>в мае 2027</b>. И сравнение некорректно по категории: 13 в COPPA и 13–16 в GDPR — возраст <i>согласия</i>, а s.9(3) — запрет практики; сопоставимая норма в ЕС это DSA ст. 28(2), и там порог тоже <b>18</b></li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Две структурные находки</h3>
+      <ul>
+        <li><b>Рекламный слой — единственный, где допуск не регулируется, зато он самый массовый.</b> Вход в платёжный слой: €20 000 / €50 000 / €125 000 / €350 000 капитала, публичная процедура, срок в норме, обжалование. Вход в рекламный слой: <b>€1 575/год</b> за место в TCF GVL (1 203 вендора) и <b>$0</b> за Google ATP (1 156 строк). Ни надзорного органа, ни санкции, ни процедуры пересмотра</li>
+        <li><b>Цена трансграничного приёма карт в ЕЭЗ — не норма, а обещание компаний.</b> IFR применяется, только когда <i>оба</i> PSP в Союзе, и выводит из-под всей Главы II коммерческие карты. Межрегиональные ставки резали решения ЕК 2019 года сроком «пять лет и шесть месяцев» — срок истёк в ноябре 2024, и 05.07.2024 Комиссия лишь «приняла к сведению добровольное продолжение» Visa и Mastercard до ноября 2029. <b>Нового решения нет.</b> Корпоративные карты, на которых сидит агентская закупка медиа, потолками не покрыты вообще</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">02 · Данные и реклама</div>
+  <h2>Карта документов по регионам</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Документ</th><th>Регион</th><th>Статус на 27.08.2026</th><th>Надзор и санкция</th><th>Что обязывает делать</th></tr></thead>
+      <tbody>
+        <tr><td><b>GDPR 2016/679</b> (ПИ)</td><td>ЕС</td><td class="st ok">В СИЛЕ</td><td>нац. DPA + EDPB; €20 млн / 4%</td><td>RoPA, DPIA, основание под каждую цель. Ст. 27 — представитель <b>в одном из</b> государств-членов, где находятся субъекты; освобождение 27(2) двойное и рекламный таргетинг заведомо не покрывает</td></tr>
+        <tr><td><b>ePrivacy Directive 2002/58, ст. 5(3)</b> (ПИ)</td><td>ЕС</td><td class="st ok">В СИЛЕ через нацправо</td><td>нац. орган; санкции национальные</td><td>Prior consent на хранение и доступ; <b>два</b> исключения внутри статьи. Консолидация от 19.12.2009, изменений с тех пор нет</td></tr>
+        <tr><td><b>ePrivacy Regulation COM(2017)10</b> (ПИ)</td><td>ЕС</td><td class="st dead">ОТОЗВАНО 06.10.2025</td><td>—</td><td>Замена планируется <b>внутри Digital Omnibus</b>, а не отдельным регламентом</td></tr>
+        <tr><td><b>Digital Omnibus (data) COM(2025)837</b> (ПИ)</td><td>ЕС</td><td class="st prop">ПРЕДЛОЖЕНО — «Awaiting committee decision»</td><td>—</td><td>Мониторить ст. 88a–88c GDPR. <b>Ст. 5(3) ePrivacy не отменяется</b>, лишь отключается для физлиц в части персданных. Прогнозировать финальные cookie-правила нельзя</td></tr>
+        <tr><td><b>DSA 2022/2065</b></td><td>ЕС</td><td class="st ok">В СИЛЕ (полностью с 17.02.2024)</td><td>ЕК для VLOP + нац. DSC; до 6% (ВИ)</td><td>Маркировка рекламы, «кто заплатил», параметры таргетинга; ст. 28(2) — запрет профилированной рекламы несовершеннолетним, порог <b>18</b>; ст. 13 — legal representative, п. 3 допускает его <b>ответственность</b></td></tr>
+        <tr><td><b>DMA 2022/1925</b></td><td>ЕС</td><td class="st ok">В СИЛЕ; обзор ст. 53 — пересмотр не предлагается</td><td>только ЕК; 10%, рецидив 20%</td><td>Гейткиперы: явное согласие на кросс-сервисное объединение; <b>ежедневная</b> отчётность о цене показа; доступ к measurement</td></tr>
+        <tr><td><b>AI Act 2024/1689, ст. 50</b> (ПИ)</td><td>ЕС</td><td class="st ok">В СИЛЕ с 02.08.2026</td><td>нац. market surveillance + AI Office; до €15 млн / 3%</td><td>Машиночитаемая маркировка синтетики, дисклеймер дипфейков. Legacy — до 02.12.2026</td></tr>
+        <tr><td><b>TTPA 2024/900</b></td><td>ЕС</td><td class="st ok">В СИЛЕ с 10.10.2025</td><td>нац. органы + DPA; до 6%</td><td>Метка политической рекламы, transparency notice, репозиторий. <b>Ст. 22 — единственный режим, где представитель обязан ЗАРЕГИСТРИРОВАТЬСЯ</b>, с публичным нацреестром</td></tr>
+        <tr><td><b>Directive (EU) 2024/825</b></td><td>ЕС</td><td class="st later">ПРИМЕНЯЕТСЯ С 27.09.2026</td><td>нац. органы</td><td>Запрет generic-эко-заявлений без доказательств — креативную библиотеку чистить <b>до</b> этой даты</td></tr>
+        <tr><td><b>Implementing Decision 2023/1795 (EU–US DPF)</b> (ПИ)</td><td>ЕС→США</td><td class="st ok">В СИЛЕ, но опора выбита</td><td>Комиссия / DoC / FTC</td><td>Независимость FTC цитировалась как основание адекватности, и <i>Trump v. Slaughter</i> (29.06.2026) её сняло. Держать SCC + свежий TIA параллельно: отзыв адекватности даёт ~0 дней перехода</td></tr>
+        <tr><td><b>FTC Act §5</b></td><td>США</td><td class="st ok">В СИЛЕ</td><td>FTC</td><td>Работает через consent orders (X-Mode, InMarket, Gravy/Venntel, Mobilewalla, Kochava): нет продажи чувствительной геолокации без affirmative express consent. Обязывает <b>ответчика</b>, для остальных — прецедент по аналогии</td></tr>
+        <tr><td><b>Commercial Surveillance Rule</b> (ПИ)</td><td>США</td><td class="st prop">PRERULE STAGE — NPRM нет</td><td>FTC</td><td><b>Ничего.</b> Помечено «EO 14192 Designation: Deregulatory». Поиск по Federal Register с ноября 2022 — ни одного proposed rule</td></tr>
+        <tr><td><b>Negative Option Rule</b> (ПИ)</td><td>США</td><td class="st dead">РЕД. 2024 ЗАПРЕЩЕНА СУДОМ; ред. 1973 В СИЛЕ</td><td>FTC</td><td><i>Custom Communications v. FTC</i>, 8th Cir., 08.07.2025 — нарушен §22 FTC Act; прежняя версия возвращена в CFR правилом от 12.02.2026. Преднотификационные требования 1973 года действуют</td></tr>
+        <tr><td><b>COPPA Rule, 16 CFR 312</b> (ПИ)</td><td>США</td><td class="st ok">В СИЛЕ; compliance с 22.04.2026</td><td>FTC + генпрокуроры</td><td>§312.5(a)(2): отдельная опция согласиться на сбор без согласия на раскрытие третьим лицам — <b>«unless such disclosure is integral to the website or online service»</b></td></tr>
+        <tr><td><b>VPPA, 18 U.S.C. 2710</b> (ПИ)</td><td>США</td><td class="st ok">В СИЛЕ; объём в SCOTUS</td><td>частный иск, $2 500/истца</td><td><i>Salazar v. Paramount Global</i> № 25-459 — <b>слушание 14.10.2026</b>, решение в 2027. Не отдавать пиксели с видеопросмотрами без отдельного согласия</td></tr>
+        <tr><td><b>TCPA one-to-one consent</b> (ПИ)</td><td>США</td><td class="st dead">ЗАПРЕЩЕНО СУДОМ</td><td>FCC / частный иск</td><td><i>IMC v. FCC</i>, 11th Cir., 24.01.2025 — вакатирована Part III.D <b>целиком</b>. 47 CFR 64.1200 вернулся к тексту 2012 года; штатные mini-TCPA не затронуты</td></tr>
+        <tr><td><b>CFPB data broker rule (Reg V)</b> (ПИ)</td><td>США</td><td class="st dead">ОТОЗВАНО 15.05.2025</td><td>—</td><td>Рекламный сегмент вне FCRA — <b>но</b> сегменты из consumer report для firm offer of credit остаются consumer report по 15 U.S.C. 1681b(c)</td></tr>
+        <tr><td><b>Законы штатов о приватности</b> (ВИ)</td><td>США</td><td class="st ok">В СИЛЕ 19 (20 с Флоридой); ещё 3 позже</td><td>генпрокуроры / CPPA</td><td>Оклахома и Луизиана — с 01.01.2027, Алабама — с 01.05.2027. <b>Государственного счётчика нет</b>: де-факто стандарт — трекер IAPP за пейволом</td></tr>
+        <tr><td><b>Colorado CPA Rule 5.07 (UOOM)</b> (ПИ)</td><td>США</td><td class="st ok">В СИЛЕ</td><td>CO AG</td><td>Список признанных механизмов ведёт <b>только Колорадо</b>, и в нём с 2023 года <b>ровно один элемент — GPC</b>. «Universal opt-out обязателен в N штатах» на практике = «GPC обязателен»</td></tr>
+        <tr><td><b>CA AB 566 «Opt Me Out Act»</b></td><td>США</td><td class="st later">ПРИМЕНЯЕТСЯ С 01.01.2027</td><td>CPPA</td><td>Браузеры обязаны иметь встроенную настройку отправки opt-out сигнала — нагрузка переносится на Chrome, Safari и Edge</td></tr>
+        <tr><td><b>UK GDPR + DUAA 2025; PECR Schedule A1</b> (ПИ)</td><td>UK</td><td class="st ok">В СИЛЕ с 05.02.2026</td><td>ICO; <b>два яруса</b> — £17,5 млн / 4% либо £8,7 млн / 2%</td><td>Пять исключений, но п.5 (статистика) и п.6 (внешний вид) работают <b>только в режиме opt-out</b>. Рекламы, таргетинга и измерения для рекламодателя среди исключений нет</td></tr>
+        <tr><td><b>DMCC Act 2024</b> (ПИ)</td><td>UK</td><td class="st ok">Ч. 3 и 4 с 06.04.2025; <span class="dead">подписки НЕ ВВЕДЕНЫ</span></td><td>CMA</td><td>Прямое правоприменение, drip pricing, фейковые отзывы — действуют. Режим потребительских подписок переносился четырежды, ориентир <b>весна 2027</b>. SMS-обозначение Google (10.10.2025) — не лицензия и не вывод о нарушении</td></tr>
+        <tr><td><b>DPDP Act 2023 + Rules 2025</b> (ПИ)</td><td>Индия</td><td class="st later">ПРИМЕНЯЕТСЯ ПОЭТАПНО</td><td>Data Protection Board — <b>не укомплектован</b></td><td>Rule 4 (Consent Manager) — ноябрь 2026, но регистрировать некому. Ядро и s.9 — <b>май 2027</b>. Consent Manager — <b>регистрация, не лицензия</b>, и роль добровольная</td></tr>
+        <tr><td><b>PIPL / DSL / CSL</b></td><td>Китай</td><td class="st ok">В СИЛЕ; поправки к CSL с 01.01.2026</td><td>CAC / SAMR</td><td>Ст. 53 PIPL — местное юрлицо или представитель + подача в CAC. Плюс приказ SAMR №72: <b>one-click close</b> для pop-up, запрет таймера и нечитаемого крестика. Плюс обязательная двойная маркировка ИИ-контента с 01.09.2025</td></tr>
+        <tr><td><b>PIPA + поправки</b> (ВИ)</td><td>Корея</td><td class="st ok">Представитель с 02.10.2025; штрафы до 10% оборота с 11.09.2026</td><td>PIPC</td><td>Прецедент: июль 2026, TikTok — <b>10,3 млрд вон</b> за кросс-сайтовый трекинг 9,45 млн пользователей без валидного согласия</td></tr>
+        <tr><td><b>PDPL + Mawthooq</b> (ВИ)</td><td>Сауд. Аравия</td><td class="st ok">В СИЛЕ с 14.09.2024</td><td>SDAIA / GAMR</td><td><b>Лицензия на саму рекламу</b> ~SAR 15 000 на 3 года, санкция до SAR 5 млн и лишение свободы — единственный такой случай во всём периметре</td></tr>
+        <tr><td><b>PIPEDA; Bill C-27</b></td><td>Канада</td><td class="st dead">C-27 ОТОЗВАН (умер 06.01.2025)</td><td>OPC / Quebec CAI</td><td>Замены не внесено. Канада сейчас регулируется <b>мягче Бразилии и Индии</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="eyebrow">03 · Деньги</div>
+  <h2>Что даёт право принимать и почём</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Документ</th><th>Регион</th><th>Статус на 27.08.2026</th><th>Точные требования</th></tr></thead>
+      <tbody>
+        <tr><td><b>PSD2 2015/2366</b> (ПИ)</td><td>ЕС</td><td class="st ok">В СИЛЕ с 13.01.2018</td><td>Ст. 7: <b>€20 000</b> money remittance / <b>€50 000</b> PIS / <b>€125 000</b> основные услуги. <b>AIS — без начального капитала</b> (ст. 33 не сохраняет ст. 5(1)(c), взамен страхование PII). Ст. 12: три месяца <b>не начинают течь</b>, пока пакет не полон, и предельного срока на запрос нет. Паспорт <b>не автоматический</b>: ст. 28 — 1 мес. на пересылку + 1 мес. на оценку</td></tr>
+        <tr><td><b>EMD2 2009/110</b> (ПИ)</td><td>ЕС</td><td class="st ok">В СИЛЕ</td><td>Ст. 4 — <b>€350 000</b>; ст. 5(3) Method D — 2% AOEM; ст. 5(1) — <b>«whichever the higher», а не «плюс»</b>. Перелом при AOEM выше <b>€17,5 млн</b></td></tr>
+        <tr><td><b>Реестр EBA по ст. 15(1) PSD2</b> (ПИ)</td><td>ЕС</td><td class="st ok">В СИЛЕ</td><td>Собственный дисклеймер: <b>«has no legal significance and confers no rights in law»</b>. Ошибочное включение не легализует, исключение не аннулирует. <b>Не счётчик лицензий</b> — семь разных типов записей</td></tr>
+        <tr><td><b>PSD3 / PSR</b> (ПИ)</td><td>ЕС</td><td class="st prop">ПРЕДЛОЖЕНО — «Awaiting Council's 1st reading position»</td><td>Пленар ориентировочно <b>14.12.2026</b>, применение ~21 мес. после публикации в OJ → раньше конца 2028 обязанностей не возникнет. Юрфирменные обзоры, обещавшие OJ в июне–июле 2026, опровергаются собственным реестром ЕП</td></tr>
+        <tr><td><b>IFR 2015/751</b> (ПИ)</td><td>ЕС</td><td class="st ok">В СИЛЕ с 09.12.2015</td><td>0,2% дебет / 0,3% кредит — но только когда <b>оба PSP в Союзе</b>. Ст. 1(3) выводит из-под <b>всей Главы II</b> коммерческие карты, снятие наличных и трёхсторонние схемы. Для внутренних дебетовых допустим более низкий потолок либо фикс <b>≤ €0,05</b></td></tr>
+        <tr><td><b>Межрегиональные MIF Visa/MC</b> (ПИ)</td><td>ЕС</td><td class="st prop">ДОБРОВОЛЬНОЕ ОБЯЗАТЕЛЬСТВО, не норма</td><td>0,2/0,3 card-present, 1,15/1,5 CNP — до ноября 2029. Реестры дел ЕК не содержат ни одного документа после 2019 года</td></tr>
+        <tr><td><b>MiCA 2023/1114</b> (ПИ)</td><td>ЕС</td><td class="st ok">В СИЛЕ; переходный режим <b>истёк 01.07.2026</b></td><td>Annex IV: Class 1 €50 000 / Class 2 €125 000 / Class 3 €150 000 — но это <b>большее из</b> Annex IV и 1/4 постоянных расходов прошлого года. Ст. 63: 5 / 25 / 40 рабочих дней, <b>не суммируются в 65</b>. Ст. 59(2) — офис в государстве-члене, effective management в Союзе, <b>директор-резидент</b></td></tr>
+        <tr><td><b>Late Payment Directive 2011/7</b></td><td>ЕС</td><td class="st ok">В СИЛЕ</td><td>Ст. 3(5): B2B свыше 60 дней — только «expressly agreed» и не grossly unfair. <b>Исключение проглотило правило</b>: 90–120 дней в медиабаинге держатся на нём. Попытка ввести жёсткие 30 дней — <span class="dead">ЗАБЛОКИРОВАНА в Совете</span></td></tr>
+        <tr><td><b>PSRs 2017 / EMRs 2011</b> (ПИ)</td><td>UK</td><td class="st ok">В СИЛЕ</td><td>Те же пороги, но номинированы <b>в евро</b>: AIS «None», money remittance €20 000, PIS €50 000, основные €125 000, EMI €350 000. Паспорта нет — отдельная авторизация FCA</td></tr>
+        <tr><td><b>HMT «Modernising Payment Services Regulation»</b> (ПИ)</td><td>UK</td><td class="st prop">КОНСУЛЬТАЦИЯ, закрытие 06.10.2026</td><td>Прямо ставит вопрос об <b>агентных платежах</b>: согласие, аутентификация, распределение ответственности за неавторизованную транзакцию, инициированную ИИ-агентом. Единственный документ в мире, который ставит его вслух</td></tr>
+        <tr><td><b>31 CFR 1022.380</b> (ПИ)</td><td>США</td><td class="st ok">В СИЛЕ</td><td><b>Регистрация, не лицензия</b>: применяется «whether or not licensed … by any State» и права переводить деньги не даёт. 180 дней, госпошлины нет, период два календарных года. Санкция $5 000 за нарушение, каждый день отдельно</td></tr>
+        <tr><td><b>31 CFR 1010.100(ff)(5)</b> (ПИ)</td><td>США</td><td class="st ok">В СИЛЕ</td><td><b>Порога в долларах нет</b> — в отличие от трёх других категорий MSB с $1 000/день. Шесть изъятий применимы к тому, кто «<b>only</b>» делает перечисленное. Изъятие (F) заканчивается словами «by the person who is accepting and transmitting the funds» — покрывает продавца собственных товаров, <b>не стороннего посредника</b></td></tr>
+        <tr><td><b>Regulation II 12 CFR 235</b> (ПИ)</td><td>США</td><td class="st ok">В СИЛЕ, но § 235.3(b) вакатирован с приостановкой</td><td>21¢ + 5 б.п. (+1¢ по 235.4). Проект ФРС 14,4¢ + 4,0 б.п. + 1,3¢ стоит в Unified Agenda как <b>«Long-Term Actions, Next Action Undetermined»</b>, а его исходные значения привязаны к данным до 30.06.2025 и требуют перерасчёта</td></tr>
+        <tr><td><b>MTMA</b> (ПИ)</td><td>США</td><td class="st prop">МОДЕЛЬНЫЙ АКТ, не норма</td><td>Принят <b>в 31 штате</b> «in full or in part» — счётчик ведёт CSBS, отраслевая ассоциация регуляторов, и смешивает полные адопции, частичные, подзаконные акты и узкие поправки об одном изъятии. Суммы бонда стоят в <b>квадратных скобках</b>, то есть это плейсхолдеры</td></tr>
+        <tr><td><b>GENIUS Act, Pub. L. 119-27</b></td><td>США</td><td class="st later">ПРИМЕНЯЕТСЯ С 18.01.2027</td><td>§20 берёт <b>более раннюю</b> из дат — финальные правила её уже не сдвинут. Статутный дедлайн правил 18.07.2026 пропущен. §4(a)(11) — <b>запрет платить yield</b></td></tr>
+        <tr><td><b>PS Act 2019</b> (ПИ)</td><td>Сингапур</td><td class="st ok">В СИЛЕ</td><td>Суммы <b>не в Акте</b>, а в Regulations: SPI S$100 000, MPI S$250 000; обеспечение S$100 000 при обороте ≤S$6 млн/мес <b>по каждой услуге</b>, иначе S$200 000</td></tr>
+        <tr><td><b>Storage of Payment System Data</b> (ПИ)</td><td>Индия</td><td class="st ok">В СИЛЕ; срок истёк 15.10.2018</td><td>Весь массив данных платёжных систем — «in a system <b>only in India</b>», <b>без порогов и исключений</b>. Плюс CoFT: мерчант, шлюз и e-commerce не хранят PAN, CVV и срок</td></tr>
+        <tr><td><b>Res. BCB 80/2021</b> (ВИ)</td><td>Бразилия</td><td class="st ok">В СИЛЕ</td><td><b>Бразильское юрлицо</b> (Ltda или S.A.), R$2 млн для эмитента и эквайрера, R$1 млн для инициатора</td></tr>
+        <tr><td><b>Ст. 5n(1)(d) Регламента 833/2014</b></td><td>ЕС</td><td class="st ok">В СИЛЕ</td><td><b>Прямой запрет</b> оказывать России и российским лицам услуги рекламы, маркетинговых исследований и опросов. Единственная норма, реально переставляющая рекламный счёт</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="viz">
+    <h3>Начальный капитал платёжной лицензии, тысячи евро</h3>
+    <p class="sub">Точные суммы из текста норм. Это и есть цена входа в слой, где деньги регулируются — против €1 575 в год за вход в слой, где они не регулируются.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">AIS · информирование о счетах<em>PSD2 ст. 33</em></div>
+        <div class="track"></div>
+        <div class="bval">0</div>
+        <div class="tip">Ст. 33(1) не сохраняет ст. 5(1)(c) — начального капитала нет вовсе; взамен требуется страхование профессиональной ответственности. То есть «PSD2-лицензия» это не одна вещь, а четыре разных уровня входа.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Money remittance<em>PSD2 ст. 7, п. 6 Annex I</em></div>
+        <div class="track"><div class="bar" style="width:5.7%; --c:var(--s1)"></div></div>
+        <div class="bval">20</div>
+        <div class="tip">В UK та же сумма номинирована в евро — €20 000, несмотря на Brexit.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">PIS · инициирование платежа<em>PSD2 ст. 7, п. 7</em></div>
+        <div class="track"><div class="bar" style="width:14.3%; --c:var(--s1)"></div></div>
+        <div class="bval">50</div>
+        <div class="tip">Класс, под который попадает большинство агентских конструкций «только исполняем, остатки не держим».</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">MiCA CASP Class 2<em>Annex IV</em></div>
+        <div class="track"><div class="bar" style="width:35.7%; --c:var(--s3)"></div></div>
+        <div class="bval">125</div>
+        <div class="tip">Но это только п.(a) ст. 67(1): пруденциальные гарантии = БОЛЬШЕЕ из Annex IV и 1/4 постоянных расходов предыдущего года. Для сколько-нибудь заметной компании второй множитель больше.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">PI · полный набор услуг<em>PSD2 ст. 7, п. 1–5</em></div>
+        <div class="track"><div class="bar" style="width:35.7%; --c:var(--s1)"></div></div>
+        <div class="bval">125</div>
+        <div class="tip">Плюс ст. 8(1): собственные средства не ниже большего из ст. 7 и ст. 9.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">MiCA CASP Class 3<em>Annex IV</em></div>
+        <div class="track"><div class="bar" style="width:42.9%; --c:var(--s3)"></div></div>
+        <div class="bval">150</div>
+        <div class="tip">Ст. 59(2) добавляет то, чего нет в капитале: офис в государстве-члене, effective management в Союзе и директор-резидент. Именно это отрезает офшорные конструкции от денег ЕС.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">EMI · электронные деньги<em>EMD2 ст. 4</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--mark)"></div></div>
+        <div class="bval">350</div>
+        <div class="tip">Плюс Method D — 2% от среднего объёма электронных денег в обращении, по правилу «whichever the higher», а НЕ «плюс». Перелом наступает при AOEM выше €17,5 млн: до этого порога связывает €350 тыс., после — процент.</div>
+      </div>
+    </div>
+    <p class="vizfoot">В США логика другая и дороже: <b>FinCEN MSB — регистрация, а не лицензия</b> (0 пошлины, 180 дней, права переводить деньги не даёт), а сама лицензия выдаётся <b>в каждом штате отдельно</b> через NMLS — одна заявка, столько решений, сколько штатов; net worth от $100 000 по шкале, бонд $100 000–$500 000 на штат. Полное покрытие США — порядка 50 одобрений и 50 бондов. <b>Делавэр в платежах не даёт ничего</b> — это чисто корпоративный мотив.</p>
+  </div>
+
+  <div class="eyebrow">04 · Три модели</div>
+  <h2>Структурно разные машины, а не разные строгости</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 268" role="img" aria-label="Три регуляторные модели и по какому таймеру в каждой идёт планирование">
+      <g font-size="11.5">
+        <rect x="0" y="0" width="300" height="196" rx="6" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="16" y="24" fill="var(--s1)" font-size="12.5" font-weight="600">А · ЕС</text>
+        <text x="16" y="44" fill="var(--ink)" font-weight="600">Кодифицированная ex-ante норма</text>
+        <text x="16" y="60" fill="var(--muted)">Регламент, а не директива — значит нет</text>
+        <text x="16" y="75" fill="var(--muted)">транспозиции и «счётчик стран» бессмыслен.</text>
+        <text x="16" y="90" fill="var(--muted)">Настоящий счётчик — сколько государств</text>
+        <text x="16" y="105" fill="var(--muted)">нотифицировали санкции и назначили органы.</text>
+        <text x="16" y="126" fill="var(--muted)">Санкция от МИРОВОГО оборота, поэтому</text>
+        <text x="16" y="141" fill="var(--muted)">не масштабируется с местным бизнесом.</text>
+        <text x="16" y="162" fill="var(--muted)">Обязательная привязка: представитель по</text>
+        <text x="16" y="177" fill="var(--muted)">ст. 27 GDPR, 13 DSA, 54 AI Act, 22 TTPA.</text>
+
+        <rect x="320" y="0" width="300" height="196" rx="6" fill="var(--card)" stroke="var(--s2)" stroke-width="2"/>
+        <text x="336" y="24" fill="var(--s2)" font-size="12.5" font-weight="600">Б · США</text>
+        <text x="336" y="44" fill="var(--ink)" font-weight="600">Правил общего действия нет</text>
+        <text x="336" y="60" fill="var(--muted)">Три суррогата: consent orders (обязывают</text>
+        <text x="336" y="75" fill="var(--muted)">одного ответчика) · частный иск со</text>
+        <text x="336" y="90" fill="var(--muted)">статутными убытками (VPPA, TCPA, BIPA) —</text>
+        <text x="336" y="105" fill="var(--muted)">единственный механизм, бьющий по adtech</text>
+        <text x="336" y="120" fill="var(--muted)">напрямую и БЕЗ регулятора · штаты и суды.</text>
+        <text x="336" y="141" fill="var(--mark)" font-weight="600">Асимметрия внутри модели:</text>
+        <text x="336" y="157" fill="var(--muted)">в данных правил нет, в деньгах правила</text>
+        <text x="336" y="172" fill="var(--muted)">точные — с номерами пунктов и суммами.</text>
+        <text x="336" y="188" fill="var(--muted)">В данных нет лицензий, только регистрации.</text>
+
+        <rect x="640" y="0" width="300" height="196" rx="6" fill="var(--card)" stroke="var(--s3)" stroke-width="2"/>
+        <text x="656" y="24" fill="var(--s3)" font-size="12.5" font-weight="600">В · ЮРИСДИКЦИЯ ПРИСУТСТВИЯ</text>
+        <text x="656" y="44" fill="var(--ink)" font-weight="600">Регулируется право быть на рынке</text>
+        <text x="656" y="60" fill="var(--muted)">Китай, Индия, Корея, Турция, Саудовская</text>
+        <text x="656" y="75" fill="var(--muted)">Аравия, Бразилия. Ст. 53 PIPL, корейский</text>
+        <text x="656" y="90" fill="var(--muted)">представитель, турецкий VERBIS, бразильское</text>
+        <text x="656" y="105" fill="var(--muted)">юрлицо, индийская локализация без порогов,</text>
+        <text x="656" y="120" fill="var(--muted)">саудовская лицензия на саму рекламу.</text>
+        <text x="656" y="141" fill="var(--muted)">Содержательные нормы могут ещё не</text>
+        <text x="656" y="156" fill="var(--muted)">действовать (индийская s.9 — с мая 2027),</text>
+        <text x="656" y="171" fill="var(--muted)">но структурное требование уже связывает.</text>
+        <text x="656" y="188" fill="var(--mark)" font-weight="600">Китай — все четыре барьера сразу.</text>
+
+        <rect x="0" y="210" width="300" height="30" rx="4" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="150" y="230" fill="var(--ink)" font-size="12" font-weight="600" text-anchor="middle">Планируют по ДАТАМ ПРИМЕНЕНИЯ</text>
+        <rect x="320" y="210" width="300" height="30" rx="4" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="470" y="230" fill="var(--ink)" font-size="12" font-weight="600" text-anchor="middle">Планируют по СУДЕБНОМУ КАЛЕНДАРЮ</text>
+        <rect x="640" y="210" width="300" height="30" rx="4" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="790" y="230" fill="var(--ink)" font-size="12" font-weight="600" text-anchor="middle">Планируют по КОРПОРАТИВНОЙ СТРУКТУРЕ</text>
+
+        <rect x="0" y="250" width="940" height="18" rx="3" fill="none"/>
+        <text x="0" y="264" fill="var(--muted)" font-size="12">UK — гибрид: содержание близко к ЕС, но институт другой — регулятор с полномочиями ПО КОНКРЕТНОЙ КОМПАНИИ. Обратная сторона: когда полномочие оспаривают, режим встаёт.</text>
+      </g>
+    </svg>
+    <figcaption>Показательная деталь по модели А: рецитал Регламента 2026/1744 прямо называет причиной отсрочки AI Act задержки с назначением национальных компетентных органов и с гармонизированными стандартами — то есть ЕС спотыкается об институциональный слой, а не о содержание. И по UK: промежуточный кэп по кросс-бордерному интерчейнджу не введён именно потому, что Mastercard, Visa и Revolut подали заявление о судебном пересмотре, из-за чего работа была приостановлена ещё в марте 2025.</figcaption>
+  </figure>
+
+  <div class="eyebrow">05 · Маршрут денег</div>
+  <h2>Норма, налог и договор решают три разные вещи</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 214" role="img" aria-label="Что именно определяет норма, налог и договорная практика в маршруте рекламных денег">
+      <g font-size="11.5">
+        <rect x="0" y="0" width="940" height="52" rx="6" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="16" y="24" fill="var(--s1)" font-size="12.5" font-weight="600">НОРМА определяет ЦЕНУ ПРИЁМА и ПРАВО ПРИНИМАТЬ — но почти не определяет место счёта.</text>
+        <text x="16" y="44" fill="var(--muted)">Интерчейндж (IFR, Regulation II), платёжные лицензии (PSD2/EMD2, MiCA, MTL). Исключение одно: санкционная ст. 5n(1)(d) Регламента 833/2014.</text>
+
+        <rect x="0" y="64" width="940" height="52" rx="6" fill="var(--card)" stroke="var(--s2)" stroke-width="2"/>
+        <text x="16" y="88" fill="var(--s2)" font-size="12.5" font-weight="600">НАЛОГ определяет ЦЕНУ СТРОКИ В СЧЁТЕ — а не адрес счёта.</text>
+        <text x="16" y="108" fill="var(--muted)">DST, WHT, Pillar Two. И кто платит DST — вопрос договора: Google конвертирует его в отдельную надбавку рекламодателю.</text>
+
+        <rect x="0" y="128" width="940" height="52" rx="6" fill="var(--card)" stroke="var(--s3)" stroke-width="2"/>
+        <text x="16" y="152" fill="var(--s3)" font-size="12.5" font-weight="600">ДОГОВОРНАЯ ПРАКТИКА определяет, У КОГО ДЕНЬГИ ЛЕЖАТ В ПРОМЕЖУТКЕ. Весит больше многих норм.</text>
+        <text x="16" y="172" fill="var(--muted)">Sequential liability (4A's/IAB v3.0, Section III(c)) — механизм, по которому кассовый разрыв ложится на паблишера. Сроки 90–120 дней легальны ПО ИСКЛЮЧЕНИЮ ст. 3(5).</text>
+
+        <rect x="0" y="192" width="940" height="22" rx="4" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="207" fill="var(--ink)" font-size="12" font-weight="600">Адрес счёта решает НДС: ст. 44 и 196 Директивы 2006/112 — B2B-счёт через границу выставляется БЕЗ НДС, покупатель сам начисляет и сам вычитает. Денежный поток нулевой.</text>
+      </g>
+    </svg>
+    <figcaption><b>Итог: где выставляется счёт, не решают ни норма, ни налог.</b> Решает комбинация — одно юрлицо на 27 рынков, reverse charge, снимающий НДС с трансграничного счёта, единый лидирующий надзорный орган по GDPR и сеть договоров об избежании. Ставка налога на прибыль как инструмент конкуренции юрисдикций умерла: для групп ≥€750 млн доплату всё равно соберёт QDMTT по месту.</figcaption>
+  </figure>
+  <div class="viz">
+    <h3>Действующие DST на цифровую рекламу, ставка</h3>
+    <p class="sub">Только те, что действуют на 27.08.2026. Наведите на строку — база и пороги у всех разные, и это важнее ставки.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Австрия<em>Werbeabgabe-модель</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--mark)"></div></div>
+        <div class="bval">5 %</div>
+        <div class="tip">База — ИСКЛЮЧИТЕЛЬНО онлайн-реклама, а не широкий набор цифровых услуг. Пороги: €750 млн глобально и €25 млн именно от онлайн-рекламы в Австрии. Реклама под Werbeabgabegesetz 2000 исключена.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Турция<em>ставка меняется по годам</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--mark)"></div></div>
+        <div class="bval">5 %</div>
+        <div class="tip">7,5% до 31.12.2025 → 5% в 2026 → 2,5% с 2027. Отдельно и куда больнее: WHT 15% на выплаты за цифровую рекламу с 2019 года.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Франция<em>3% на 2026 — разрешено 17.09.2026</em></div>
+        <div class="track"><div class="bar" style="width:60%; --c:var(--s2)"></div></div>
+        <div class="bval">3 %</div>
+        <div class="tip">Закрыто по первоисточникам 17.09.2026. Ставка стоит не в CGI, а в CIBS L453-70 (с 01.01.2024, ордонанс 2023-1210); пороги €750 млн / €25 млн — L453-65/66. Закон о финансах 2026-103 от 19.02.2026 их не меняет: повышения до 15% (комиссия) и 6% (I-655) пропали, когда 21.11.2025 Собрание отклонило законопроект, а Сенат поправки на 6% и 9% отклонил. Решение 2026-901 DC налог не рассматривало. Оговорка: ставка за 2026 год определяется правом на конец года, так что бюджет на 2027 теоретически ещё может её тронуть — проверки 07.10, 23.10, 05.11, 01.12.2026.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Италия<em>только ТАРГЕТИРОВАННАЯ реклама</em></div>
+        <div class="track"><div class="bar" style="width:60%; --c:var(--s2)"></div></div>
+        <div class="bval">3 %</div>
+        <div class="tip">Опровергнуто ходовое «пороги отменены»: отменён ТОЛЬКО внутренний порог €5,5 млн, глобальный €750 млн сохранён в действующей редакции. И база по comma 37(a) — «pubblicità mirata».</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Испания</div>
+        <div class="track"><div class="bar" style="width:60%; --c:var(--s2)"></div></div>
+        <div class="bval">3 %</div>
+        <div class="tip">Google перекладывает как отдельную надбавку 3% рекламодателю.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Великобритания<em>сборы выросли вдвое</em></div>
+        <div class="track"><div class="bar" style="width:40%; --c:var(--s1)"></div></div>
+        <div class="bval">2 %</div>
+        <div class="tip">£380 млн в 2021-22 → £808 млн в 2024-25. Самая низкая ставка даёт самый быстрорастущий сбор.</div>
+      </div>
+    </div>
+    <p class="vizfoot"><b>Откат DST 2024–2026 вызван не Pillar One, а торговым давлением.</b> Многосторонняя конвенция по Amount A опубликована в октябре 2023 и <b>до сих пор не открыта к подписанию</b>, подписей ноль. Причина отката — меморандум от 21.02.2025, Section 301 против шести юрисдикций и угрозы 100% тарифов. Отменили: Индия (2% с 01.08.2024, 6% на онлайн-рекламу с 01.04.2025), Канада (C-15 принят 26.03.2026 с ретроактивной отменой и <b>возвратом с процентами</b>), Кения, Новая Зеландия, Мэриленд (сбит налоговым судом в августе 2026 по ITFA и dormant Commerce Clause; собрано ~$535,5 млн).</p>
+  </div>
+
+  <div class="eyebrow">06 · Юрисдикции</div>
+  <h2>Почему компании регистрируются там, где регистрируются</h2>
+  <p class="note">Мотивы: <b>Н</b> — налоговый, <b>Л</b> — лицензионный (что даёт допуск), <b>А</b> — регуляторно-арбитражный (что позволяет <i>не</i> делать).</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Юрисдикция</th><th>Что физически даёт</th><th>Мотив</th><th>Чего этот мотив уже не даёт</th></tr></thead>
+      <tbody>
+        <tr><td><b>Ирландия</b></td><td>Одно юрлицо обслуживает 27 рынков; лидирующий DPA один; reverse charge снимает НДС с трансграничного B2B-счёта; Knowledge Development Box — эффективные <b>10%</b>, продлён на периоды, начинающиеся до 01.01.2027; R&amp;D-кредит 35% на 2026</td><td><b>Л+Н</b>, но ядро операционно-регуляторное</td><td>Базовые 12,5% для групп ≥€750 млн съедены QDMTT до 15%. Double Irish закрыт с 2020</td></tr>
+        <tr><td><b>Люксембург</b></td><td>Ст. 50ter LITL — 80% освобождение квалифицируемого IP-дохода по nexus, эффективная ~5,2% (ВИ); плюс холдинговые и финансовые функции</td><td><b>Н</b></td><td>Для групп ≥€750 млн QDMTT доводит до 15% — мотив живёт <b>ниже порога</b>. По CASP всего 13 записей: не узел</td></tr>
+        <tr><td><b>Нидерланды</b></td><td>Innovation box 9% против 25,8% (ВИ); развитая договорная сеть; <b>29 записей CASP, третье место в ЕС</b></td><td><b>Н+Л</b></td><td>Та же оговорка Pillar Two — но лицензионная часть работает</td></tr>
+        <tr><td><b>Литва</b></td><td>Скорость и доступность платёжной авторизации плюс паспорт. Крупнейший узел EMI-лицензий в ЕС после ухода UK</td><td><b>Л+А</b></td><td><b>Арбитраж закрывается:</b> в 2024 нетто-сокращение сектора, отзывы у Silvergate LT, NEOCARD, Sezzle Lithuania, FoxPay, Kevin EU; Резолюция Банка Литвы № 03-33 добавила требования к wind-down плану с 09.04.2025. <b>Точное число лицензий установить нельзя</b> — lb.lt отдаёт 403</td></tr>
+        <tr><td><b>Сингапур</b></td><td>Допуск к APAC через предсказуемый MAS; три класса, MPI S$250 000 + обеспечение; требования к резидентству директоров и обязательный пентест до выдачи</td><td><b>Л</b></td><td><b>Н сдулся:</b> Multinational Enterprise (Minimum Tax) Act 2024 ввёл MTT и DTT для финансовых годов с 01.01.2025</td></tr>
+        <tr><td><b>Делавэр</b></td><td>Корпоративное право и Chancery — предсказуемость акционерных и договорных конфликтов</td><td><b>чисто корпоративный</b>, ни Н, ни Л</td><td><b>В платежах не даёт ничего:</b> money transmission лицензируется в каждом штате присутствия, а FinCEN-регистрация применяется «whether or not licensed by any State»</td></tr>
+        <tr><td><b>Кипр</b></td><td>Доступность авторизации CASP — <b>26 записей в реестре ESMA, четвёртое место</b>; исторически IP-box и низкая ставка</td><td><b>Л+Н</b></td><td>Налоговая часть под Pillar Two; лицензионная — под общий MiCA-стандарт, паспорт теперь у всех одинаковый</td></tr>
+        <tr><td><b>Мальта</b></td><td><b>22 записи CASP</b>; исторический VFA-режим стал быстрой точкой конверсии в MiCA-авторизацию; отдельно игорная лицензия MGA</td><td><b>Л+А</b></td><td>Игорная и крипто-части первоисточниками не подтверждены — подтверждён только счётчик CASP</td></tr>
+        <tr><td><b>Кюрасао</b></td><td>Дешёвый допуск для игорного и аффилиатного трафика</td><td><b>А в чистом виде</b></td><td><b>Первоисточников по Кюрасао в материале нет ни одного.</b> Что можно утверждать твёрдо — структурную границу со стороны ЕС: MiCA ст. 59(2) требует офиса в государстве-члене и директора-резидента, ст. 61 толкует reverse solicitation узко и <b>аннулирует договорные оговорки</b>, если велась реклама в Союзе</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Сквозной вывод: три мотива разошлись по разным этажам.</b> Налоговый обесценен для крупных групп — Pillar Two перенёс конкуренцию со ставки на substance-based льготы с кэпом 5,5% ФОТ и амортизации, то есть на зарплаты и материальные активы. Лицензионный выравнивается — MiCA дала единый Annex IV и единый паспорт, PSD2 давно дал свой; арбитраж свёлся к скорости регулятора и его терпимости к отсутствию substance, а она сокращается. Регуляторно-арбитражный отрезан от денег ЕС и США по норме — но остаётся живым в трафике и партнёрских выплатах, <b>потому что рекламный слой допуска, в отличие от платёжного, не регулируется вовсе</b>.</p>
+
+  <div class="eyebrow">07 · Допуск</div>
+  <h2>Лицензия, реестр и сертификат — три разных механизма</h2>
+  <div class="cons3">
+    <div class="box" style="--cc:var(--s1)">
+      <h3>ЛИЦЕНЗИЯ</h3>
+      <p class="note" style="margin:0">Без неё деятельность <b>незаконна</b>. Есть норма, санкция, надзорный орган, проверка капитала и fit-and-proper. PSD2/EMD2, MiCA CASP, MTL штата, PS Act. <br><br><b>Не путать:</b> FinCEN-регистрация MSB — не лицензия; AIS-регистрация по ст. 33 PSD2 — режим без начального капитала; MTMA — модель, а не норма; реестр EBA не порождает прав.</p>
+    </div>
+    <div class="box" style="--cc:var(--s2)">
+      <h3>РЕЕСТР</h3>
+      <p class="note" style="margin:0">Деятельность законна, но <b>без записи не пустят на площадку</b>. Ведёт частное лицо — ассоциация или доминирующий покупатель; санкция — отключение от спроса. TCF GVL, Google ATP, sellers.json.<br><br>Отдельно — <b>публично-правовые</b> реестры, где запись обязательна по норме: ст. 27 GDPR, ст. 13 DSA, ст. 22 TTPA, дата-брокерские реестры штатов.</p>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>СЕРТИФИКАТ</h3>
+      <p class="note" style="margin:0">Формально <b>добровольный</b>, принудительность создаёт контрагент договором. PCI DSS, ISO 27001/27701, SOC 2, MRC, TAG, TISAX.<br><br>Плюс четвёртая категория, которую обычно не выделяют: <b>контрактное условие площадки</b> — требования биржи к юрлицу продавца. Меняется односторонне, не публикуется и не обжалуется.</p>
+    </div>
+  </div>
+  <div class="cons">
+    <div class="box" style="--cc:var(--accent)">
+      <h3>Adtech-посредник: минимальный набор</h3>
+      <ul>
+        <li><b>Лицензий — ноль.</b> Рекламная деятельность не лицензируется нигде, кроме Саудовской Аравии</li>
+        <li><b>По норме обязательно:</b> представитель по ст. 27 GDPR; DPO по ст. 37 (триггер «регулярный систематический мониторинг в крупном масштабе» срабатывает почти всегда); legal representative по ст. 13 DSA (назначение <b>не</b> создаёт establishment, но представитель может нести ответственность); зарегистрированный представитель по ст. 22 TTPA при политрекламе</li>
+        <li><b>Реестры допуска:</b> TCF GVL €1 575/год + Google ATP + <b>сертифицированный Google CMP</b> (обязателен для показа в EEA/UK с 16.01.2024) + корректные ads.txt, app-ads.txt, sellers.json, SupplyChain Object</li>
+        <li><b>США, если продаёт данные:</b> регистрация дата-брокером — CA $6 000, TX $300, OR $600, VT $100. Итого около $7 000/год. Настоящая цена — не пошлина, а <b>публичное раскрытие</b>: калифорнийская форма с 2026 спрашивает прямо, продаёт ли брокер данные иностранным «adversary» правительствам, правоохранителям и <b>разработчикам GenAI-систем</b></li>
+        <li><b>Ловушка money transmission,</b> если посредник сам принимает деньги рекламодателя и платит паблишеру: изъятие (F) покрывает только продавца собственных товаров. Работать надо через (B) payment processor с четырьмя условиями FIN-2019-G001 и agent-of-payee exemption. При правильных договорах лицензия не нужна; при неправильных — нужна <b>в 40+ штатах</b></li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Оператор агентских платежей и паблишер</h3>
+      <ul>
+        <li><b>Оператор платежей:</b> рекламных требований ноль, финансовых максимум. ЕС — EMI €350 000 при удержании остатков либо PI €125 000 при чистом исполнении. UK — отдельная авторизация FCA, паспорта нет. США — FinCEN MSB <b>плюс MTL в каждом штате</b>. Сингапур — MPI S$250 000. Крипта — MiCA CASP, переходный период <b>истёк</b>. Стейблкоин — с 18.01.2027 только permitted issuer, <b>без выплаты yield</b>. Плюс PCI DSS уровня, назначенного эквайрером</li>
+        <li><b>И здесь зияет главная дыра:</b> делегирование полномочий ИИ-агенту <b>не имеет правового определения ни в Reg E, ни в Reg Z, ни в GENIUS Act</b>. Reg E определяет «неавторизованный» через отсутствие actual, implied или apparent authority — кто такой агент в этой конструкции, не сказано нигде. Единственный документ в мире, который ставит вопрос вслух, — консультация HM Treasury, закрывающаяся 06.10.2026. Это стадия консультации: нормы нет</li>
+        <li><b>Паблишер и аффилиат:</b> лицензий нет, ads.txt — публикация, а не регистрация, в TCF регистрироваться не нужно. Но <b>нужен сертифицированный Google CMP</b>, иначе Google не покажет рекламу в EEA/UK — то есть допуск к деньгам всё равно выдаёт Google, а не регулятор</li>
+        <li><b>Структурная асимметрия:</b> попадание паблишера в sellers.json решает биржа, а не паблишер, и в крупнейшем файле <b>71% продавцов скрыты</b>. Публичность собственного юрлица в цепочке поставок паблишер не контролирует</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">08 · Календарь</div>
+  <h2>Ближайшие 18 месяцев</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Дата</th><th>Что происходит</th></tr></thead>
+      <tbody>
+        <tr><td class="st"><b>27.09.2026</b></td><td>Директива (ЕС) 2024/825 — запрет generic-эко-заявлений. Креативную библиотеку чистить <b>до</b> этой даты</td></tr>
+        <tr><td class="st"><b>06.10.2026</b></td><td>Закрывается консультация HM Treasury по агентным платежам — единственный документ, ставящий вопрос об ответственности за транзакцию, инициированную ИИ-агентом</td></tr>
+        <tr><td class="st"><b>14.10.2026</b></td><td>Слушание SCOTUS по <i>Salazar v. Paramount Global</i> — судьба всей волны pixel-исков по VPPA</td></tr>
+        <tr><td class="st"><b>13/14.11.2026</b></td><td>Индия: Rule 4 DPDP, регистрация Consent Manager. <b>Регистрировать некому</b> — Data Protection Board не укомплектован</td></tr>
+        <tr><td class="st"><b>02.12.2026</b></td><td>Срок исполнения ст. 111(4) AI Act: legacy-системы приводятся в соответствие со ст. 50(2). В ту же дату — новые запреты ст. 5</td></tr>
+        <tr><td class="st"><b>14.12.2026</b></td><td>Ориентировочное пленарное голосование ЕП по PSD3/PSR — после него начинается отсчёт 21 месяца</td></tr>
+        <tr><td class="st"><b>01.01.2027</b></td><td>Оклахома и Луизиана. <b>CA AB 566</b> — браузеры обязаны иметь встроенный opt-out сигнал, что резко поднимет долю трафика с GPC</td></tr>
+        <tr><td class="st"><b>18.01.2027</b></td><td><b>GENIUS Act вступает в силу</b> — §20 берёт более раннюю дату, финальные правила её уже не сдвинут</td></tr>
+        <tr><td class="st"><b>31.01.2027</b></td><td>TCPA revoke-all — единый реестр отзывов по всем бизнес-юнитам</td></tr>
+        <tr><td class="st"><b>весна 2027</b></td><td>UK: ориентир запуска режима потребительских подписок. Дата переносилась четырежды</td></tr>
+        <tr><td class="st"><b>13/14.05.2027</b></td><td>Индия: ядро DPDP и <b>s.9</b> — запрет трекинга и таргетированной рекламы лицам до 18</td></tr>
+        <tr><td class="st"><b>10.07.2027</b></td><td>AMLR 2024/1624 применяется; AMLA переходит к прямому надзору с 2028</td></tr>
+        <tr><td class="st"><b>02.12.2027</b></td><td>AI Act: high-risk по Annex III</td></tr>
+        <tr><td class="st">не датировано</td><td>Решение 8th Cir. по <i>Corner Post</i> (судьба дебетового интерчейнджа) и решение по remedies в деле Google adtech</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="eyebrow">09 · Слепые зоны</div>
+  <h2>Что искали и не нашли</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s2)">
+      <h3>Реестры и допуск</h3>
+      <ul>
+        <li><b>Требования бирж к юрлицу продавца</b> не публикуются вовсе — они в закрытых MSA. Косвенно измеряются только через результат. <i>Кому удобно:</i> биржам — порог можно менять односторонне и по-разному для разных контрагентов</li>
+        <li><b>Платёжные лицензии по юрисдикциям ЕС сравнить публично невозможно:</b> реестр EBA — Angular SPA без выгрузки, lb.lt отдаёт 403 на любой User-Agent. По MiCA CASP цифры есть, по EMI/PI нет</li>
+        <li><b>Цена сертификации:</b> у MRC публичной тарифной сетки нет, у TAG «custom package», PCI-уровни рендерятся скриптом. <i>Кому удобно:</i> барьер входа непрозрачен, значит несопоставим</li>
+        <li><b>Счётчик законов штатов о приватности</b> государственного не существует; де-факто стандарт — трекер IAPP <b>за пейволом</b></li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Деньги и правоприменение</h3>
+      <ul>
+        <li><b>Совокупные карточные комиссии в США — официального счётчика нет.</b> $187,2 млрд (Nilson) против $236,4 млрд (CMSPI) за 2024, разрыв $49,2 млрд, и объяснение разрыва — не факт, а утверждение лоббистской стороны. Обе стороны заинтересованные</li>
+        <li><b>Схемные сборы:</b> в публичной версии обзора PSR все конкретные проценты и суммы отредактированы маркером — доступны только агрегаты «не менее 25%» и «не менее £170 млн»</li>
+        <li><b>Google adtech remedies:</b> решения на 27.08.2026 нет. Монополия установлена больше года назад, <b>ни одно средство не применено</b> — вся структура открытого веб-дисплея юридически не изменилась ни на йоту</li>
+        <li><b>Национальный слой ePrivacy не разобран вообще:</b> кто санкционирует (DPA или телеком-регулятор) и в каком размере — по государствам-членам. Для компании вне ЕС именно этот слой определяет, где регистрировать представителя и по какому праву её будут штрафовать</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Собрано агентом gid 27.08.2026: пять research-агентов по независимым срезам, по одному адверсариальному верификатору на срез. Верификатор дал <b>50 правок</b> — больше, чем в любом предыдущем раунде, и подавляющее большинство одного класса: <b>принятое выдавалось за применяющееся</b>.
+    <br><br>
+    Помимо четырёх опровержений в разделе 01: PSD3/PSR — не «почти принято», а «Awaiting Council's 1st reading position»; ePrivacy Regulation отозван, но <b>замена планируется</b> внутри Digital Omnibus, а не отсутствует; Negative Option Rule — редакция 2024 запрещена судом, но редакция <b>1973 года действует</b>, а не «правила нет»; TCPA — вакатирована Part III.D целиком, а не только one-to-one; MTMA принят в <b>31</b> штате, а не в 30 или 33, и счётчик ведёт отраслевая ассоциация; Reg E — все цифры это «the lesser of», $500 не автоматичны, и <b>после 60 дней потолок есть</b>; санкция AI Act для SME считается по правилу «что меньше», а не «что выше»; британские исключения PECR для аналитики работают <b>только в режиме opt-out</b>.
+    <br><br>
+    Полный справочник со всеми 50 правками и пятью срезами — <code>docs/regulatory-map.md</code> в репозитории проекта.
+  </footer>
+</main>

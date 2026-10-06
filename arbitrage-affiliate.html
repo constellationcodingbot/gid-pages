@@ -1,0 +1,340 @@
+<title>Экономика арбитража и аффилиатки</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --mark:#B4540A; --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1040px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.1rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.38rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:72ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:40px}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:78ch; margin:6px 0 16px; font-size:.92rem}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.86em; background:var(--chip-bg); padding:1px 5px; border-radius:3px}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:74ch}
+  .bars{display:grid; gap:10px}
+  .brow{display:grid; grid-template-columns:minmax(150px,275px) 1fr 100px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:17px}
+  .bar{height:17px; border-radius:2px 4px 4px 2px; background:var(--c)}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .pair{display:grid; gap:3px}
+  .pair .track{height:11px}
+  .pair .bar{height:11px}
+  .pv{font-size:.78rem; font-variant-numeric:tabular-nums; text-align:right; line-height:1.35}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:430px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:82ch}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:80ch}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:800px){ .cons{grid-template-columns:1fr} .brow{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px; border-top:3px solid var(--cc,var(--accent))}
+  .box h3{margin:0 0 8px}
+  .box ul,.box ol{margin:0; padding-left:19px}
+  .box li{margin-bottom:7px; font-size:.88rem}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:740px}
+  th{text-align:left; font-size:.71rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
+  td{padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.86rem}
+  tr:last-child td{border-bottom:none}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:82ch}
+</style>
+<main>
+  <h1>Экономика арбитража и аффилиатки</h1>
+  <p class="lede">Что люди реально делают после подключения к площадкам: откуда берётся маржа, почему она не улучшается, через какие юрисдикции идут деньги, кто этому противостоит — и что со всем этим сделали AI-поиск и агенты.</p>
+  <p class="meta">Ресёрч gid · 26.08.2026 · пять срезов, адверсариальная верификация: 25 правок. Рамка — рыночное исследование по документированным источникам: отчётность эмитентов, судебные и регуляторные материалы, расследования</p>
+
+  <div class="eyebrow">01 · Природа спреда</div>
+  <h2>Маржа здесь информационная, а не производственная</h2>
+  <p class="note">Арбитраж — это разрыв между двумя ценами на одного и того же человека: его покупают как показ или клик, продают как действие. Спред живёт там, где покупатель трафика знает о вероятности конверсии больше, чем продавец площадки. Отсюда главное свойство: <b>это информационная рента, и она структурно недолговечна</b> — как только площадка научается предсказывать ту же конверсию, она поднимает цену и забирает спред себе.</p>
+  <p class="note">Практическое следствие, которое почти всегда теряют: у арбитражника «выручка» — это <b>пропускная способность, а не размер бизнеса</b>, поскольку в неё включена медиазакупка. Поэтому падение выручки при росте процентной маржи нормально, а рост выручки может означать просто увеличение прокачки при том же тонком спреде.</p>
+  <div class="viz">
+    <h3>Лестница маржи внутри одной компании с одним учётом</h3>
+    <p class="sub">Better Collective A/S, Q2 2026 (отчёт от 20.08.2026). Единственное место, где сравнение корректно, потому что учёт один.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Esports — HLTV, FUTBIN<em>собственная аудитория</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--s4)"></div></div>
+        <div class="bval">63 %</div>
+        <div class="tip">Оговорка верификатора: Esports — всего 5% выручки группы (€5,07 млн из €89,1 млн). То есть 63% — маржа на узкой полоске, а не доказательство масштабируемости модели.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Publishing<em>свои медиа, органика</em></div>
+        <div class="track"><div class="bar" style="width:46%; --c:var(--s1)"></div></div>
+        <div class="bval">29 %</div>
+        <div class="tip">Основной сегмент — €57,5 млн выручки, €16,9 млн EBITDA. Именно он и страдает от AI-поиска.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Paid Media<em>купленный трафик</em></div>
+        <div class="track"><div class="bar" style="width:41%; --c:var(--mark)"></div></div>
+        <div class="bval">26 %</div>
+        <div class="tip">Стоит на 24–26% <b>восемь кварталов подряд</b> и не улучшается ни при росте, ни при падении. Компания защищает эту маржу аргументом «asset-light»: меньше вложений в баланс, значит ROIC приемлем даже при низкой марже.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Правило, которое стоит запомнить: чем больше ты владеешь аудиторией, тем выше маржа; покупка трафика упирается в потолок около 26% даже у игрока с масштабом и прямыми контрактами с операторами. Тот же внутрифирменный разрыв виден у System1 — сегмент собственных сайтов даёт 94% сегментной валовой маржи против 41% у купленного трафика.</p>
+  </div>
+  <p class="note"><b>Где спред физически измерим — только в трекере:</b> ни рекламная сеть, ни CPA-сеть по отдельности не видят обе стороны сделки. Публичных замеров всего два, и верификатор поправил оба. System1 раскрывала RTAC 120% при TAC $351,5 млн — но по определению самой компании RTAC включает revenue share партнёрской сети и в числителе, и в знаменателе, то есть <b>спред именно на собственную закупку структурно невидим</b>. С отчёта за Q2 2026 метрика RTAC исчезла вовсе, заменена на число активных партнёров — единственная публичная метрика спреда перестала публиковаться ровно тогда, когда перестала быть выигрышной.</p>
+
+  <div class="eyebrow">02 · Участники</div>
+  <h2>Четыре яруса, и офшор живёт не там, где принято думать</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 330" role="img" aria-label="Четыре яруса участников рынка арбитража">
+      <g font-size="11.5">
+        <rect x="0" y="20" width="940" height="62" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="42" fill="var(--ink)" font-weight="600" font-size="12.5">ЯРУС 0 · Не участники, а владельцы пола</text>
+        <text x="16" y="62" fill="var(--muted)">Google и Meta не покупают и не продают трафик в этой схеме — они задают её границы. Масштаб зависимости: у System1 67% выручки FY2025 приходилось на</text>
+        <text x="16" y="76" fill="var(--muted)">соглашения с Google; после расторжения «for convenience» с 10.02.2026 выручка сегмента упала на 80%, партнёров стало 59 вместо 133.</text>
+
+        <rect x="0" y="92" width="940" height="56" rx="5" fill="var(--card)" stroke="var(--s4)" stroke-width="2"/>
+        <text x="16" y="114" fill="var(--s4)" font-weight="600" font-size="12.5">ЯРУС 1 · Публичные компании — обычные юрисдикции</text>
+        <text x="16" y="134" fill="var(--muted)">Better Collective (Дания, CVR 27 65 29 13) · Grandstand, ex-Gambling.com (Джерси + Ирландия + Мальта) · Catena Media (Мальта, C70858) · Team Internet (AIM) · System1 (делистинг)</text>
+
+        <rect x="0" y="158" width="940" height="56" rx="5" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="16" y="180" fill="var(--s1)" font-weight="600" font-size="12.5">ЯРУС 2 · Приватные, но идентифицируемые</text>
+        <text x="16" y="200" fill="var(--muted)">CPA-сети: ClickBank (Айдахо, с 1998), MaxBounty (Оттава) · Платформы: Awin (Axel Springer), impact.com, Partnerize · Трекеры: Apliteni OÜ (Таллин), Affise (Вильнюс), CAKE и Tune (Constellation Software)</text>
+
+        <rect x="0" y="224" width="940" height="56" rx="5" fill="var(--card)" stroke="var(--s2)" stroke-width="2"/>
+        <text x="16" y="246" fill="var(--s2)" font-weight="600" font-size="12.5">ЯРУС 3 · Офшорный РАСЧЁТНЫЙ и идентичностный слой — вот где офшор</text>
+        <text x="16" y="266" fill="var(--muted)">Capitalist Inc. (BVI) · Paxum Bank (Доминика, только нерезиденты) · Payeer (Вануату, под санкциями ЕС с 25.11.2025) · антидетект-браузеры (Таллин, Сингапур) · 250+ прокси-провайдеров</text>
+
+        <rect x="0" y="290" width="940" height="38" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="314" fill="var(--mark)" font-weight="600" font-size="12.5">ЯРУС 4 · Анонимные — известны только по правоприменению: <tspan fill="var(--muted)" font-weight="400">911 S5 (19 млн заражённых устройств) · Genesis Market · BADBOX 2.0 · Huione свыше $27 млрд с 2021</tspan></text>
+      </g>
+    </svg>
+    <figcaption><b>Опровергнуто верификацией:</b> «кипрско-латвийский контур» в листингованном слое отсутствует полностью — в перечне дочерних компаний Better Collective (20 юрисдикций) нет ни Кипра, ни Сейшел, ни ОАЭ, ни BVI. Офшор живёт не в корпоративном слое, а в <b>расчётном</b>. Ключевое различие между ярусами не в степени агрессивности, а в природе: в белом контуре есть договор с идентифицируемым контрагентом и применимая юрисдикция — что и делает возможными дела вроде FTC v. LeadClick Media; в сером контуре идентичность контрагента сама является товаром.</figcaption>
+  </figure>
+  <p class="note"><b>Главный водораздел в деньгах — не «легально/нелегально», а может ли участник держать банковский счёт.</b> Grandstand в риск-факторах 20-F пишет, что банки могут неохотно обслуживать компанию из-за работы с iGaming — но модальность именно «may be hesitant», а не констатация отказов, и основной банк группы Wells Fargo. Корпоративный слой решает налог, платёжный — доставку, и они оптимизируются по разным критериям в разных юрисдикциях. Мальтийский механизм Catena раскрывает сама: возврат <b>шести седьмых</b> уплаченного налога при распределении дивиденда снижает нагрузку примерно на 30 п.п. от ставки 35% — то есть «5%» это результат связки «уплата плюс возврат», а не ставка.</p>
+
+  <div class="eyebrow">03 · Инфраструктура</div>
+  <h2>Контуры смыкаются не в людях, а в инструментах</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Сцепка, которую обычно не замечают</h3>
+      <ul>
+        <li>Трекер <b>Voluum</b> и pop/redirect-сеть <b>Zeropark</b> — активы одной лондонской публичной компании Team Internet Group plc (сделка 2020 года за $36 млн). То есть инструмент, которым меряют арбитраж, и сеть, у которой покупают трафик, принадлежат одному эмитенту</li>
+        <li>Но измерить по её отчётности экономику арбитража нельзя: отчётность по сегментам, а не по продуктам. <b>Публичные данные здесь меряют выручку вендоров инструментов, а не оборот их клиентов</b></li>
+        <li>Насколько зависимость односторонняя, видно по FY2025: валовая выручка −40%, adj. EBITDA −54%, в сегменте монетизации RPM −51% — после того как Google волнами отключал рекламодателей от припаркованных доменов</li>
+        <li>Капзатраты на запуск посредника — сотни долларов в месяц: «сеть» это, как правило, не технология, а арендованная white-label платформа от $49–299/мес</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Двойное назначение трекера</h3>
+      <ul>
+        <li>Правила фильтрации трафика (гео, устройство, источник) технически неотличимы от правил подмены контента — и это сделало трекер объектом threat-intelligence</li>
+        <li>Серия Infoblox и Confiant (март 2026): около <b>15 500 доменов</b> с вредоносными инстансами Keitaro; свыше 20% акторов, отслеживаемых в рекламных каналах, использовали Keitaro</li>
+        <li><b>Что в этот замер структурно не попадает:</b> self-hosted инстансы вне рекламных сеток и всё легальное использование — у трекера нет вендорской телеметрии. Поэтому 20% — доля внутри малвертайзинг-выборки, <b>а не доля рынка</b></li>
+        <li>Сосуществуют крякнутые и легально оплаченные лицензии; вендор после 100+ репортов отменил «более десятка» аккаунтов</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">04 · Что сломал AI-поиск</div>
+  <h2>Рынок переоценил не прибыль, а надёжность канала</h2>
+  <div class="viz">
+    <h3>Цена перехода от бесплатной органики к покупному трафику</h3>
+    <p class="sub">Grandstand (ex-Gambling.com Group). Верхняя полоса — Q4 2024, нижняя — Q2 2026.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Себестоимость к выручке<em>рост втрое</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:6.2%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:15.6%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="pv">6,2 %<br>15,6 %</div>
+        <div class="tip">Оговорка верификатора: cost of sales по определению 20-F — это выплаты партнёрам плюс затраты на данные, а медиазакупка сидит в sales and marketing. Поэтому рост COGS на 119% г/г — смесь, а не чистая конвертация издательской маржи в арбитражную.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Валовая маржа<em>минус 10 пунктов</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:94%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:84%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="pv">94 %<br>84 %</div>
+        <div class="tip">Компания сама объясняет рост себестоимости «затратами, связанными со стратегией диверсификации источников трафика».</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Adjusted EBITDA-маржа<em>падение более чем вдвое</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:42%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:20%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="pv">42 %<br>20 %</div>
+        <div class="tip">Гайденс на 2026 срезан дважды за пять месяцев. Символическая деталь: компания переименовалась из Gambling.com Group в Grandstand и позиционируется как «intelligence layer», а не аффилиат. Растёт у неё не маркетинг, а данные.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Тот же механизм у Catena Media: доля прямых затрат выросла примерно с 14% до 31% «due to the expansion in subaffiliation». Бесплатный вход обнулился, и его замена покупным трафиком читается прямо в строке себестоимости.</p>
+  </div>
+  <div class="viz">
+    <h3>Переоценка надёжности канала: падение капитализации от пика</h3>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Catena Media<em>Мальта, Nasdaq Stockholm</em></div>
+        <div class="track"><div class="bar" style="width:94%; --c:var(--mark)"></div></div>
+        <div class="bval">−94 %</div>
+        <div class="tip">Q2 2026: выручка €9,5 млн, adj. EBITDA €1,2 млн, маржа 13%; прямые затраты +25%.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Grandstand<em>при росте выручки 2025 на 30%</em></div>
+        <div class="track"><div class="bar" style="width:86%; --c:var(--mark)"></div></div>
+        <div class="bval">−86 %</div>
+        <div class="tip">Это главное наблюдение всего блока: выручка росла, капитализация обвалилась. Рынок переоценил не прибыль, а надёжность источника трафика.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Better Collective<em>крупнейший игрок сегмента</em></div>
+        <div class="track"><div class="bar" style="width:51%; --c:var(--s2)"></div></div>
+        <div class="bval">−51 %</div>
+        <div class="tip">Групповой микс подтверждает направление выхода: спонсорство +39% — самая быстрорастущая строка, CPM −16%. Отрасль не чинит арбитраж, она из него выходит.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">System1<em>делистинг с NYSE</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--mark)"></div></div>
+        <div class="bval">делистинг</div>
+        <div class="tip">Form 25 подан 27.10.2025, оговорка going concern, долг $245,1 млн со сроком июль 2027 при кэше $40,5 млн на 30.06.2026.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Аффилиатные денежные потоки перестали считаться аннуитетом, потому что источник трафика — чужая платформа, которая может расторгнуть отношения «for convenience». Параллельно спрос-сторона срезала выплаты: UK Remote Gaming Duty вырос с 21% до 40% с 01.04.2026, CPA в Великобритании примерно на 15% ниже, Amazon Associates срезал комиссии в ряде категорий с ~10% до 4–5% без публичного объявления.</p>
+  </div>
+  <p class="note"><b>Спор о влиянии AI-поиска неразрешим по построению, и это уже правовая проблема, а не аналитическая.</b> Панели считают визиты на сайты и структурно не видят доменов ниже порога покрытия — то есть ровно тот длинный хвост, где живёт аффилиатка. Google считает уходящие клики агрегированно, где хвостовое перераспределение тонет. Обе стороны формально правы, полный лог есть только у одной, и она его не публикует. Самый ценный источник — иск <b>Penske Media v. Google</b> (14.09.2025), потому что заявлено под процессуальной ответственностью и прямо про аффилиатные деньги: около 20% поисков, ведущих на сайты Penske, показывают AI Overviews, а аффилиатная выручка упала более чем на треть от пика.</p>
+  <p class="note"><b>Отдельная правка, важная для гигиены цитирования:</b> градиент падения по размеру сайта (−60% у мелких против −22% у крупных) публиковал <b>Chartbeat</b>, а не Similarweb. Версия с атрибуцией Similarweb и агрегатом «12 → 11,2 млрд визитов» проверку первоисточника не прошла и использоваться не должна.</p>
+
+  <div class="eyebrow">05 · Агенты</div>
+  <h2>Слот для аффилиата в протоколах уже есть — экономики в нём нет</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 260" role="img" aria-label="Слот атрибуции в агентских протоколах: что есть и чего нет">
+      <g font-size="11.5">
+        <rect x="0" y="20" width="455" height="112" rx="6" fill="var(--card)" stroke="var(--s4)" stroke-width="2"/>
+        <text x="20" y="44" fill="var(--s4)" font-size="12.5" font-weight="600">ЧТО УЖЕ ЕСТЬ В СПЕЦИФИКАЦИИ</text>
+        <text x="20" y="66" fill="var(--ink)" font-weight="600">ACP · объект AffiliateAttribution</text>
+        <text x="20" y="84" fill="var(--muted)">provider, token, publisher_id, campaign_id,</text>
+        <text x="20" y="99" fill="var(--muted)">sub_id, touchpoint (first/last), source.url</text>
+        <text x="20" y="120" fill="var(--muted)">UCP · types/attribution.json — referral context, click ID</text>
+
+        <rect x="485" y="20" width="455" height="112" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="505" y="44" fill="var(--mark)" font-size="12.5" font-weight="600">ЧЕГО НЕТ И НЕ ПЛАНИРУЕТСЯ</text>
+        <text x="505" y="66" fill="var(--ink)" font-weight="600">Ставки комиссии — объявленный non-goal</text>
+        <text x="505" y="84" fill="var(--muted)">RFC дословно: «defining commission rates,</text>
+        <text x="505" y="99" fill="var(--muted)">payout schedules, or settlement rails»</text>
+        <text x="505" y="120" fill="var(--muted)">AP2 таких полей не содержит вовсе</text>
+
+        <path d="M227 132 L227 150 M712 132 L712 150" stroke="var(--line)" stroke-width="2"/>
+        <path d="M227 150 L712 150 M470 150 L470 168" stroke="var(--line)" stroke-width="2"/>
+        <rect x="150" y="168" width="640" height="44" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="470" y="188" fill="var(--ink)" font-size="13" font-weight="600" text-anchor="middle">Техническая роль аффилиату оставлена. Экономическая — нет.</text>
+        <text x="470" y="206" fill="var(--muted)" font-size="11.5" text-anchor="middle">Комиссия ассистента (~2% по Альтману, 4% по сообщению о Shopify) экономически И ЕСТЬ аффилиатная — только получает её не автор рекомендации.</text>
+
+        <text x="0" y="240" fill="var(--muted)" font-size="11.5">Мотивация RFC написана прямо против тезиса о вытеснении: без стандартного сигнала атрибуции экосистема «devolves into opaque, platform-controlled deals rather than open, interoperable referral economics».</text>
+      </g>
+    </svg>
+    <figcaption>Это главная правка раунда: расхожая версия «агенты убивают аффилиатную атрибуцию, потому что нет Referer и cookie» верна технически, но неполна — слот в стандарте уже определён и попал в changelog ещё 12.12.2025. Вопрос не в том, есть ли поле, а в том, наполнится ли оно деньгами.</figcaption>
+  </figure>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Три вещи, которые временно спасают аффилиатку</h3>
+      <ul>
+        <li><b>Агентский чекаут пока проиграл.</b> Instant Checkout запущен 29.09.2025 и свёрнут в исходном виде 04.03.2026; по словам президента Shopify, вживую работали «около дюжины» мерчантов. Куда откатились — важнее отката: не к покупке на сайте мерчанта, а к маршрутизации через сторонние приложения внутри ChatGPT</li>
+        <li><b>Масштаб канала микроскопический.</b> MONY Group раскрыл честнее всех: клик-аут из собственного Price Optimiser <b>в 100 раз выше</b>, чем из громко анонсированного приложения в ChatGPT. Google AI Mode — 0,34% всех запросов Google</li>
+        <li><b>Выигрывают вертикальные агенты ритейлеров</b> (Rufus, Sparky) — это прямая интернализация рекомендательного слоя: то, за что раньше платили аффилиату, оплачивается через retail media внутри собственного периметра</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Два новых противоречия</h3>
+      <ul>
+        <li><b>Легитимный агент по букве отраслевых определений — невалидный трафик.</b> Шопинг-агент внутри Chromium неотличим от headless-фрода теми же сигналами. И фильтры затягиваются ровно сейчас: Awin сообщает о снижении невалидного клик-трафика с 11,2% до 7,7%. Кто отличит агента, которому положена комиссия, от агента, которому положен бан, не решено ни технически, ни юридически</li>
+        <li><b>Арбитраж переехал с трафика на цитирование.</b> Cornell Tech: около 13 слов внедрённого текста хватает, чтобы вымышленный продукт упоминался в 38–51% ответов. Но три оговорки обязательны — это частота упоминания, а не изменение суждения; у коммерческих продуктов доля цитирований UGC на порядок-два ниже; и <b>исследователи ничего не публиковали в живой веб</b>, поэтому самый дорогой шаг реальной атаки замером не покрыт</li>
+        <li>Экономика новой поверхности при этом уже сложилась: GEO/AEO-ретейнеры $2–8 тыс./мес в мидмаркете. Структурная разница с MFA: там платил рекламодатель за показ, здесь платит бренд за упоминание — и на этом слое нет ни IVT-метрики, ни sequential liability, ни clawback</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">06 · Защита</div>
+  <h2>Что реально работает</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Механизм</th><th>Оценка</th><th>Почему</th></tr></thead>
+      <tbody>
+        <tr><td><b>Идентичность плательщика</b></td><td style="color:var(--s4);font-weight:600">работает</td><td>Верификация рекламодателя, привязывающая личность к приостановке, а не классификация контента. Первое прямое действие против инфраструктуры обхода: 26.02.2026 Meta подала иски против четырёх рекламодателей и разослала cease-and-desist восьми бывшим Business Partners, торговавшим разбаном и арендой доверенных аккаунтов</td></tr>
+        <tr><td><b>Возрастные фильтры на домены у SSP</b></td><td style="color:var(--s4);font-weight:600">работает</td><td>Отсекают эфемерный инвентарь до аукциона — слоп-сайты со сроком жизни 30–60 дней просто не доживают</td></tr>
+        <tr><td><b>Блокировка на уровне биржи</b></td><td style="color:var(--s4);font-weight:600">работает</td><td>Equativ закрыла MFA в PMP в 2023-м и во всей бирже в 2025-м; доля MFA в выручке издателей у платформ упала с 20–30% до 0–2%</td></tr>
+        <tr><td><b>Договор и юрисдикция</b></td><td style="color:var(--s4);font-weight:600">работает</td><td>FTC v. LeadClick Media (2-й округ, 2016 — все 24 идентифицированных аффилиат-сайта оказались фейковыми новостными, §230 сеть не защитил) и consent order против MediaAlpha на $45 млн возможны только там, где контрагент идентифицируем</td></tr>
+        <tr><td><b>Отраслевые декларативные стандарты</b></td><td style="color:var(--mark);font-weight:600">не работает</td><td>ads.txt и sellers.json как самостоятельная защита непригодны — низкая адопция, искажения, отсутствие энфорсмента. TAG публикует IVT менее 1% в сертифицированных каналах, но замеряют сами вендоры-члены</td></tr>
+        <tr><td><b>Пост-фактум фильтрация с кредитованием</b></td><td style="color:var(--mark);font-weight:600">не работает</td><td>Верификаторы возвращают кредит, а не деньги; агрегированная доля фактически возвращённых средств не публикуется никем</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Аккуратность в цифрах платформ.</b> Google Ads Safety Report за 2025: 8,3 млрд заблокированных объявлений против 5,1 млрд годом ранее — но приостановленных аккаунтов 24,9 млн против 39,2 млн, то есть ряд немонотонен, и спад Google объясняет ростом точности. Обе метрики — самоотчётные счётчики объектов без внешнего аудита и <b>без знаменателя</b>, поэтому рост блокировок неотличим от роста объёма подач. Против этого — Reuters по внутренним документам: Meta прогнозировала около 10% выручки 2024 (≈$16 млрд) от рекламы скама и запрещённых товаров. Числитель раскрыт, знаменатель нет.</p>
+  <p class="note"><b>И важное про качество вердикта верификаторов.</b> Adalytics: publisher-side пиксель IAS маркировал декларированных ботов как людей в 16% случаев, а URLScan-ботов — в 77%. Но измеряемая вселенная — самодекларирующиеся боты из списков IAB и TAG, то есть GIVT, самый лёгкий класс; находка в том, что пре-бид фильтрация <b>проваливается</b>, а не в том, что её нет. Ходячая цифра «возмещено около 1% расходов» первоисточниками не подтверждается — отчёт фиксирует именно отсутствие возврата, а не его измеренную величину. DV подал на Adalytics иск о диффамации, и 29.04.2026 судья разрешил идти дальше — от исхода зависит, останется ли внешний аудит рекламного качества возможным как жанр.</p>
+
+  <div class="eyebrow">07 · Слепые зоны</div>
+  <h2>Чего не публикует никто</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s2)">
+      <h3>Про экономику</h3>
+      <ul>
+        <li><b>Распределение спреда, а не его среднее.</b> Ни одна компания не раскрывает, какая доля кампаний убыточна. «Средние 20% на медиазатраты» одинаково совместимы с «все кампании дают 20%» и с «5% дают 300%, остальные минус» — это две разные индустрии с разными требованиями к капиталу, и различить их публичными данными нельзя</li>
+        <li><b>Ставки закупки и выплат по одной сделке.</b> Всё, что циркулирует как «бенчмарки CPA», — маркетинговый материал самих сетей без методологии и выборки</li>
+        <li><b>Сколько людей и денег в рынке.</b> Awin заявляет более 1 млн партнёров, impact.com — свыше 330 тыс., но это аккаунты; доля активных не раскрывается ни одной сетью, а публичного замера смертности арбитражных операторов не существует</li>
+        <li><b>Порог перехода из офшора в оншор.</b> Видны только конечные состояния; при какой выручке издержки на substance и лицензии становятся дешевле ограничений офшорного банкинга — не описано нигде</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Про измеримость</h3>
+      <ul>
+        <li><b>Доля крипты в аффилиатных выплатах невыводима в принципе.</b> Chainalysis ($154 млрд) и TRM ($158 млрд) меряют атрибутированные нелегальные адреса; «выплаты аффилиатам» не являются категорией атрибуции ни у одного вендора, а фиат, карточные схемы, PSP и неттинг структурно невидимы</li>
+        <li><b>Сегментация выручки вендоров инструментов по типу клиента</b> — в биллинге эта разбивка заведомо есть, но не публикуется; не публикуется и отношение легальных инсталляций к пиратским</li>
+        <li><b>Всё, что относится к агентскому слою:</b> GMV агентского чекаута (OpenAI не раскрыла ни на запуске, ни при сворачивании), сколько легитимных агентских покупок отфильтровывается как IVT и на чей счёт списывается, фактические выплаты по лицензионным сделкам</li>
+        <li><b>Сквозная методологическая дыра:</b> все публикуемые данные о том, что AI-трафик конвертит лучше, меряются на сайтах, переживших падение органики. Survivorship bias встроен в метод, и ни один вендор его не корректирует</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">08 · Сигналы</div>
+  <h2>Что смотреть дальше</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Сигнал</th><th>Что наблюдать</th><th>Что решается</th></tr></thead>
+      <tbody>
+        <tr><td><b>Наполнится ли слот аффилиата в протоколах</b><br><span style="color:var(--faint);font-size:.8rem">сигнал бинарный и уже наблюдаемый</span></td><td>Коммиты и changelog репозиториев ACP и UCP; объявления impact.com, Awin, Rakuten или CJ о поддержке provider-токенов; первый публичный кейс выплаты комиссии по сделке агента. Симметрично — движение ставок ассистента (2% против сообщённых 4%)</td><td>Если слот заполнится, аффилиат получает новую роль — оплату за влияние и цитирование вместо клика. Если нет — ренту целиком забирает ассистент, и протокол закрепит это на уровне стандарта</td></tr>
+        <tr><td><b>Метрика цены у верификаторов</b></td><td>Реализованный Measured Transaction Fee у DoubleVerify: за 2025 он снизился на 3% до $0,07 при росте объёма на 15%. Плюс исход иска DV против Adalytics</td><td>Если цена продолжит падать при растущем объёме — рынок платит за охват измерения, а не за качество вердикта, и обратной связи между провалами детекции и доходом верификатора по-прежнему нет</td></tr>
+        <tr><td><b>Расхождение купонного и контентного слоёв</b></td><td>Future plc — единственный, кто раскрыл разбивку: ваучеры −6% против аффилиата в целом −24%. Смотреть, повторит ли он её и подтянутся ли Ziff Davis, People Inc., NerdWallet</td><td>Если разрыв растёт, значит ударов действительно два и с разными таймингами: AI-поиск бьёт по контентному слою, агентский чекаут — по купонно-кэшбэчному</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Сопутствующие даты того же горизонта: погашение долга System1 $245,1 млн в июле 2027 при кэше $40,5 млн и оговорке going concern; финальный statement Ofcom по Fraudulent Advertising Codes не позднее середины 2027; первый обмен по CARF/DAC8 в 2027 при подключении ОАЭ только в 2028 — двухлетнее окно расхождения, в которое никто публично не оценил, куда сместятся крипто-расчёты.</p>
+
+  <footer>
+    Собрано агентом gid 26.08.2026: пять research-агентов по независимым срезам, по одному адверсариальному верификатору на срез. Верификатор дал 25 правок.
+    <br><br>
+    Рамка работы: рыночное исследование по документированным источникам — отчётность эмитентов, судебные и регуляторные материалы, расследования Infoblox, Confiant, Adalytics, Elliptic. Операционные приёмы обхода модерации и детекции намеренно вне охвата: механизмы описаны на уровне, достаточном для понимания экономики и для защиты.
+    <br><br>
+    Что снято как неподтверждённое: «кипрско-латвийский контур» в листингованном слое (в перечне дочек Better Collective отсутствует); атрибуция градиента падения трафика к Similarweb (это Chartbeat); цифры штрафа Payeer, числа клиентов и выручки (в источнике отсутствуют); «возмещено около 1% расходов» по кейсу YouTube; конкретика про «одиннадцать агентств с ~10% комиссии» у Meta.
+    <br><br>
+    Полный справочник — <code>docs/arbitrage-affiliate.md</code> в репозитории проекта.
+  </footer>
+</main>

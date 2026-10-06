@@ -1,0 +1,496 @@
+<title>Кюрасао, Литва, дата-брокеры</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --mark:#B4540A; --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1050px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.1rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.38rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:72ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:40px}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:80ch; margin:6px 0 16px; font-size:.92rem}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.85em; background:var(--chip-bg); padding:1px 5px; border-radius:3px}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:76ch}
+  .bars{display:grid; gap:9px}
+  .brow{display:grid; grid-template-columns:minmax(140px,240px) 1fr 118px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:17px; position:relative}
+  .bar{height:17px; border-radius:2px 4px 4px 2px; background:var(--c)}
+  .pair{display:grid; gap:4px}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:450px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .legend{display:flex; flex-wrap:wrap; gap:14px; margin:0 0 14px; font-size:.79rem; color:var(--muted)}
+  .legend span{display:inline-flex; align-items:center; gap:6px}
+  .swatch{width:11px; height:11px; border-radius:2px; background:var(--c); display:inline-block}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:84ch}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:82ch}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:860px}
+  th{text-align:left; font-size:.71rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
+  td{padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.845rem}
+  tr:last-child td{border-bottom:none}
+  td.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:860px){ .cons{grid-template-columns:1fr} .brow{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px; border-top:3px solid var(--cc,var(--accent))}
+  .box h3{margin:0 0 8px}
+  .box ul,.box ol{margin:0; padding-left:19px}
+  .box li{margin-bottom:7px; font-size:.88rem}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:84ch}
+</style>
+<main>
+  <h1>Кюрасао, Литва, дата-брокеры</h1>
+  <p class="lede">Три пробела, оставшиеся открытыми после раунда по регуляторной карте. Все три закрыты первоисточниками — включая тот, где в прошлый заход не нашлось ни одного документа. Общий вывод оказался неожиданным: во всех трёх сюжетах барьер переехал со входа на удержание.</p>
+  <p class="meta">Ресёрч gid · 27.08.2026 · четыре среза, адверсариальная верификация: 40 правок. Первоисточники — Publicatieblad Кюрасао, реестры CGA, живой реестр Банка Литвы, реестр EBA, тексты статутов и приказы CPPA</p>
+
+  <div class="eyebrow">01 · Кюрасао</div>
+  <h2>Закрыт: закон найден, мастер-лицензии мертвы, дата зафиксирована</h2>
+  <p class="note"><b>Действующий закон:</b> Landsverordening op de kansspelen (LOK) от 20.12.2024, Publicatieblad van Curaçao A° 2024 N° 157, в силе с 24.12.2024. <b>Но не целиком:</b> ст. 1.5 (запрет поставлять критические услуги без B2B-лицензии) и ст. 5.16(4) вступают только <b>24.12.2026</b>, а ст. 15.6(a),(c) об освобождении от оборотного налога ждут landsbesluit'а — дата не назначена вообще. Без обходных путей это не читается: <code>cga.cw</code> отдаёт 403 на обычный запрос, но отвечает на curl с браузерным UA; документы лежат на CDN; тело страниц портала — в <code>/uploads/publications/&lt;hash&gt;.pdf</code>.</p>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 236" role="img" aria-label="Хронология смерти модели мастер-лицензий Кюрасао">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">СМЕРТЬ МОДЕЛИ МАСТЕР-ЛИЦЕНЗИЙ — ВСЕ ДАТЫ ИЗ PDF-ОБЪЯВЛЕНИЙ CGA</text>
+        <line x1="14" y1="46" x2="926" y2="46" stroke="var(--line)" stroke-width="2"/>
+
+        <circle cx="60" cy="46" r="5" fill="var(--s1)"/>
+        <text x="60" y="34" fill="var(--ink)" font-size="11" font-weight="600" text-anchor="middle">24.12.2024</text>
+        <text x="60" y="66" fill="var(--muted)" font-size="10.5" text-anchor="middle">LOK в силе;</text>
+        <text x="60" y="79" fill="var(--muted)" font-size="10.5" text-anchor="middle">провизорные</text>
+        <text x="60" y="92" fill="var(--muted)" font-size="10.5" text-anchor="middle">лицензии на 6 мес.</text>
+
+        <circle cx="270" cy="46" r="5" fill="var(--s1)"/>
+        <text x="270" y="34" fill="var(--ink)" font-size="11" font-weight="600" text-anchor="middle">23.06.2025</text>
+        <text x="270" y="66" fill="var(--muted)" font-size="10.5" text-anchor="middle">продление ещё</text>
+        <text x="270" y="79" fill="var(--muted)" font-size="10.5" text-anchor="middle">на 6 мес., до 24.12.2025 —</text>
+        <text x="270" y="92" fill="var(--muted)" font-size="10.5" text-anchor="middle">лимит 6+6 исчерпан</text>
+
+        <circle cx="480" cy="46" r="6" fill="var(--mark)"/>
+        <text x="480" y="34" fill="var(--mark)" font-size="11" font-weight="600" text-anchor="middle">15.10.2025</text>
+        <text x="480" y="66" fill="var(--mark)" font-size="10.5" font-weight="600" text-anchor="middle">ДАТА СМЕРТИ МОДЕЛИ:</text>
+        <text x="480" y="79" fill="var(--muted)" font-size="10.5" text-anchor="middle">истечение Orange Seal</text>
+        <text x="480" y="92" fill="var(--muted)" font-size="10.5" text-anchor="middle">«bringing the former sublicense</text>
+        <text x="480" y="105" fill="var(--muted)" font-size="10.5" text-anchor="middle">system to an end»</text>
+
+        <circle cx="700" cy="46" r="5" fill="var(--s3)"/>
+        <text x="700" y="34" fill="var(--ink)" font-size="11" font-weight="600" text-anchor="middle">23.12.2025</text>
+        <text x="700" y="66" fill="var(--muted)" font-size="10.5" text-anchor="middle">«current status remains</text>
+        <text x="700" y="79" fill="var(--muted)" font-size="10.5" text-anchor="middle">unaffected» — НЕ третье</text>
+        <text x="700" y="92" fill="var(--muted)" font-size="10.5" text-anchor="middle">продление, а обещание</text>
+        <text x="700" y="105" fill="var(--muted)" font-size="10.5" text-anchor="middle">не трогать</text>
+
+        <circle cx="890" cy="46" r="5" fill="var(--s2)"/>
+        <text x="890" y="34" fill="var(--ink)" font-size="11" font-weight="600" text-anchor="middle">20.08.2026</text>
+        <text x="890" y="66" fill="var(--muted)" font-size="10.5" text-anchor="middle">290 из 661</text>
+        <text x="890" y="79" fill="var(--muted)" font-size="10.5" text-anchor="middle">«Assessment</text>
+        <text x="890" y="92" fill="var(--muted)" font-size="10.5" text-anchor="middle">in progress»</text>
+
+        <rect x="0" y="126" width="940" height="46" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="146" fill="var(--mark)" font-size="12.5" font-weight="600">С 25.12.2025 сотни операторов работают не по сроку лицензии, а по административному невмешательству регулятора.</text>
+        <text x="16" y="164" fill="var(--muted)" font-size="12">И ст. 15.1(1), и ст. 5.1(8) ограничивают провизорную лицензию максимум 12 месяцами — они были исчерпаны к 24.12.2025.</text>
+
+        <rect x="0" y="184" width="940" height="52" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="204" fill="var(--ink)" font-size="12" font-weight="600">Мастер-лицензии не конвертировались — нормы о конвертации в законе НЕТ вовсе.</text>
+        <text x="470" y="204" fill="var(--muted)" font-size="12">Ст. 15.1(1) давала автоматическую лицензию только тем, кто сам</text>
+        <text x="16" y="222" fill="var(--muted)" font-size="12">предлагал услуги в рамках собственной эксплуатации; союз конъюнктивный, и мастер-лицензиат, только выдававший суб-лицензии, под норму не подпадает. Номера 1668/JAZ, 8048/JAZ, 365/JAZ и 5536/JAZ не встречаются ни в одном публичном реестре CGA.</text>
+      </g>
+    </svg>
+    <figcaption>Реестр CGA охватывает только лицензии по New Online Gaming Policy с 15.11.2023 — режим NOOGH, под которым жили мастер-лицензии, отдельно не публикуется нигде. Это и есть слепая зона: установить, кто и когда потерял право в период 2023–2025, публично невозможно.</figcaption>
+  </figure>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Цена — суммы прямо в законе, в евро</h3>
+      <ul>
+        <li><b>Заявка B2C:</b> €4 592 + €150 за каждого UBO + €150 за держателя квалифицированного участия + €2 551 за биржевого UBO (ст. 5.18(1))</li>
+        <li><b>Годовой сбор B2C: €47 450</b> — €24 490 в казну плюс €22 960 в CGA, до 15 января (ст. 5.19(3)–(4)). Годовой B2B — €24 490, в казну ноль</li>
+        <li>Домен €250, игра €13, смена UBO €128, сертификат €383</li>
+        <li><b>Расхождение, решённое в пользу закона:</b> для B2B держатель квалучастия стоит <b>€128</b>, а не 150 — тарифный документ CGA печатает 150 и сам же оговаривает, что «the LOK will always take precedence»</li>
+        <li><b>Минимального капитала в LOK нет вообще.</b> Порог сформулирован через ликвидность: ст. 2.4(2)(c) <i>обязывает отозвать</i> лицензию, если оператор не докажет наличие средств для немедленной выплаты выигрышей</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Substance отложен до 01.04.2027 — инструментом сомнительной формы</h3>
+      <ul>
+        <li>Ст. 5.12 требует: первые 4 года минимум <b>1 ключевое лицо</b> в bevolkingsregister Кюрасао на полный день, с 5-го года — <b>3</b>, плюс собственное помещение на острове</li>
+        <li>23.01.2026 CGA объявила общее освобождение до 01.04.2027, причина названа прямо — нехватка местных кадров</li>
+        <li><b>Четыре оговорки:</b> ст. 5.12(6) допускает освобождение не более двух лет и только при особых обстоятельствах; ст. 5.12(7) <b>императивно требует landsbesluit</b>, а объявление обещает <i>ministerial decree</i> — разные инструменты, и ни один акт не опубликован; «Minister» по ст. 1.1(k) — это министр <b>финансов</b>, а действовал министр юстиции</li>
+        <li>И главное: ст. 5.12(4) <b>без всякой отсрочки полностью выводит</b> из-под требования любого оператора с GGR ниже <b>NAf 20 000 000</b></li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Лицензия не открывает ни одного рынка, и цена этого измерена.</b> Ст. 5.1 разрешает предлагать игры «в или из Кюрасао» только на одобренных доменах; ст. 2.4(1)(j) позволяет CGA отозвать лицензию по решению <i>иностранного</i> регулятора; списка запрещённых стран нет — риск целиком на операторе. Нидерландская Ksa решением от 16.12.2025 оштрафовала <b>Novatech Solutions N.V. на €24 846 000</b> — ту самую компанию, что числится в реестре CGA. Налоги: winstbelasting 15% до NAf 500 000 прибыли и 22% свыше; режим e-zone 2% <b>истёк</b> («tot en met het jaar 2022»); отдельного налога на игорный доход LOK не вводит вовсе. Кюрасао исключён из Приложения II списка ЕС 18.02.2025 и в чёрном списке не был никогда.</p>
+  <p class="note"><b>Ответ на исходный тезис «дешёвый допуск без substance»: наполовину неверен, и у второй половины есть дата.</b> Неверно теперь — €47 450 в год повторяющегося сбора, идентификация всех UBO, goAML, ADR, сертификация игр аккредитованной лабораторией, <b>обязательный Tier-IV дата-центр на Кюрасао</b> для доступа CGA к данным игроков, 24-часовой инцидент-репортинг, и посредника больше нет. Всё ещё верно — <b>капитала нет, налога на игорный доход нет, substance физически не требуется до апреля 2027 и не требуется вообще при GGR ниже NAf 20 млн</b>, в статусе «Assessment in progress» можно работать бесконечно, и лицензия по-прежнему не защищает от Ksa.</p>
+
+  <div class="eyebrow">02 · Литва</div>
+  <h2>Число есть: 70 EMI и 27 PI</h2>
+  <p class="note">Снято напрямую с живого реестра финансовых участников Банка Литвы 27.08.2026. Фильтр <code>business_form=32&amp;market=1</code> → блок totals дословно «All results <b>70</b>»; <code>business_form=27&amp;market=1</code> → «All results <b>27</b>». Механика, без которой цифру нельзя цитировать: <b>параметр <code>market=1</code> обязателен</b> — без него счётчик не рендерится вообще. Реестр считает карточки юрлиц, а поскольку EMI-лицензия у юрлица может быть только одна, 70 карточек = 70 лицензий. Отозванные исчезают из реестра полностью в течение месяцев — проверено на семи компаниях, включая свежие PAYTEND и AlphaPay.</p>
+  <div class="viz">
+    <h3>Откуда берутся вендорские 90 / 100 / 180+</h3>
+    <p class="sub">Все три ошибки воспроизведены и разложены. Ни одна не является ложью — каждая считает не то, что заявляет.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Фильтр <code>type=7</code><em>«Electronic money institution»</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--mark)"></div></div>
+        <div class="bval">279</div>
+        <div class="tip">Точное разложение: 70 литовских EMI + 2 ограниченной деятельности + 204 ИНОСТРАННЫХ EMI, паспортизованных в Литву без филиала + 2 через посредника + 1 филиал = 279. То есть вендоры, дающие «180+», считают входящий паспортинг. Исходная оценка в 182 иностранных неверна — их 204.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Секторная страница lb.lt<em>«We supervise 80…»</em></div>
+        <div class="track"><div class="bar" style="width:28.7%; --c:var(--s2)"></div></div>
+        <div class="bval">80</div>
+        <div class="tip">Дословно: «We supervise 80 electronic money institutions… as at 30/09/2024… Last date of data update: 02-07-2026». Виджет двухлетней давности с сегодняшней датой обновления — главная ловушка. Парная страница по PI протухла так же: 43 на ту же дату.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Сумма нарезок<em>70+27 либо 72+38</em></div>
+        <div class="track"><div class="bar" style="width:39.4%; --c:var(--s2)"></div></div>
+        <div class="bval">97–110</div>
+        <div class="tip">Отсюда ходовые «90–100+». Считается разное: 72 = 70 EMI плюс 2 ограниченной деятельности; 38 = 27 PI плюс 11 ограниченной деятельности.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Верное число, EMI<em>business_form=32, живой реестр</em></div>
+        <div class="track"><div class="bar" style="width:25.1%; --c:var(--s1)"></div></div>
+        <div class="bval">70</div>
+        <div class="tip">Совпало ровно с реестром EBA (PSD_EMI = 70) — хорошая перекрёстная валидация двух независимых источников с разной методикой.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Верное число, PI<em>business_form=27</em></div>
+        <div class="track"><div class="bar" style="width:9.7%; --c:var(--s1)"></div></div>
+        <div class="bval">27</div>
+        <div class="tip">Здесь согласия нет: обзор Банка Литвы даёт 44 «PI-лицензии» на конец 2025, EBA — 34. Граница категории в обзорах не опубликована, расхождение не разрешено. Для вопроса «сколько полных платёжных лицензий выдано» брать 27.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Не установлено: видны ли в реестре <b>приостановленные</b> лицензии — кейса для проверки не нашлось, значит 70 и 27 теоретически могут их включать.</p>
+  </div>
+  <div class="viz">
+    <h3>Динамика лицензий Литвы, EMI и PI на конец года</h3>
+    <p class="sub">Собственный счётчик Банка Литвы из обзоров рынка. Восстановлено из PDF по координатам символов — значения столбиков отрисованы графикой.</p>
+    <p class="legend"><span><i class="swatch" style="--c:var(--s1)"></i>EMI</span><span><i class="swatch" style="--c:var(--s2)"></i>PI</span></p>
+    <div class="bars">
+      <div class="brow" tabindex="0"><div class="blab">2018</div><div class="pair"><div class="track"><div class="bar" style="width:56%; --c:var(--s1)"></div></div><div class="track"><div class="bar" style="width:85%; --c:var(--s2)"></div></div></div><div class="bval">49 / 46</div><div class="tip">Точка 2018 — из обзора за 2023, где ось начинается с этого года.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">2019</div><div class="pair"><div class="track"><div class="bar" style="width:77%; --c:var(--s1)"></div></div><div class="track"><div class="bar" style="width:89%; --c:var(--s2)"></div></div></div><div class="bval">67 / 48</div><div class="tip">Первый год притока после Brexit-миграции.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">2020</div><div class="pair"><div class="track"><div class="bar" style="width:92%; --c:var(--s1)"></div></div><div class="track"><div class="bar" style="width:96%; --c:var(--s2)"></div></div></div><div class="bval">80 / 52</div><div class="tip">—</div></div>
+      <div class="brow" tabindex="0"><div class="blab">2021 · пик<em>141 всего</em></div><div class="pair"><div class="track"><div class="bar" style="width:100%; --c:var(--s1)"></div></div><div class="track"><div class="bar" style="width:100%; --c:var(--s2)"></div></div></div><div class="bval">87 / 54</div><div class="tip">Максимум за всю историю режима. Дальше только вниз.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">2022</div><div class="pair"><div class="track"><div class="bar" style="width:97%; --c:var(--s1)"></div></div><div class="track"><div class="bar" style="width:87%; --c:var(--s2)"></div></div></div><div class="bval">84 / 47</div><div class="tip">—</div></div>
+      <div class="brow" tabindex="0"><div class="blab">2023</div><div class="pair"><div class="track"><div class="bar" style="width:94%; --c:var(--s1)"></div></div><div class="track"><div class="bar" style="width:80%; --c:var(--s2)"></div></div></div><div class="bval">82 / 43</div><div class="tip">Шесть принудительных отзывов в платёжном секторе за год — рекорд.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">2024</div><div class="pair"><div class="track"><div class="bar" style="width:87%; --c:var(--s1)"></div></div><div class="track"><div class="bar" style="width:80%; --c:var(--s2)"></div></div></div><div class="bval">76 / 43</div><div class="tip">Год отзывов у NEOCARD, Kevin EU, Foxpay, Majestic Financial.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">2025<em>117 всего, −17,0% от пика</em></div><div class="pair"><div class="track"><div class="bar" style="width:84%; --c:var(--s1)"></div></div><div class="track"><div class="bar" style="width:81%; --c:var(--s2)"></div></div></div><div class="bval">73 / 44</div><div class="tip">При этом объём платёжных транзакций 166,3 млрд евро против 153,4 млрд в 2024 (+8%), доход от лицензируемой деятельности 653 млн евро (+14%). Из 117 институтов 106 малых и средних держат 8% оборота, остальные 11 — 92%.</div></div>
+    </div>
+    <p class="vizfoot"><b>Меньше лицензий, больше оборота, растущая концентрация — это консолидация, а не бегство.</b> Литва не «мягкая юрисдикция», а зрелая: 15 принудительных отзывов за три с половиной года и штраф Revolut Bank UAB на <b>3 500 000 евро</b> (04.04.2025 — крупнейший во всём реестре мер воздействия с 2012 года; ближайший исторический был 440 000). Риторика при этом смягчилась — план инспекций на 2026 обещает «avoid excessive administrative burden» и всего около 20 проверок, — а цифры нет: за январь–июль 2026 два отзыва и шесть штрафов от 69 до 362 тыс. евро.</p>
+  </div>
+  <p class="note"><b>Опровергнутый нарратив: Kevin EU не «свернулся сам».</b> Реестр мер воздействия фиксирует «Licence revocation (cancellation)» 24.09.2024 плюс назначение временного представителя двумя месяцами раньше. И «ушли без санкции» верно не для всех: Silvergate LT и Sezzle действительно ушли чисто, а <b>Pyrros Lithuania была оштрафована на 40 000 евро за шесть дней до ухода</b>, Revolut Payments UAB — на 150 000. Различать надо: «без принудительного отзыва» ≠ «без санкции».</p>
+  <p class="note"><b>Сравнение с ЕС возможно только через реестр EBA</b> — единственный источник с одной методикой. PSD_EMI на 27.08.2026: <b>Литва 70</b>, Мальта 38, Кипр 29, Ирландия 28, Нидерланды 27, Франция 23, Люксембург 16, Германия 12, Эстония 3. А PSD_PI: Германия 80, Франция 73, Нидерланды 64, и <b>Литва только девятая с 34</b>. То есть Литва — хаб именно EMI, а не платёжных лицензий вообще; «литовский платёжный хаб» как единая категория — вендорский артефакт. Оговорка: отозванные <b>остаются</b> в EBA со второй датой, тогда как из литовского реестра исчезают — EBA лучший источник по истории уходов и худший для наивного «сколько сейчас».</p>
+
+  <div class="eyebrow">03 · Дата-брокеры</div>
+  <h2>Штатов шесть, а не четыре, и разброс пошлин вырос до 15 000×</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Штат</th><th>Закон</th><th>Орган</th><th>Пошлина</th><th>Окно</th><th>Санкция за нерегистрацию</th><th>Записей</th></tr></thead>
+      <tbody>
+        <tr><td><b>Калифорния</b></td><td>Civ. Code 1798.99.80–88 (AB 1202 / SB 362 / SB 361); 11 CCR 7600–7615</td><td>CPPA</td><td class="num"><b>$6 000</b></td><td>1–31 января</td><td><b>$200/день</b> + причитавшиеся пошлины + издержки CPPA</td><td class="num">603</td></tr>
+        <tr><td><b>Вермонт</b></td><td>9 V.S.A. § 2446</td><td>Secretary of State</td><td class="num">$100</td><td>до 31 января</td><td>$50/день, потолок $10 000/год</td><td class="num">283</td></tr>
+        <tr><td><b>Техас</b></td><td>Bus. &amp; Com. Code <b>гл. 510</b> (ранее 509)</td><td>Secretary of State</td><td class="num">$300 + $300</td><td>сертификат 1 год</td><td>$100/день, потолок $10 000 за 12 мес.</td><td class="num">429</td></tr>
+        <tr><td><b>Орегон</b></td><td>ORS 646A.593 (HB 2052)</td><td>DFR</td><td class="num">$600 + $600</td><td>до 31 декабря</td><td>до $500/день, потолок $10 000/год</td><td class="num">383</td></tr>
+        <tr><td><b>Коннектикут</b></td><td>Public Act 26-64, подписан 27.05.2026</td><td>Dept. of Consumer Protection</td><td class="num">$2 500 + $2 500</td><td>запрет продавать без регистрации с <b>01.01.2027</b></td><td>до $200/день</td><td class="num">реестра нет</td></tr>
+        <tr><td><b>Нью-Джерси</b></td><td>A5328 [1R], подписан 30.06.2026</td><td>Division of Consumer Affairs</td><td class="num"><b>$5 000 – $1 500 000</b> по ярусам</td><td>~27.03.2027</td><td><b>$2 500/день</b></td><td class="num">реестра нет</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Ярусы Нью-Джерси по числу потребителей штата:</b> ≤100 тыс. — $5 000; &gt;100 тыс. — $10 000; &gt;500 тыс. — $100 000; &gt;1 млн — $500 000; &gt;1,5 млн — $750 000; &gt;2,5 млн — $1 000 000; &gt;4,5 млн — $1 500 000. <b>Дефект юртехники:</b> формула «more than X and fewer than Y» оставляет незакрытыми ровные значения — ровно 500 000, 1 000 000, 1 500 000, 2 500 000 и 4 500 000 не попадают ни в один ярус. И скрытый множитель: закон NJ покрывает не только брокеров, но и <b>«data collectors»</b> — компании с прямыми отношениями с людьми, продающие их данные брокерам.</p>
+  <p class="note"><b>Калифорнийская пошлина прошла три поколения:</b> $400 (2020–2024, принято Генпрокурором), $6 600 (регистрация 2025), <b>$6 000 с 01.01.2026</b> — единственное снижение среди шести штатов. Механика снижения обнажает природу режима: по меморандуму General Counsel CPPA от 18.09.2025 бюджет DROP на два финансовых года — $6,8 млн, «the data broker registrant population is <b>undefined</b>», делим на ~530 зарегистрировавшихся в 2025. <b>Цена регистрации буквально равна бюджету платформы, делённому на число плательщиков.</b></p>
+  <div class="cons">
+    <div class="box" style="--cc:var(--mark)">
+      <h3>DROP: календарь и двойной множитель</h3>
+      <ul>
+        <li><b>01.01.2026</b> — платформа запущена, потребители могут подавать запросы</li>
+        <li><b>01.08.2026</b> — брокеры <b>обязаны</b> обращаться к DROP и обрабатывать удаления; с той же даты — повторно удалять не реже раза в <b>45 дней</b> и не продавать новые данные потребителя</li>
+        <li><b>01.01.2028</b> — первый независимый аудит третьей стороной, далее каждые 3 года, хранение материалов 6 лет</li>
+        <li><b>01.01.2029</b> — в форме регистрации появляется вопрос о прохождении аудита</li>
+        <li><b>Санкции разделены.</b> За нерегистрацию — $200 за каждый день. За несоблюдение § 1798.99.86 — дословно <b>«$200 for each deletion request for each day»</b>: двойной множитель по числу запросов И по дням. Это первая санкция в режиме реестра, масштабирующаяся размером базы, а не календарём</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Вермонт: из самого дешёвого — в самый злой</h3>
+      <ul>
+        <li>Act 138 подписан 16.06.2026, но <b>ключевые нормы вступают 01.01.2027</b>, а не 01.07.2026, как пишет ряд юрфирменных обзоров: Sec. 5 дословно «Secs. 1 and 4 shall take effect on January 1, 2027», а пошлина, бонд и санкции все в Sec. 1. Проверка сходится — сайт легислатуры на 27.08.2026 публикует § 2446 с суммой $100</li>
+        <li>С 01.01.2027: пошлина $100 → <b>$900</b>; <b>бонд $20 000</b> в пользу штата; регистрация не позднее 30 дней после соответствия определению; штраф из гражданского $50/день с потолком превращается в <b>административный $200/день БЕЗ ПОТОЛКА</b>; плюс $1 000/день за неподачу дополнения и $25 000 за существенно недостоверные сведения</li>
+        <li>При этом собственный механизм удаления Вермонт пока только <b>изучает</b>: доклады до 01.12.2027 и 01.12.2028</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">04 · Кто попадает</div>
+  <h2>Определение важнее реестра, и в четырёх штатах оно сконструировано по-разному</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 180" role="img" aria-label="Четыре разные конструкции определения дата-брокера">
+      <g font-size="11.5">
+        <rect x="0" y="0" width="228" height="132" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="14" y="22" fill="var(--mark)" font-size="12" font-weight="600">КАЛИФОРНИЯ</text>
+        <text x="14" y="41" fill="var(--ink)" font-size="11" font-weight="600">через ОТНОШЕНИЯ</text>
+        <text x="14" y="60" fill="var(--muted)" font-size="10.5">Прямой сбор пикселем или SDK</text>
+        <text x="14" y="73" fill="var(--muted)" font-size="10.5">НЕ создаёт прямых отношений —</text>
+        <text x="14" y="86" fill="var(--muted)" font-size="10.5">нужен умысел потребителя.</text>
+        <text x="14" y="105" fill="var(--mark)" font-size="10.5" font-weight="600">Статус дробится ПО ДАННЫМ</text>
+        <text x="14" y="118" fill="var(--muted)" font-size="10.5">(«as to») — вне first-party</text>
+
+        <rect x="238" y="0" width="228" height="132" rx="6" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="252" y="22" fill="var(--s1)" font-size="12" font-weight="600">ТЕХАС</text>
+        <text x="252" y="41" fill="var(--ink)" font-size="11" font-weight="600">через ИСТОЧНИК данных</text>
+        <text x="252" y="60" fill="var(--muted)" font-size="10.5">«did not collect directly from</text>
+        <text x="252" y="73" fill="var(--muted)" font-size="10.5">the individual».</text>
+        <text x="252" y="92" fill="var(--muted)" font-size="10.5">Шире: ловит пассивный сбор</text>
+        <text x="252" y="105" fill="var(--muted)" font-size="10.5">от партнёра. Уже: прямой сбор</text>
+        <text x="252" y="118" fill="var(--muted)" font-size="10.5">пикселем ВЫВОДИТ из-под нормы</text>
+
+        <rect x="476" y="0" width="228" height="132" rx="6" fill="var(--card)" stroke="var(--s4)" stroke-width="2"/>
+        <text x="490" y="22" fill="var(--s4)" font-size="12" font-weight="600">ОРЕГОН</text>
+        <text x="490" y="41" fill="var(--ink)" font-size="11" font-weight="600">признака НЕТ вовсе</text>
+        <text x="490" y="60" fill="var(--muted)" font-size="10.5">Словосочетание «direct</text>
+        <text x="490" y="73" fill="var(--muted)" font-size="10.5">relationship» в секции не</text>
+        <text x="490" y="86" fill="var(--muted)" font-size="10.5">встречается ни разу.</text>
+        <text x="490" y="105" fill="var(--muted)" font-size="10.5">Эквивалент вынесен в изъятия,</text>
+        <text x="490" y="118" fill="var(--muted)" font-size="10.5">включая агентское</text>
+
+        <rect x="714" y="0" width="226" height="132" rx="6" fill="var(--card)" stroke="var(--s3)" stroke-width="2"/>
+        <text x="728" y="22" fill="var(--s3)" font-size="12" font-weight="600">ВЕРМОНТ</text>
+        <text x="728" y="41" fill="var(--ink)" font-size="11" font-weight="600">через ОТНОШЕНИЯ + примеры</text>
+        <text x="728" y="60" fill="var(--muted)" font-size="10.5">Ловит «unit or units of a</text>
+        <text x="728" y="73" fill="var(--muted)" font-size="10.5">business», добавляет «licenses».</text>
+        <text x="728" y="92" fill="var(--s3)" font-size="10.5" font-weight="600">С 01.01.2027 импортирует</text>
+        <text x="728" y="105" fill="var(--s3)" font-size="10.5" font-weight="600">калифорнийскую конструкцию</text>
+        <text x="728" y="118" fill="var(--muted)" font-size="10.5">и удаляет прежние изъятия</text>
+
+        <rect x="0" y="146" width="940" height="34" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="167" fill="var(--ink)" font-size="12" font-weight="600">Разброс 283–603 записи при почти идентичном бизнесе регистрантов означает, что формулировки реально сортируют РАЗНЫЕ множества компаний.</text>
+      </g>
+    </svg>
+    <figcaption><b>Техас — единственный с числовым порогом:</b> более 50% выручки <i>непосредственно</i> от обработки чужих данных либо выручка от данных более чем <b>50 000</b> человек за 12 месяцев. Что в счётчике 50 000 — техасские резиденты, чьи данные не собраны у них напрямую; не записи, не транзакции, не клиенты брокера. Денежного порога выручки нет вовсе. Калифорния числового порога в Delete Act не имеет, но «business» требует выручки свыше $26 625 000 либо 100 000+ потребителей либо 50%+ выручки от продажи ПД. Вермонт и Орегон порогов не имеют вообще.</figcaption>
+  </figure>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Роль в adtech</th><th>Калифорния</th><th>Техас</th><th>Что показывает реестр</th></tr></thead>
+      <tbody>
+        <tr><td><b>Поставщик аудиторных сегментов</b></td><td>Да</td><td>Да</td><td>Ядро определения. Зарегистрированы Eyeota, Semasio, Datonics, AnalyticsIQ, Stirista, Adstra, Claritas</td></tr>
+        <tr><td><b>Identity-граф</b></td><td>Да</td><td>Да</td><td>LiveRamp, Neustar (2 юрлица), ID5. Граф по построению склеивает данные, собранные не у человека напрямую</td></tr>
+        <tr><td><b>SSP</b></td><td>Как правило да</td><td>Как правило да</td><td>PubMatic, Magnite, OpenX, Index Exchange, Sharethrough, Sovrn, TripleLift, Media.net, FreeWheel. <b>PubMatic публично разместил техасское уведомление</b>: «The entity maintaining this website is a data broker under Texas law»</td></tr>
+        <tr><td><b>DSP</b></td><td>Зависит от модели</td><td>Зависит</td><td>Зарегистрированы Criteo, Viant, Dstillery, Zeta Global, AppLovin. <b>НЕ зарегистрирован The Trade Desk</b> — аргумент против: DSP как service provider рекламодателя прямо выведен изъятием</td></tr>
+        <tr><td><b>Retail media network</b></td><td>Скорее да — в части данных вне first-party</td><td>Скорее да</td><td>В реестре нет ни Walmart, ни Kroger, ни Instacart, ни Amazon: опора на прямые отношения с покупателем. Но правило дробит статус «as to» данным вне first-party — RMN, подмешивающая внешние сигналы, попадает частично</td></tr>
+        <tr><td><b>Measurement</b></td><td colspan="2">Разделились</td><td>Зарегистрированы Comscore, Nielsen, VideoAmp, iSpot.tv, Samba TV. <b>НЕ зарегистрированы DoubleVerify и IAS</b> — аргумент: продают верификацию, а не ПД</td></tr>
+        <tr><td><b>CDP</b></td><td colspan="2">Обычно нет</td><td>Процессор по поручению клиента = service provider. Нет Tealium, Segment/Twilio, Snowflake, InfoSum, Habu</td></tr>
+        <tr><td><b>Аффилиатная сеть</b></td><td>Да, если торгует лидами</td><td>Да</td><td>Growbots и UpLead (B2B-лидогенерация) — <b>первые два дела CPPA вообще</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Состав отсутствующих в реестре показателен:</b> Google, Amazon, Meta, Microsoft/Xandr, Yahoo, The Trade Desk, Oracle, Adobe, Salesforce, Roku, Comcast, DoubleVerify, IAS, Kochava, Lotame, Outbrain. Крупнейшие узлы экосистемы либо считают себя имеющими прямые отношения с пользователем, либо квалифицируют себя как service provider. <b>Режим ловит средний слой</b> — тех, кто торгует данными открыто и не имеет ни пользовательского интерфейса, ни договора-процессора, за который можно спрятаться. И официальных разъяснений по ролям нет ни в одном из шести штатов: техасский SOS прямо снимает вопрос — «It is the data broker's responsibility to determine».</p>
+  <p class="note"><b>Ключевая правовая позиция против типовой защиты adtech</b> — приказ CPPA по ROR Partners от 03.12.2025, п. 18, дословно: «ROR Partners' disclosures are sales of personal information, <b>regardless of whether those sales are provided in a bundle with advertising and marketing services</b>… <b>A sale is a sale.</b> A business cannot bypass the CCPA's and the Delete Act's requirements by selling personal information as part of a larger suite of products and services it offers.» Аргумент «мы не продаём данные, мы продаём медиа» — не защита.</p>
+
+  <div class="eyebrow">05 · Правоприменение</div>
+  <h2>Двенадцать дел на $660 890 — и все в одном штате</h2>
+  <div class="viz">
+    <h3>Денежные резолюции CPPA по нерегистрации</h3>
+    <p class="sub">Медиана $53 300, средний чек $55 074. Максимум по «чистой» нерегистрации математически ограничен: $200 × число дней просрочки.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0"><div class="blab">LocateSmarter<em>08.2026</em></div><div class="track"><div class="bar" style="width:100%; --c:var(--mark)"></div></div><div class="bval">$116 490</div><div class="tip">Первое дело ОДНОВРЕМЕННО по CCPA и Delete Act: $30 600 + $79 890 + $6 000 пошлины. Отдельное нарушение — требование сообщить 4 цифры SSN для opt-out квалифицировано как нарушение принципа минимизации данных.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">S&amp;P Global<em>08.01.2026</em></div><div class="track"><div class="bar" style="width:53.7%; --c:var(--s1)"></div></div><div class="bval">$62 600</div><div class="tip">Объяснение компании — «due to an administrative error». Не помогло.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">ROR Partners<em>03.12.2025</em></div><div class="track"><div class="bar" style="width:48.6%; --c:var(--s1)"></div></div><div class="bval">$56 600</div><div class="tip">$50 000 штрафа плюс $6 600 пошлины. Custom audiences для таргетинга, «billions of data points», 262 млн взрослых США. Именно здесь сформулировано «A sale is a sale».</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Key Marketing Advantage<em>29.01.2025</em></div><div class="track"><div class="bar" style="width:47.9%; --c:var(--s1)"></div></div><div class="bval">$55 800</div><div class="tip">Просрочка 01.02–05.11.2024.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Accurate Append<em>29.07.2025</em></div><div class="track"><div class="bar" style="width:47.6%; --c:var(--s1)"></div></div><div class="bval">$55 400</div><div class="tip">Зарегистрировался только после контакта Enforcement Division.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Infillion (PayDae)<em>23.12.2024</em></div><div class="track"><div class="bar" style="width:46.5%; --c:var(--s1)"></div></div><div class="bval">$54 200</div><div class="tip">—</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Cybba<em>13.08.2026</em></div><div class="track"><div class="bar" style="width:45.0%; --c:var(--s1)"></div></div><div class="bval">$52 400</div><div class="tip">Ретаргетинг, lookalike, атрибуция; продажа геолокации, internet activity data и инференсов. Самое близкое к профилю классического adtech-вендора.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Background Alert<em>26.02.2025</em></div><div class="track"><div class="bar" style="width:42.9%; --c:var(--s3)"></div></div><div class="bval">$50 000*</div><div class="tip">*Альтернатива: ОСТАНОВКА ДЕЯТЕЛЬНОСТИ ДО 2028 ГОДА. Профили из миллиардов публичных записей плюс инференсы. Компания выбрала закрыться.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">The Data Group<em>23.12.2024</em></div><div class="track"><div class="bar" style="width:40.0%; --c:var(--s1)"></div></div><div class="bval">$46 600</div><div class="tip">—</div></div>
+      <div class="brow" tabindex="0"><div class="blab">National Public Data<em>08.05.2025</em></div><div class="track"><div class="bar" style="width:39.5%; --c:var(--s2)"></div></div><div class="bval">$46 000</div><div class="tip">МАКСИМУМ ПО ЗАКОНУ: зарегистрировался на 230 дней позже срока, 230 × $200 = $46 000. Приказ по умолчанию — компания не явилась.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Datamasters<em>08.01.2026</em></div><div class="track"><div class="bar" style="width:38.6%; --c:var(--s3)"></div></div><div class="bval">$45 000</div><div class="tip">Плюс ЗАПРЕТ продавать любые ПД калифорнийцев. Перепродажа списков по болезням (Альцгеймер, зависимость), «Senior Lists», «Hispanic Lists», политвзглядам. Бизнес-модель уничтожена приказом на $45 000.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Growbots / UpLead<em>14.11.2024</em></div><div class="track"><div class="bar" style="width:30.4%; --c:var(--s1)"></div></div><div class="bval">$35,4 / 34,4 тыс.</div><div class="tip">Первые два дела вообще — обе B2B-лидогенерация. Публичный investigative sweep был объявлен 30.10.2024.</div></div>
+    </div>
+    <p class="vizfoot"><b>Самое дорогое — не деньги, а инъюнктив.</b> Datamasters обязали полностью прекратить продажу ПД калифорнийцев; Background Alert — закрыться до 2028 года. И с <b>01.08.2026 включился второй счётчик</b>: $200 в день за <i>каждый запрос на удаление</i>. При сотнях тысяч зарегистрировавшихся в DROP это арифметика другого порядка, чем весь реестр штрафов за нерегистрацию, — и она бьёт по зарегистрированным тоже.</p>
+  </div>
+  <p class="note"><b>За пределами Калифорнии правоприменения практически нет.</b> Вермонт — дел по § 2446 не обнаружено ни одного; единственное громкое дело, <i>State v. Clearview AI</i>, прекращено по юрисдикционным основаниям, и ирония мотивировки в том, что суд отличил Clearview от Facebook и Amazon именно тем, что <b>у Clearview нет прямых отношений с вермонтцами — а значит нет и юрисдикционной связи</b>. Признак, делающий тебя дата-брокером, работает как щит от юрисдикции. Орегон — публичных денежных взысканий не найдено, хотя из 214 жалоб за первый год 62 касались брокеров. Техас — реестр ведёт SOS, но не расследует; enforcement у AG, есть иск против <b>Allstate и Arity</b> от 13.01.2025 с требованием по нерегистрации при обработке данных 45+ млн человек, но публичного исхода на 27.08.2026 нет.</p>
+  <div class="viz">
+    <h3>Что компании обязаны публично признать при регистрации в Калифорнии</h3>
+    <p class="sub">Из 603 записей цикла 2026. Это и есть настоящая цена режима — не пошлина, а документ.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0"><div class="blab">Собирают точную геолокацию</div><div class="track"><div class="bar" style="width:100%; --c:var(--mark)"></div></div><div class="bval">115</div><div class="tip">19,1% всех регистрантов. Именно этот класс данных стал предметом пяти геолокационных consent orders FTC 2024–2026.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Продавали федеральному правительству</div><div class="track"><div class="bar" style="width:47.8%; --c:var(--s3)"></div></div><div class="bval">55</div><div class="tip">9,12%. Одна ячейка пуста, отвечали 602.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Продавали правительствам штатов</div><div class="track"><div class="bar" style="width:47.0%; --c:var(--s3)"></div></div><div class="bval">54</div><div class="tip">8,96%. Объединение «федеральное ИЛИ штаты» даёт ровно 64 брокера.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Продавали разработчикам GenAI</div><div class="track"><div class="bar" style="width:27.8%; --c:var(--s1)"></div></div><div class="bval">32</div><div class="tip">5,31%. Новый вопрос формы, введённый SB 361. Поправка к ходовой формулировке: «государству вдвое чаще, чем GenAI» верно только для ОБЪЕДИНЕНИЯ федерального и штатов (64 против 32 = ровно 2,00×); одно федеральное даёт 1,72×.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Продавали правоохранителям</div><div class="track"><div class="bar" style="width:24.3%; --c:var(--s1)"></div></div><div class="bval">28</div><div class="tip">Нижняя граница по построению: статут выводит из счётчика всё переданное во исполнение повестки или судебного приказа. Причём заголовок колонки в выгрузке CPPA («required by») уже статутной формулировки («shared pursuant to») — регулятор в собственном файле процитировал собственную норму неточно.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Продавали иностранному актору</div><div class="track"><div class="bar" style="width:22.6%; --c:var(--s1)"></div></div><div class="bval">26</div><div class="tip">4,31%. «Foreign actor» определён через «covered nation» по 10 U.S.C. § 4872.</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Собирают данные несовершеннолетних</div><div class="track"><div class="bar" style="width:15.7%; --c:var(--s2)"></div></div><div class="bval">18</div><div class="tip">—</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Собирают биометрию</div><div class="track"><div class="bar" style="width:10.4%; --c:var(--s2)"></div></div><div class="bval">12</div><div class="tip">—</div></div>
+      <div class="brow" tabindex="0"><div class="blab">Репродуктивные медданные</div><div class="track"><div class="bar" style="width:7.0%; --c:var(--s2)"></div></div><div class="bval">8</div><div class="tip">Самая политически заряженная категория в форме.</div></div>
+    </div>
+    <p class="vizfoot">Плюс полная статистика DSAR по каждому юрлицу и доля деятельности под FCRA, GLBA, HIPAA. <b>Для конкурента это карта закупочных возможностей и операционный бенчмарк; для журналиста — готовый список поводов.</b> Методическая ловушка: колонки метрик в реестре цикла 2026 подписаны «in 2024» — это не опечатка, CPPA прямо требует отчитываться при регистрации в январе 2026 метриками 2024 года.</p>
+  </div>
+
+  <div class="eyebrow">06 · Что из этого следует</div>
+  <h2>Реестр — не «лёгкая лицензия», а другая ось</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 168" role="img" aria-label="Три механизма допуска и что каждый из них торгует">
+      <g font-size="11.5">
+        <rect x="0" y="0" width="300" height="112" rx="6" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="16" y="24" fill="var(--s1)" font-size="12.5" font-weight="600">ЛИЦЕНЗИЯ</text>
+        <text x="16" y="46" fill="var(--ink)" font-size="11.5" font-weight="600">торгует РАЗРЕШЕНИЕМ</text>
+        <text x="16" y="60" fill="var(--ink)" font-size="11.5" font-weight="600">против КАПИТАЛА и НАДЗОРА</text>
+        <text x="16" y="82" fill="var(--muted)" font-size="10.5">Дорогая (€47 450/год на Кюрасао,</text>
+        <text x="16" y="95" fill="var(--muted)" font-size="10.5">€350 000 капитала в Литве), медленная,</text>
+        <text x="16" y="108" fill="var(--muted)" font-size="10.5">с дискрецией и правом отозвать</text>
+
+        <rect x="320" y="0" width="300" height="112" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="336" y="24" fill="var(--mark)" font-size="12.5" font-weight="600">РЕЕСТР</text>
+        <text x="336" y="46" fill="var(--ink)" font-size="11.5" font-weight="600">торгует БЕЗНАКАЗАННОСТЬЮ</text>
+        <text x="336" y="60" fill="var(--ink)" font-size="11.5" font-weight="600">против ПРОЗРАЧНОСТИ</text>
+        <text x="336" y="82" fill="var(--muted)" font-size="10.5">Дешёвый, быстрый, без дискреции —</text>
+        <text x="336" y="95" fill="var(--muted)" font-size="10.5">регистрация не одобряется, она подаётся.</text>
+        <text x="336" y="108" fill="var(--muted)" font-size="10.5">Статуса не даёт, документ создаёт</text>
+
+        <rect x="640" y="0" width="300" height="112" rx="6" fill="var(--card)" stroke="var(--s3)" stroke-width="2"/>
+        <text x="656" y="24" fill="var(--s3)" font-size="12.5" font-weight="600">СЕРТИФИКАТ</text>
+        <text x="656" y="46" fill="var(--ink)" font-size="11.5" font-weight="600">торгует ДОВЕРИЕМ</text>
+        <text x="656" y="60" fill="var(--ink)" font-size="11.5" font-weight="600">через АККРЕДИТОВАННОГО ТРЕТЬЕГО</text>
+        <text x="656" y="82" fill="var(--muted)" font-size="10.5">Формально добровольный,</text>
+        <text x="656" y="95" fill="var(--muted)" font-size="10.5">принудительность создаёт контрагент.</text>
+        <text x="656" y="108" fill="var(--muted)" font-size="10.5">На Кюрасао — 11 держателей на 01.07.2026</text>
+
+        <rect x="0" y="126" width="940" height="42" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="146" fill="var(--ink)" font-size="12" font-weight="600">Дата-брокеру никто не запрещает работать — от него требуют публично описать, чем он торгует. И раскрытие оказывается дороже пошлины:</text>
+        <text x="16" y="163" fill="var(--muted)" font-size="12">сравните $6 000 пошлины с тем, что 115 компаний обязаны были письменно признать сбор точной геолокации, а 32 — продажу данных разработчикам GenAI.</text>
+      </g>
+    </svg>
+    <figcaption><b>Юрисдикцию для режима реестра нельзя выбрать</b> — в отличие от лицензионных режимов. Он привязан не к месту учреждения, а к резидентству субъектов данных: техасский порог считается по техасским резидентам, вермонтский закон ловит «unit or units of a business», нью-джерсийский — ещё и «data collectors». Единственная переменная под контролем компании — <b>самоквалификация</b>: считаешь ли ты себя service provider и есть ли у тебя direct relationship. Отсюда и состав отсутствующих в реестре.</figcaption>
+  </figure>
+  <p class="note"><b>Сквозной вывод раунда: во всех трёх сюжетах барьер переехал со входа на удержание.</b> Кюрасао — разовая заявка €4 592 против ежегодного сбора €47 450, вход в десять раз дешевле удержания, с приостановкой на 71-й день неуплаты. Литва — госпошлина €1 463, но wind-down plan обязателен с 09.04.2025, а лимиты концентрации включаются 01.01.2027. Калифорния — пошлина $6 000, но опрос DROP каждые 45 дней бессрочно, аудит с 2028 каждые три года, хранение шесть лет. <b>Заплатить, чтобы войти, стало дёшево. Дорого стало оставаться.</b></p>
+  <p class="note"><b>И общее правило для всей карты норм, подтверждённое трижды: всегда спрашивай, что физически в счётчике.</b> Кюрасао считает <b>строки</b> (661 строка → 660 номеров → 659 компаний, с включёнными добровольными отзывами и опечаткой). Литва считает <b>карточки юрлиц</b> (70 = 70 лицензий, отозванные исчезают полностью). Калифорния считает <b>регистрации за цикл</b> (603 заявления, поданные в январе 2026 за деятельность 2025, откуда запись убрать нельзя). И три соответствующие ловушки: параллельный сервис CGA считает домены (5 140) и «организации» (1 782) вместо 659 компаний; литовский фильтр <code>type=7</code> считает входящий паспортинг (279 вместо 70); техасский реестр не чистит истёкшие сертификаты (429 включает минимум 17 протухших).</p>
+
+  <div class="eyebrow">07 · Слепые зоны</div>
+  <h2>Что осталось неустановленным</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s2)">
+      <h3>Кюрасао и Литва</h3>
+      <ul>
+        <li><b>Судьба номеров мастер-лицензий</b> 1668/JAZ, 8048/JAZ, 365/JAZ, 5536/JAZ. Проверены все четыре PDF-реестра, исторические версии из веб-архива, полный перебор публикаций портала. Режим NOOGH нигде отдельно не публикуется. <i>Кому удобно:</i> мастер-лицензиатам — отсутствие публичного следа разрывает цепочку ответственности за 2023–2025</li>
+        <li><b>Министерский декрет о переносе substance</b> обещан «shortly» 23.01.2026 и не найден ни в Landscourant, ни в Publicatieblad. Обязанность отложена без публичного акта, который можно было бы оспорить</li>
+        <li><b>Waarborgfonds</b> (гарантийный фонд выплат игрокам) учреждён ст. 5.7, но управляющий не назначен, премия не установлена, в тарифном документе строки нет. <b>Фонд не работает</b></li>
+        <li><b>Литва: несостыковка счёта PI.</b> Обзор ЛБ даёт 44, реестр — 27+11=38, EBA — 34. Три источника не сходятся, методика обзора не опубликована</li>
+        <li><b>Первоисточника с прямым требованием местного присутствия в Литве не найдено.</b> Формулировки «letterbox» и «resident decision-makers» встречаются только у вендоров корпоративных услуг — тех, кто продаёт «локальное присутствие» как обязательное требование</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Дата-брокеры</h3>
+      <ul>
+        <li><b>Вермонтский реестр</b> закрыт CAPTCHA — обходить принципиально не стали. Цифра 283 взята из фискальной записки Joint Fiscal Office; сходимость проверена: 283 × $900 = $254 700, ровно сумма дохода в записке. Обязанность публиковать выгрузку заработает только с 01.01.2027</li>
+        <li><b>Texas AG</b> полностью закрыт Cloudflare — и дата рассылки писем более чем 100 компаниям, и список адресатов остались по вторичным источникам. Публичного реестра нарушителей нет, факт получения письма нигде не фиксируется</li>
+        <li><b>Исход Texas AG v. Allstate/Arity</b> — на 27.08.2026 ни решения, ни мирового</li>
+        <li><b>Vermont AG и Oregon DFR</b> — ни одного публичного взыскания. Отрицательный результат вероятен, но не доказан исчерпывающе. <i>Кому удобно:</i> 283 вермонтским и 383 орегонским регистрантам — режим существует на бумаге и в кассе, но не в правоприменении</li>
+        <li><b>Стоимость независимого аудита</b> в Калифорнии нормой не задана — это переговорная цена, в расчёт совокупной стоимости не включена. То же с премией по вермонтскому бонду</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">08 · Добор</div>
+  <h2>Три барьера, взятые вторым заходом</h2>
+  <p class="note">Отдельный раунд специально по трём местам, где первый заход упал на технике. Границы были заданы жёстко: <b>CAPTCHA и защиту от ботов не обходить</b>. Из одиннадцати позиций полностью закрыто пять, частично четыре, не закрыто две — и обе незакрытые это ровно те, где барьер непреодолим в этих границах.</p>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 168" role="img" aria-label="Какие барьеры обходятся легитимно, а какие нет">
+      <g font-size="11.5">
+        <rect x="0" y="0" width="455" height="96" rx="6" fill="var(--card)" stroke="var(--s4)" stroke-width="2"/>
+        <text x="16" y="24" fill="var(--s4)" font-size="12.5" font-weight="600">ОБХОДИТСЯ ПОЛНОСТЬЮ</text>
+        <text x="16" y="46" fill="var(--ink)" font-weight="600">Бот-защита на живом сайте органа</text>
+        <text x="16" y="64" fill="var(--muted)">texasattorneygeneral.gov отдаёт 403 на всё —</text>
+        <text x="16" y="79" fill="var(--muted)">но веб-архив выдал и HTML-релизы, и 46-страничную</text>
+        <text x="16" y="92" fill="var(--muted)">петицию; подлинность подтверждена совпадением SHA-1</text>
+
+        <rect x="485" y="0" width="455" height="96" rx="6" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="501" y="24" fill="var(--mark)" font-size="12.5" font-weight="600">НЕ ОБХОДИТСЯ НИЧЕМ</text>
+        <text x="501" y="46" fill="var(--ink)" font-weight="600">SPA-оболочка вместо контента</text>
+        <text x="501" y="64" fill="var(--muted)">Вермонтский реестр, реестр Texas SOS: архив</text>
+        <text x="501" y="79" fill="var(--muted)">добросовестно сохранил ПУСТОЙ КАРКАС.</text>
+        <text x="501" y="92" fill="var(--muted)">Данные недоступны навсегда, а не временно</text>
+
+        <rect x="0" y="110" width="940" height="58" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="130" fill="var(--ink)" font-size="12.5" font-weight="600">Главный методический вывод: заархивированный HTTP 200 — не заархивированный контент.</text>
+        <text x="16" y="149" fill="var(--muted)" font-size="12">Значительная часть снимков sos.vermont.gov — это блок-страницы Imperva. Перед тем как считать канал рабочим, надо смотреть размер и содержимое снимка, а не код ответа.</text>
+        <text x="16" y="164" fill="var(--muted)" font-size="12">И второй: источник ДОКУМЕНТА и источник ЧИСЛА внутри документа — разные провенансы, второй почти всегда слабее.</text>
+      </g>
+    </svg>
+    <figcaption>Сработавшие каналы, годные к переносу: CDX-запрос <b>по CDN-домену отдельно от основного</b> — так вскрылся орфанный PDF регулятора, не слинкованный ни с одной страницы; <b>число, которого нет у регистратора, ищи в бюджетном процессе</b>; и <b>продукт публичного запроса, лежащий у третьей стороны</b> — выгрузка Secretary of State нашлась на CDN MuckRock, список незарегистрированных брокеров на eff.org.</figcaption>
+  </figure>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Мастер-лицензии: даты есть, актов нет</h3>
+      <ul>
+        <li><b>Все четыре даты установлены</b> по единственному архивному снимку реестра прежнего Gaming Control Board от 23.08.2019 плюс объявление CGA от 07.08.2024: 1668/JAZ Cyberluck — 01.10.1996 → 01.10.2024; 8048/JAZ Antillephone — 29.11.1996 → 28.11.2024; 365/JAZ Gaming Services Provider — 18.08.1998 → 18.08.2024; 5536/JAZ C.I.L. — 31.01.2002 → 31.01.2025</li>
+        <li><b>Качество этого источника надо носить с числами:</b> записей на странице <b>пять, а не четыре</b>, у пятой номер напечатан как «0000/JAZ» и срок как «xxx. 00, 0000», а рядом висит нерасчищенная рыба «Ipsum lorum texti». Это недоделанная страница подрядчика, а не выверенный реестр</li>
+        <li><b>Акта о прекращении нет ни по одной</b> — и установлено, что таких актов в вестнике не публикуют в принципе: сплошной греп всех <b>138 выпусков</b> Landscourant за 2024–2026 даёт ноль. След есть только по двум: банкротство Cyberluck (решение суда 18.10.2024) и самопубликация Gaming Curacao о прекращении операций 18.08.2024. По Antillephone и C.I.L. — <b>ноль везде</b></li>
+        <li><b>Находка, сломавшаяся на одной букве:</b> Gaming Servi<b>c</b>e Provider N.V. — в вестнике единственное число — вела судебный процесс в октябре 2025, через год с лишним после истечения лицензии. Дословный греп по «Services» этого не находил</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Ответственность установлена — и практически неисполнима</h3>
+      <ul>
+        <li><b>Лицензиар отрицал:</b> архивный валидатор Antillephone (16.07.2023) несёт печать «operates under the License No. 8048/JAZ» и тут же дисклеймер, что компания «does not own, operate or have any financial interest», а суб-лицензиат «singularly required to comply with all relevant laws»</li>
+        <li><b>Суд возложил на мастера окончательно:</b> Hoge Raad 20.12.2024 отклонил кассацию, устояла солидарная ответственность за невыплату игроку 620 000 турецких лир</li>
+        <li><b>Но главное правовое исправление раунда:</b> HR <b>обесценил</b> ярлык «bijzondere zorgplicht» — дословно «heeft in dit verband geen betekenis». Устояла обычная деликтная ответственность на трёх фактических основаниях. Ссылаться на это решение как на источник особой обязанности заботы для мастер-лицензиатов <b>нельзя</b></li>
+        <li><b>Регулятор был на той же стороне:</b> «The Master Licensor is responsible for ensuring that ALL its Sublicenses and ALL related domains are registered»</li>
+        <li><b>Практический итог:</b> ответственный устанавливается однозначно, но по одному из четырёх он банкрот, а по двум юрлицо не прослеживается вообще</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s2)">
+      <h3>Вермонт: число нашлось, метод — нет</h3>
+      <ul>
+        <li><b>283 — из фискальных записок Joint Fiscal Office от 19.03.2026</b> (не 28.05.2026, как считалось), посимвольно копируется во все восемь; арифметика сходится: 283 × $900 = $254 700</li>
+        <li><b>Но сноска говорит только ГДЕ информацию найти, а не как она получена.</b> Вывод «ручной подсчёт сотрудника» был достроен и снят верификатором. Метод остаётся неустановленным, а само число фильтрозависимо</li>
+        <li><b>Официального ряда по годам нет и по норме быть не должно</b> — обязанности публиковать список в 9 V.S.A. § 2446 нет вовсе, отчётность Act 171 была разовой</li>
+        <li><b>467 нашлось</b> — сшивкой двух срезов: The Record 27.12.2024 даёт ряд «California 519, Oregon 206, Texas 217, Vermont 467» со ссылкой на анализ PRC. Метод по-прежнему не раскрыт; по косвенным признакам оно лежит в ряду сырых записей, а не текущих регистраций</li>
+        <li><b>Орган противоречит собственным данным:</b> AG утверждал «No data brokers reported known security breaches», но в его же выгрузке колонка ненулевая у двух регистрантов — Data Facts (1 брешь, 6 720 затронутых) и Early Warning Services (3 бреши)</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Texas AG: документы есть, статус завис</h3>
+      <ul>
+        <li><b>Петиция добыта целиком</b> — 46 страниц, подлинность подтверждена совпадением SHA-1 файла с digest архивного снимка. Cause No. 25-01-00561, 457-й округ Montgomery County, 13.01.2025, шесть ответчиков</li>
+        <li><b>Провенансная тонкость:</b> в самой петиции поля номера дела и округа <b>оставлены пустыми</b> — и то и другое подтверждено отдельным первичным документом, ответом Arity со штампом клерка</li>
+        <li><b>Статус — главное исправление:</b> ордер от 10.04.2025 о выводе двух ответчиков <b>не окончателен</b> — штат обжаловал его в Пятнадцатый апелляционный суд Техаса, устные прения прошли 21–22.05.2026, решения нет. Сам ордер не видел ни один агент. <b>Перепроверено 25.09 и исправлено 27.09.2026:</b> решения апелляции не видно, но вывод «канал закрыт» оказался ошибкой формы запроса. Суд покрыт машинно — в CourtListener это <code>court_id=txctapp15</code> (2 534 мнения, свежайшее 17.09.2026), и само дело там лежит под номерами <b>15-25-00082-CV</b> и <b>15-25-00213-CV</b> («State of Texas v. Arity 875, LLC») с документами от 02.05.2025 (NOTICE OF APPEAL) по 23.12.2025; документов 2026 года в деле нет. Прежний запрос не находил их потому, что шёл без <code>court_id</code> и с фильтром <code>filed_after=2026-05-01</code>. Сайт судов Техаса действительно отдаёт 403 на оба User-Agent, но он больше не единственный канал: текст найденного документа требует токена CourtListener (<code>/opinions/&lt;id&gt;/</code> → 401), сам факт наличия документа — нет. Следующая проверка 27.10.2026</li>
+        <li><b>Эффект рассылки — в пределах шума:</b> орган засчитывает себе рост «to over 200», но 217 было уже в декабре 2024, а 226 — в апреле 2025. Одновременно PRC и EFF передали Пакстону поимённый список <b>524 брокеров</b>, зарегистрированных в других штатах и отсутствующих в техасском</li>
+        <li><b>Завершённых взысканий по брокерскому режиму ноль</b>, и это доказано содержанием саморекламного годового релиза: там Meta $1,4 млрд и Google $1,375 млрд, а про Data Broker Law только фраза о росте регистраций</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer>
+    Собрано агентом gid 27.08.2026: четыре research-агента, по одному адверсариальному верификатору на срез, плюс отдельный добор по трём барьерам (ещё <b>30 правок</b>). Верификаторы дали <b>70 правок</b> суммарно.
+    <br><br>
+    Существенные: LOK в силе <b>не целиком</b> — две статьи ждут 24.12.2026, ещё две не имеют даты вовсе; объявление CGA от 23.12.2025 — <b>не третье продление</b>, а административное невмешательство, поскольку лимит 6+6 месяцев был исчерпан; для B2B держатель квалучастия стоит <b>€128, а не 150</b> — тарифный документ регулятора расходится с законом; минимального капитала в LOK <b>нет вообще</b>, порог сформулирован через ликвидность; сегрегированный счёт игроков предписан <b>не законом, а лицензионными условиями</b>; иностранных EMI в литовском фильтре <b>204, а не 182</b>; категория AISP даёт 10 записей, но литовских лицензий среди них <b>5</b>; Kevin EU — <b>принудительный отзыв</b>, а не добровольный уход; вермонтские $900 вступают <b>01.01.2027, а не 01.07.2026</b>; штатов с регистрацией <b>шесть, а не четыре</b>; «государству вдвое чаще, чем GenAI» верно только для объединения федерального и штатов.
+    <br><br>
+    Полный справочник со всеми 40 правками и четырьмя срезами — <code>docs/curacao-lithuania-databrokers.md</code> в репозитории проекта.
+  </footer>
+</main>

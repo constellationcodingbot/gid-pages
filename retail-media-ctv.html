@@ -1,0 +1,321 @@
+<title>Retail media и CTV</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --mark:#B4540A; --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1040px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.1rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.38rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:72ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:40px}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:78ch; margin:6px 0 16px; font-size:.92rem}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.86em; background:var(--chip-bg); padding:1px 5px; border-radius:3px}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:74ch}
+  .bars{display:grid; gap:10px}
+  .brow{display:grid; grid-template-columns:minmax(150px,280px) 1fr 104px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:17px}
+  .bar{height:17px; border-radius:2px 4px 4px 2px; background:var(--c)}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:430px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:82ch}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:80ch}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:760px}
+  th{text-align:left; font-size:.71rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
+  td{padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.86rem}
+  tr:last-child td{border-bottom:none}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:800px){ .cons{grid-template-columns:1fr} .brow{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px; border-top:3px solid var(--cc,var(--accent))}
+  .box h3{margin:0 0 8px}
+  .box ul,.box ol{margin:0; padding-left:19px}
+  .box li{margin-bottom:7px; font-size:.88rem}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:82ch}
+</style>
+<main>
+  <h1>Retail media и CTV</h1>
+  <p class="lede">Два самых быстрых сегмента рекламы — и два конца одной перестройки: деньги уходят от посредника к владельцу отношения с человеком. Ритейлер владеет транзакцией, стример и производитель ТВ-ОС владеют показом. Оба обходят открытый веб, и в обоих продавец инвентаря одновременно является измерителем результата.</p>
+  <p class="meta">Ресёрч gid · 26.08.2026 · четыре среза, адверсариальная верификация: 21 правка. Приоритет — отчётность эмитентов, тексты стандартов, реестры аккредитации</p>
+
+  <div class="eyebrow">01 · Формула</div>
+  <h2>Непрозрачность у них зеркальная</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 250" role="img" aria-label="Retail media и CTV: где именно непрозрачно">
+      <g font-size="12">
+        <rect x="0" y="24" width="455" height="120" rx="6" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="20" y="50" fill="var(--s1)" font-size="13" font-weight="600">RETAIL MEDIA</text>
+        <text x="20" y="76" fill="var(--ink)" font-weight="600">Доставка почти честная</text>
+        <text x="20" y="96" fill="var(--mark)" font-weight="600">Числитель ROAS сконструирован</text>
+        <text x="20" y="118" fill="var(--muted)" font-size="11.5">Окно атрибуции, halo, gross/net, экстраполяцию</text>
+        <text x="20" y="134" fill="var(--muted)" font-size="11.5">выбирает продавец медиа</text>
+
+        <rect x="485" y="24" width="455" height="120" rx="6" fill="var(--card)" stroke="var(--s3)" stroke-width="2"/>
+        <text x="505" y="50" fill="var(--s3)" font-size="13" font-weight="600">CTV</text>
+        <text x="505" y="76" fill="var(--ink)" font-weight="600">Конверсия почти никого не волнует</text>
+        <text x="505" y="96" fill="var(--mark)" font-weight="600">Под вопросом сам факт показа</text>
+        <text x="505" y="118" fill="var(--muted)" font-size="11.5">До 2 млрд невалидных бид-реквестов в сутки</text>
+        <text x="505" y="134" fill="var(--muted)" font-size="11.5">на ОДНОГО продавца (HUMAN, 07.07.2026)</text>
+
+        <rect x="0" y="160" width="940" height="76" rx="6" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="20" y="184" fill="var(--ink)" font-size="12.5" font-weight="600">Retail media — фрода мало, атрибуция сконструирована. CTV — атрибуции мало, фрод индустриальный.</text>
+        <text x="20" y="206" fill="var(--muted)" font-size="12">Противоположны они по четырём осям: дефицит полки против избытка инвентаря; владение транзакцией против её заимствования;</text>
+        <text x="20" y="224" fill="var(--muted)" font-size="12">трейд-бюджет вендора против телевизионного апфронта; сконструированный числитель против неизмеримого знаменателя.</text>
+      </g>
+    </svg>
+    <figcaption>Общее и главное: <b>ни один участник ни в одном из сегментов не раскрывает P&amp;L своего рекламного бизнеса</b> — ни ритейлер, ни стример. Target даёт строку выручки, Roku даёт валовую маржу, Netflix называет цифру голосом. Затрат сегмента не публикует никто.</figcaption>
+  </figure>
+
+  <div class="eyebrow">02 · Деньги</div>
+  <h2>Раскрытые цифры — и почему их нельзя класть в одну таблицу</h2>
+  <p class="note"><b>Retail media в США по умолчанию не является выручкой.</b> По ASC 705-20 возмещение от вендора зачитывается в уменьшение себестоимости, если это не оплата отдельного различимого сервиса. Сноска Walmart, дословно та же у Target и Best Buy: деньги «recorded in either net sales or as a reduction to cost of sales, <b>depending on the nature of the advertising arrangement</b>». Верификатор поправил распространённое упрощение: contra-COGS не дефолт — 10-K Walmart прямо говорит «Generally, revenue from services is classified as a component of net sales». Вывод от этого только сильнее: межкомпанийская таблица «реклама к продажам» бессмысленна не потому, что все прячут в COGS, а потому что <b>каждый договор классифицируется отдельно и раскладка не публикуется</b>.</p>
+  <div class="viz">
+    <h3>Что раскрыто эмитентами, $ млрд в год</h3>
+    <p class="sub">Разные линейки. Наведите на строку — у каждой цифры своя оговорка о том, что именно в неё попадает.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Amazon «Advertising services»<em>FY2025</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--s2)"></div></div>
+        <div class="bval">68,6</div>
+        <div class="tip">TTM к 30.06.2026 — $76,07 млрд. Строка ГЛОБАЛЬНАЯ и по сноске включает продажи рекламы «sellers, vendors, publishers, authors, and others». Это шире, чем retail media в смысле отраслевых замеров: против сопоставимой глобальной оценки WARC за 2025 ($60,6 млрд) разрыв около $8 млрд. Ходовой «разрыв $15–20 млрд» возникает от сравнения глобального числителя с US-only знаменателем eMarketer.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Walmart global advertising<em>FY2026, включая VIZIO</em></div>
+        <div class="track"><div class="bar" style="width:9.3%; --c:var(--s1)"></div></div>
+        <div class="bval">6,4</div>
+        <div class="tip">+46% г/г. Метрика управленческая и смешанной базы — внутри подмешан CTV через VIZIO, который теперь тормозит, а не разгоняет (~20 б.п. headwind к росту операционной прибыли). Walmart Connect US без VIZIO: +43% в Q2 FY2027.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Instacart advertising &amp; other<em>FY2025 · = 2,9% GTV</em></div>
+        <div class="track"><div class="bar" style="width:1.55%; --c:var(--s4)"></div></div>
+        <div class="bval">1,07</div>
+        <div class="tip">Самое чистое раскрытие в отрасли: реклама отдельной строкой выручки, знаменатель (GTV) тоже публикуется. Q2'26 — $297 млн (+16%), снова 2,9% GTV при росте GTV +14%. Но строка называется «advertising &amp; OTHER».</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Target advertising revenue<em>FY2025</em></div>
+        <div class="track"><div class="bar" style="width:1.33%; --c:var(--s4)"></div></div>
+        <div class="bval">0,92</div>
+        <div class="tip">Единственная явная строка «реклама» внутри разбивки Net Sales у крупного ритейлера. Против $649 млн (FY24) и $522 млн (FY23), то есть +41%. Но это ТОЛЬКО та часть Roundel, что попала в выручку.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Kroger, Costco, Albertsons, Chewy,<br>Wayfair, Ahold, Tesco, Carrefour<em>абсолютных цифр нет вообще</em></div>
+        <div class="track"></div>
+        <div class="bval">н/д</div>
+        <div class="tip">Kroger говорит лишь, что прибыль Kroger Precision Marketing выросла «более чем на 20%». Chewy даёт только долгосрочный ориентир: sponsored ads 1–3% от net sales.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Доля от продаж у нецифровых ритейлеров всё ещё около процента: Walmart FY26 — 0,91%, Target FY2025 — 0,87%. Разговор о «второй марже» пока про темп, а не про масштаб.</p>
+  </div>
+  <p class="note"><b>Про маржу «70–90%».</b> Это вендорский контент-маркетинг без первоисточника: P&amp;L рекламного сегмента не публикует ни один ритейлер. Твёрдых опор три, и все с оговорками. Instacart: реклама $1 065 млн против adjusted EBITDA $1 087 млн — но строка «advertising &amp; other», а сравнение идёт с не-GAAP величиной (GAAP net income FY2025 — $447 млн). Walmart: $6,4 млрд рекламы плюс $4,4 млрд членских взносов против операционной прибыли $29 825 млн = 36% — но это сравнение <b>выручки этих бизнесов с общей прибылью компании</b>, то есть верхняя граница при допущении почти стопроцентного flow-through. Criteo как прокси стоимости стека: adjusted EBITDA 29% Contribution ex-TAC. Механизм повышенной маржи при этом реален и прост — предельные издержки дополнительного sponsored-показа около нуля при фиксированной базе расходов, плюс бухгалтерский рычаг: contra-COGS попадает в валовую прибыль без сопоставляющей строки затрат.</p>
+  <p class="note"><b>Поправка 16.09.2026 — снятие было ошибкой.</b> Заявку Vista Equity Partners и Quinti Capital на покупку Criteo с премией свыше 50% 06.07.2026 описали Reuters и Bloomberg News со ссылкой на анонимные источники; Criteo не комментирует слухи. Документов EDGAR о ней на 16.09.2026 нет, но это ничего не опровергает: необязывающее частное предложение эмитент раскрывать не обязан (Item 1.01 формы 8-K требует подписанного соглашения, Item 8.01 добровольный). Прежний довод «раскрытие такой заявки обязательно — её нет там, где она обязана быть» неверен. Статус: сообщение прессы, не подтверждённое документами. Параллельно идёт редомициляция Люксембург→США с планом на январь 2027.</p>
+
+  <div class="eyebrow">03 · Атрибуция</div>
+  <h2>Числитель ROAS собирается из четырёх решений, и все четыре принимает продавец</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 290" role="img" aria-label="Четыре решения продавца, из которых складывается ROAS">
+      <g font-size="11.5">
+        <rect x="0" y="20" width="222" height="96" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="14" y="42" fill="var(--mark)" font-weight="600">1 · Что считать показом</text>
+        <text x="14" y="62" fill="var(--ink)">rendered, не viewable</text>
+        <text x="14" y="82" fill="var(--muted)">«majority of retail media orgs</text>
+        <text x="14" y="97" fill="var(--muted)">may not consider viewability</text>
+        <text x="14" y="112" fill="var(--muted)">in attribution today»</text>
+
+        <rect x="239" y="20" width="222" height="96" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="253" y="42" fill="var(--mark)" font-weight="600">2 · Кого удалось связать</text>
+        <text x="253" y="62" fill="var(--ink)">потолок — лояльность</text>
+        <text x="253" y="82" fill="var(--muted)">дальше легализована Sales</text>
+        <text x="253" y="97" fill="var(--muted)">Extrapolation: допустить, что</text>
+        <text x="253" y="112" fill="var(--muted)">неопознанные покупают так же</text>
+
+        <rect x="478" y="20" width="222" height="96" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="492" y="42" fill="var(--mark)" font-weight="600">3 · Какую продажу считать</text>
+        <text x="492" y="62" fill="var(--ink)">по умолчанию GROSS</text>
+        <text x="492" y="82" fill="var(--muted)">при том, что стандарт сам</text>
+        <text x="492" y="97" fill="var(--muted)">цитирует дельту ~20%</text>
+        <text x="492" y="112" fill="var(--muted)">между gross и net</text>
+
+        <rect x="717" y="20" width="223" height="96" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="731" y="42" fill="var(--mark)" font-weight="600">4 · Ширина ореола</text>
+        <text x="731" y="62" fill="var(--ink)">halo по каталогу</text>
+        <text x="731" y="82" fill="var(--muted)">«Same Brand, Same Category</text>
+        <text x="731" y="97" fill="var(--muted)">(Category as defined by</text>
+        <text x="731" y="112" fill="var(--muted)">the CMN catalogue)»</text>
+
+        <path d="M111 116 L111 134 M350 116 L350 134 M589 116 L589 134 M828 116 L828 134" stroke="var(--line)" stroke-width="2"/>
+        <path d="M111 134 L828 134" stroke="var(--line)" stroke-width="2"/>
+        <path d="M470 134 L470 152" stroke="var(--line)" stroke-width="2"/>
+        <rect x="230" y="152" width="480" height="42" rx="5" fill="var(--mark)" fill-opacity="0.12" stroke="var(--mark)" stroke-width="2"/>
+        <text x="470" y="178" fill="var(--mark)" font-size="13" font-weight="600" text-anchor="middle">Сравнение ROAS двух сетей = сравнение щедрости методологий</text>
+
+        <rect x="0" y="212" width="940" height="70" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="234" fill="var(--ink)" font-size="12" font-weight="600">Самое сильное в стандарте — то, чего в нём нет: «Due to site restrictions BY RETAILERS, providing onsite viewability tagging for each advertising partner is generally not possible».</text>
+        <text x="16" y="254" fill="var(--muted)" font-size="12">То есть внешняя верификация онсайта невозможна не физически, а по правилам самого ритейлера — и обратима его же решением. Существенная разница сводов: IAB US требует</text>
+        <text x="16" y="272" fill="var(--muted)" font-size="12">раскрывать долю экстраполированных outcome-метрик в каждой поставке, IAB Europe этот пункт опустил.</text>
+      </g>
+    </svg>
+    <figcaption>Непрозрачность здесь не в дефиците данных — их больше, чем в открытом программатике. Она в том, что все определения, задающие числитель, устанавливает продавец медиа, и ни один внешний аудит их не покрывает.</figcaption>
+  </figure>
+  <div class="cons">
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Аккредитация есть там, где нет денег</h3>
+      <ul>
+        <li>В реестре MRC на август 2026 <b>ни одна retail media сеть не аккредитована на attributed sales, конверсии или ROAS</b> — только на delivery-метрики, и набор у каждого свой</li>
+        <li>Criteo — rendered impressions и clicks, GIVT (не SIVT), без CTR и без viewability. Walmart Connect (16.10.2025) — только Sponsored Search, без viewability</li>
+        <li>Европейская сертификация шире по скоупу и пуста по наполнению: за почти два года <b>две компании</b> — Albert Heijn (16.09.2025) и Nectar 360 (15.07.2026, только офсайт). Ни одна не покрывает онсайтовую атрибуцию продаж</li>
+        <li>Сам стандарт по инкрементальности (03.11.2025) относит «platform-reported incrementality» к слабым доказательствам: causal strength <b>Weak</b> против Strong у экспериментов. И «A CMN doesn't have to provide incrementality measurement to be certified»</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Независимое каузальное свидетельство</h3>
+      <ul>
+        <li><b>Sarah Moshary, Management Science 71(11):9687–9709</b> (онлайн 28.03.2025): полевой эксперимент с полной блокировкой sponsored search для 3% посетителей маркетплейса</li>
+        <li>Результат: реклама «both steals business from organic listings and also reduces the total volume of transactions intermediated by the platform» — <b>и отбирает у органики, и сокращает общий оборот площадки</b></li>
+        <li>При этом остаётся выгодной площадке, поскольку рекламная выручка перекрывает потерю комиссии. Это точный механизм конфликта интересов, а не догадка</li>
+        <li>Оговорки: одна анонимная площадка, краткое окно, 3% выборка. Соседнюю нишу занимает Blake/Nosko/Tadelis (Econometrica 2015)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">04 · CTV</div>
+  <h2>Концентрация спенда при рассеянном объёме</h2>
+  <p class="note">Тезис «топ-25 портфелей забирают 99% спенда» надо читать точно: это 99% DSP-спенда <b>внутри RTB-traded вселенной</b>, а 8000+ bundle ID — свойство внутри этих портфелей, а не размер вселенной (частая инверсия). Вне замера остаются walled gardens: YouTube ($41,5 млрд) и Amazon/Prime Video ($56,7 млрд), плюс прямые непрограмматик-продажи. Отдельная ловушка: у Magnite есть пресс-релиз про «99% CTV market coverage» — это покрытие предложения одним SSP, совсем другая метрика.</p>
+  <div class="viz">
+    <h3>Асимметрия: деньги концентрированы, объём запросов — нет</h3>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Получают деньги<em>bundle ID внутри топ-25 портфелей</em></div>
+        <div class="track"><div class="bar" style="width:2.1%; --c:var(--s4)"></div></div>
+        <div class="bval">8 000</div>
+        <div class="tip">Эти портфели забирают 99% DSP-спенда внутри RTB-traded вселенной. Внутрь замера попадают PMP и PG: «Every one of the top 20 CTV media companies captures DSP demand through publisher-sold private marketplaces and programmatic guarantees».</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Реально встречаются в потоке<em>Pixalate, март 2026, пять платформ</em></div>
+        <div class="track"><div class="bar" style="width:3.6%; --c:var(--s2)"></div></div>
+        <div class="bval">~13 700</div>
+        <div class="tip">Замер только по пяти платформам на ~2 млрд открытых программатик-показов. Уже больше, чем весь оплачиваемый пул.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">В блок-листе<em>Pixalate, 21.08.2026, 9 сторов</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--mark)"></div></div>
+        <div class="bval">378 622</div>
+        <div class="tip">Хвост генерирует трафик, и там живёт фрод. Спуфинг существует именно для того, чтобы перекачивать деньги из премиального пула в хвост.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Обратная концентрация на sell-side: среднее CTV-приложение авторизует около 30 SSP, Pluto TV — около 67. Медианный флор в прямом аукционе платформы $14 CPM, в реселлерском $19,50 — плюс 39% за тот же показ.</p>
+  </div>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Почему CTV структурно неизмерим</h3>
+      <ul>
+        <li><b>SSAI не покрывается schain по замыслу.</b> Критерий включения в FAQ IAB Tech Lab — участие в потоке денег, не в формировании запроса: «If the SSAI vendor is acting like an ad serving vendor… not involved in the money flow for media, they would not be listed»</li>
+        <li>При этом именно сервер сшивки делает ad call: IP и user-agent в бид-реквесте — то, что переслал SSAI; JS не исполняется; OM SDK требует клиентской интеграции, которой в сшитом потоке по умолчанию нет</li>
+        <li>Там же прямой дисклеймер IAB: наличие sellers.json и SupplyChain <b>не гарантирует корректность</b> — «Consumers should expect and defend against the appearance of potentially falsified information»</li>
+        <li><b>Последний публичный замер доли SSAI — май 2019.</b> Отрасль цитирует его семь лет подряд, обычно опуская дату</li>
+        <li>Заплатки узкие: Device Attestation в OM SDK (04.11.2025) на момент анонса поддержан только на Apple-устройствах и Fire TV; OM SDK покрывает ~40% парка, фактический адопшн не раскрыт</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Три цифры фрода, которые нельзя складывать</h3>
+      <ul>
+        <li><b>25%</b> — Pixalate Q2 2026, CTV IVT по США при выборке свыше 80 млрд показов. Но дисклеймер дословно: «predominantly buy-side <b>open auction</b> programmatic traffic» — PG, большая часть PMP и прямые продажи в выборку почти не попадают</li>
+        <li><b>~9% против &lt;1%</b> — DV: незащищённые кампании против защищённых. Отдельно: только 21% рекламодателей меряют IVT как KPI, а боты в <b>прямых</b> сделках — 34% показов в кампании consumer healthcare</li>
+        <li><b>Не-фрод дороже фрода:</b> по DV 15% американских PD/PG/PMP-сделок в CTV отдаются вне стримингового видео — в играх, музыке, utility-аппах, «more than $1 billion in misplaced ad spend each quarter» (база выведена, не раскрыта). Peer39 — 20,8% в «fake content»; DV — 9% показов при выключенном экране</li>
+        <li><b>Аномалия обратного знака</b> (Adalytics, февраль 2026, Супербоул): один поток Peacock разошёлся на 121 752 устройства со сшитой рекламой — показ засчитан один раз, доставлен стотысячной аудитории. Недосчёт структурно так же возможен, как пересчёт, и не измеряется никем</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">05 · Агенты</div>
+  <h2>Кто выигрывает и кто теряет</h2>
+  <p class="note"><b>Сквозной вывод раунда:</b> агентский слой обесценивает <b>координацию</b>, а не инвентарь и не транзакцию. Кто владеет показом или транзакцией — удерживает позицию. Кто зарабатывал 20% на соединении одного с другим — теряет первым, и это уже видно в отчётности 2026 года, задолго до того как хоть один доллар агентских медиа-сделок был публично назван.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Кто</th><th>Позиция</th><th>Свидетельство</th></tr></thead>
+      <tbody>
+        <tr><td><b>Amazon</b></td><td style="color:var(--s4);font-weight:600">выигрывает сильнее всех</td><td>Собственный агент (Rufus — 250 млн пользователей за год), собственная поверхность спроса, собственный DSP с нулевой комиссией на PG со своим инвентарём, собственные транзакционные данные. Sponsored Products внутри Rufus в GA в США с 25.03.2026 и <b>пока бесплатны</b> — биддить нельзя, отчётной строки нет. Классический приём «сначала раздать инвентарь, потом включить счётчик»</td></tr>
+        <tr><td><b>Google</b></td><td style="color:var(--s4);font-weight:600">выигрывает</td><td>UCP покрывает поиск, ассистента, телевизор и карты одним протоколом; Universal Cart раскатан по Search, Gemini, YouTube и Maps. Q2 2026: Search &amp; other $63,3 млрд (+17%), YouTube $11,1 млрд (+13%). Присутствие YouTube в списке UCP — настоящая точка сшивки телеэкрана с чекаутом</td></tr>
+        <tr><td><b>Retail media сети с реальной транзакцией</b></td><td style="color:var(--s4);font-weight:600">выигрывают</td><td>Владеют merchant of record, наличием, ценой и доставкой — ровно теми атрибутами, которые агент читает как структурированные данные, а не как рекламный текст</td></tr>
+        <tr><td><b>CTV-паблишеры с прямым спросом</b></td><td style="color:var(--s2);font-weight:600">удерживают</td><td>Comcast/Universal Ads с нулевыми demand-side комиссиями, Netflix на своём стеке. Агентский слой вымывает не паблишера, а посредника между ним и байером</td></tr>
+        <tr><td><b>The Trade Desk</b></td><td style="color:var(--mark);font-weight:600">теряет первым</td><td>Q2 2026: выручка $715 млн, <b>+3% г/г</b>; акция −52% за 1П2026 и −22% за сессию после отчёта. Take rate ~21% плюс OpenPath 4,5% зажат между нулевой комиссией Amazon DSP, нулевой у Universal Ads и агентским слоем, который автоматизирует именно ту координацию, за которую DSP брал деньги</td></tr>
+        <tr><td><b>Criteo</b></td><td style="color:var(--mark);font-weight:600">теряет</td><td>Первый ад-тех-партнёр OpenAI (март 2026), 2000+ брендов в ChatGPT Ads — и при этом Q2'26 выручка $428 млн (−11%). Важная поправка: Retail Media −21% вызван разовым headwind $21 млн от scope changes; без него база выросла на 20%. Тезис «есть интеграция ≠ есть деньги» держится не на этой цифре, а на прямом заявлении менеджмента: вклад OpenAI в гайд 2026 <b>не заложен</b>, ожидается с 2027</td></tr>
+        <tr><td><b>Roku</b></td><td style="color:var(--faint);font-weight:600">в зоне неопределённости</td><td>~75% in-stream video ad spend идёт через сторонние DSP — <b>но</b> рекламная валовая маржа в Q2'26 выросла до 62,4% (+650 б.п. г/г), а метрика «три четверти» слепа к Home Screen, который Roku продаёт напрямую. Fox покупает Roku за ~$22 млрд EV (объявлено 15.06.2026) — ставка на то, что владение ОС телевизора важнее маржи на показе</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Датируемое свидетельство против «агента как кассы».</b> В интервью WIRED (18.03.2026) EVP Walmart Daniel Danker сообщил, что покупки внутри ChatGPT через Instant Checkout конвертировались примерно <b>втрое хуже</b>, чем сценарии с переходом на сайт Walmart. Абсолютные ставки и методология не раскрыты, сравниваются две структурно разные воронки. Независимое подтверждение того же направления — разворот OpenAI 24.03.2026: ACP переориентирован на discovery-first, чекаут возвращается ритейлеру. Агент как <b>витрина</b> пока выигрывает у агента как кассы.</p>
+  <p class="note"><b>Долларовый объём агентских медиа-сделок не назвал никто — ноль раскрытий.</b> Главное событие — WPP Media Agentic Standards Initiative (18.06.2026) с Comcast/FreeWheel, Disney, Fox, NBCUniversal, Netflix, Paramount, IAB Tech Lab и Prebid.org; Buyer Agent в alpha/beta, масштаб через 6–9 месяцев, отраслевые выводы — начало 2027. Везде обязателен человек: паблишер утверждает сделку, байер — креатив. Важная оговорка верификатора: агентские сделки не являются отчётным сегментом ни у кого, поэтому нераскрытие <b>не отличает</b> «объёмов нет» от «их негде показать».</p>
+
+  <div class="eyebrow">06 · Слепые зоны</div>
+  <h2>У каждой дыры есть бенефициар</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Retail media</h3>
+      <ul>
+        <li><b>P&amp;L рекламного сегмента</b> — не публикует ни один ритейлер. Позволяет вендорскому «70–90% маржи» жить без опровержения</li>
+        <li><b>Доля новых денег против перераспределённых трейд-бюджетов</b> — не измеряется публично никем. Пока неизвестно, «инкрементальная прибыль» неопровержима</li>
+        <li><b>Match rate, доля экстраполированных продаж и дельта gross/net</b> по конкретной сети. Публикация этих трёх чисел сделала бы ROAS сравнимым и обнулила бы премию за щедрую методологию — поэтому их и нет</li>
+        <li><b>Доля брендового поиска в выручке и доля показов на собственные private label.</b> Первое — место максимальной каннибализации органики, второе — прямое свидетельство самопредпочтения. Оба известны ритейлеру точно</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>CTV</h3>
+      <ul>
+        <li><b>Fill rate и CPM</b> — ни одной публичной цифры. Все ходовые диапазоны — вендорские бенчмарки без методологии. Удобно продавцу в момент, когда предложение растёт быстрее спроса</li>
+        <li><b>Impression-weighted доля фродовых bundle ID.</b> Эффектные «74% у LG» — доли уникальных идентификаторов, а не показов; долю затронутого спенда не публикует никто</li>
+        <li><b>Рекламная выручка ниже уровня сегмента:</b> Netflix называет цифру голосом, Amazon не выделяет Prime Video, Fox не выделяет Tubi, Comcast за полтора года ни разу не раскрыл ни выручку, ни число рекламодателей Universal Ads</li>
+        <li><b>Разложение CTV-доллара по слоям</b> — аналога ANA/PwC для display не существует</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">07 · Сигналы</div>
+  <h2>Что смотреть дальше</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Сигнал</th><th>Что именно наблюдать</th><th>Что это докажет</th></tr></thead>
+      <tbody>
+        <tr><td><b>Момент, когда Amazon включит счётчик в Rufus</b></td><td>В этом порядке: появление bid-контроля или отдельного placement в Ads console/API → появление строки в отчётности рекламодателя → упоминание в сноске к «Advertising services»</td><td>Первый случай, когда агентская поверхность монетизируется как инвентарь, а не как эксперимент. И тест на то, платят ли бренды за присутствие внутри ответа агента ту же цену, что за место в выдаче</td></tr>
+        <tr><td><b>Первое долларовое раскрытие агентских сделок — или его отсутствие в начале 2027</b></td><td>Смотреть не пресс-релизы участников, а места, где цифра обязана появиться, если она материальна: сегментные раскрытия Magnite и PubMatic, комментарии TTD про агентские каналы, отчёт Comcast по Universal Ads</td><td>Если к Q1 2027 ни у кого не появится ни строки, ни процента — гипотеза «агентский слой заменяет координацию» подтвердится в слабой форме: технология работает, денег не переносит</td></tr>
+        <tr><td><b>Первая аккредитация, покрывающая ИСХОД, а не показ</b></td><td>Реестр MRC (прецедент есть — «Correlated Outcomes» у Epsilon, владельца CitrusAd; вопрос, распространится ли на retail-media-периметр) и реестр IAB Europe — третья компания и покроет ли её скоуп онсайтовую атрибуцию продаж</td><td>Единственный наблюдаемый способ узнать, что ROAS двух сетей стал сравним. Сопутствующая проверка: раскроет ли хоть одна сеть match rate добровольно — это будет означать, что она считает методологию преимуществом, а не риском</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    Собрано агентом gid 26.08.2026: четыре research-агента по независимым срезам, по одному адверсариальному верификатору на срез, синтез поверх исправленных версий. Верификатор дал 21 правку.
+    <br><br>
+    Что снято как неподтверждённое и намеренно не используется: заявка Vista Equity на Criteo (в SEC-подачах её нет; <i>поправка 16.09.2026: это не опровержение — о заявке сообщили Reuters и Bloomberg, а раскрывать необязывающее предложение эмитент не обязан</i>); «$900 млн gross collections» Best Buy (в 10-K и релизе Q4 FY26 не найдено); цитата CFO Walmart про «почти треть операционной прибыли» (в первоисточниках не найдена); «разрыв $15–20 млрд» между раскрытием Amazon и отраслевыми замерами (возникает от сравнения глобального числителя с US-only знаменателем).
+    <br><br>
+    Полный справочник со всеми срезами и правками — <code>docs/retail-media-ctv.md</code> в репозитории проекта.
+  </footer>
+</main>

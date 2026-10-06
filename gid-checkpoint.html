@@ -1,0 +1,727 @@
+<title>Приборная панель gid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --ground:#F1F4F7;
+  --surface:#FFFFFF;
+  --surface-2:#F7F9FB;
+  --surface-3:#EDF1F6;
+  --ink:#141A23;
+  --ink-2:#4E5966;
+  --ink-3:#79838F;
+  --rule:#DCE2E9;
+  --rule-2:#EAEEF3;
+  --accent:#27406B;
+
+  --s-on:#0F7350;
+  --s-part:#B87214;
+  --s-off:#A32749;
+  --s-dead:#6E4E9C;
+  --s-nil:#6B7480;
+
+  --s-on-bg:#E4F0EA;
+  --s-part-bg:#F7EEDF;
+  --s-off-bg:#F7E6EB;
+  --s-dead-bg:#EEE9F5;
+
+  --fd:'Alegreya', Georgia, 'Times New Roman', serif;
+  --fb:'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fm:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --maxw:1180px;
+  --readw:68ch;
+}
+
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1319;
+    --surface:#171C24;
+    --surface-2:#1D232C;
+    --surface-3:#232A34;
+    --ink:#E4E9F0;
+    --ink-2:#9BA6B5;
+    --ink-3:#6D7787;
+    --rule:#2A313C;
+    --rule-2:#222831;
+    --accent:#8FAFDD;
+
+    --s-on:#2E9C72;
+    --s-part:#BF8A22;
+    --s-off:#D95C7C;
+    --s-dead:#9880CC;
+    --s-nil:#8A94A1;
+
+    --s-on-bg:#12281F;
+    --s-part-bg:#2A2211;
+    --s-off-bg:#2C1720;
+    --s-dead-bg:#211C2E;
+  }
+}
+
+:root[data-theme="dark"]{
+  --ground:#0F1319;
+  --surface:#171C24;
+  --surface-2:#1D232C;
+  --surface-3:#232A34;
+  --ink:#E4E9F0;
+  --ink-2:#9BA6B5;
+  --ink-3:#6D7787;
+  --rule:#2A313C;
+  --rule-2:#222831;
+  --accent:#8FAFDD;
+
+  --s-on:#2E9C72;
+  --s-part:#BF8A22;
+  --s-off:#D95C7C;
+  --s-dead:#9880CC;
+  --s-nil:#8A94A1;
+
+  --s-on-bg:#12281F;
+  --s-part-bg:#2A2211;
+  --s-off-bg:#2C1720;
+  --s-dead-bg:#211C2E;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:var(--fb);font-size:15px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,4vw,44px)}
+
+/* ─── шапка ─── */
+.top{background:var(--surface);border-bottom:1px solid var(--rule);padding:38px 0 0}
+.stamp{
+  display:flex;flex-wrap:wrap;gap:8px 20px;
+  font-family:var(--fm);font-size:11px;font-weight:500;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--ink-3);
+  padding-bottom:20px;
+}
+h1{
+  font-family:var(--fd);font-weight:800;
+  font-size:clamp(2.3rem,6vw,3.7rem);line-height:1.02;
+  letter-spacing:-.02em;margin:0 0 16px;text-wrap:balance;
+}
+.dek{font-size:1.11rem;line-height:1.58;color:var(--ink-2);max-width:64ch;margin:0 0 30px}
+.dek b{color:var(--ink);font-weight:600}
+.kfs{display:grid;grid-template-columns:repeat(auto-fit,minmax(178px,1fr));border-top:1px solid var(--rule)}
+.kf{padding:22px 22px 24px 0;border-right:1px solid var(--rule-2)}
+.kf:last-child{border-right:0}
+.kf b{
+  display:block;font-family:var(--fm);font-weight:600;
+  font-size:1.72rem;line-height:1;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;margin-bottom:7px;
+}
+.kf span{display:block;font-size:12.5px;line-height:1.42;color:var(--ink-3)}
+
+/* ─── секции ─── */
+section{padding:52px 0;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:0}
+.eyebrow{
+  font-family:var(--fm);font-size:11px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.13em;color:var(--accent);
+  margin:0 0 10px;
+}
+h2{
+  font-family:var(--fd);font-weight:700;
+  font-size:clamp(1.55rem,3.4vw,2.15rem);line-height:1.14;
+  letter-spacing:-.015em;margin:0 0 14px;text-wrap:balance;
+}
+h3{
+  font-family:var(--fd);font-weight:700;font-size:1.25rem;
+  line-height:1.2;margin:38px 0 12px;
+}
+p{margin:0 0 15px;max-width:var(--readw)}
+p:last-child{margin-bottom:0}
+.lede{font-size:1.05rem;color:var(--ink-2);max-width:66ch;margin-bottom:26px}
+b,strong{font-weight:600}
+code{
+  font-family:var(--fm);font-size:.88em;
+  background:var(--surface-3);padding:1px 5px;border-radius:2px;
+}
+a{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:2px}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:2px}
+
+/* ─── легенда статусов ─── */
+.legend{display:flex;flex-wrap:wrap;gap:10px 22px;margin:0 0 24px;font-size:12.5px;color:var(--ink-2)}
+.lg{display:inline-flex;align-items:center;gap:7px}
+.sw{width:12px;height:12px;flex:0 0 12px;border-radius:2px}
+.sw.on{background:var(--s-on)}
+.sw.part{background:var(--s-part)}
+.sw.off{background:var(--s-off)}
+.sw.dead{background:var(--s-dead)}
+
+/* ─── карта покрытия ─── */
+.tools{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:4px;
+}
+.tool{background:var(--surface);padding:15px 16px 17px;display:flex;flex-direction:column;gap:6px;position:relative}
+.tool::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+.tool.on::before{background:var(--s-on)}
+.tool.part::before{background:var(--s-part)}
+.tool.off::before{background:var(--s-off)}
+.tool.dead::before{background:var(--s-dead)}
+.tool-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.tool-n{font-family:var(--fm);font-size:13px;font-weight:600;color:var(--ink)}
+.tool-c{
+  font-family:var(--fm);font-size:15px;font-weight:600;
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em;
+}
+.tool.on .tool-c{color:var(--s-on)}
+.tool.part .tool-c{color:var(--s-part)}
+.tool.off .tool-c{color:var(--s-off)}
+.tool.dead .tool-c{color:var(--s-dead)}
+.tool-b{font-size:12.5px;line-height:1.45;color:var(--ink-2)}
+.tool-b b{color:var(--ink)}
+
+/* ─── матрица слоёв ─── */
+.mx-scroll{overflow-x:auto;margin:8px 0 0;padding-bottom:6px}
+table.mx{border-collapse:collapse;font-family:var(--fm);font-size:12.5px}
+table.mx th,table.mx td{border:1px solid var(--rule);padding:0}
+table.mx th{
+  font-weight:500;color:var(--ink-2);background:var(--surface-2);
+  text-align:left;padding:9px 11px;white-space:nowrap;
+}
+table.mx th.rot{font-size:11px;letter-spacing:.02em;vertical-align:bottom}
+table.mx th.rh{text-align:right;font-weight:600;color:var(--ink)}
+table.mx th .sz{display:block;font-size:10.5px;color:var(--ink-3);font-weight:400}
+.cell{
+  width:88px;height:52px;text-align:center;vertical-align:middle;
+  font-variant-numeric:tabular-nums;background:var(--surface);
+}
+.cell.zero{color:var(--s-nil);background:var(--surface-2);font-size:14px}
+.cell.hit{
+  color:var(--s-on);background:var(--s-on-bg);
+  font-size:16px;font-weight:600;
+}
+.cell.self{background:var(--surface-3);color:var(--ink-3);font-size:11px}
+.cell.na{background:repeating-linear-gradient(135deg,var(--surface-2) 0 4px,var(--surface) 4px 8px)}
+.mx-note{font-size:12.5px;color:var(--ink-3);max-width:72ch;margin-top:14px;line-height:1.5}
+
+/* ─── парные бары ─── */
+.bars{display:flex;flex-direction:column;gap:22px;margin:6px 0 0;max-width:760px}
+.brow{display:grid;grid-template-columns:minmax(150px,210px) 1fr;gap:16px;align-items:center}
+.blab{font-size:13px;line-height:1.35}
+.blab b{display:block;font-family:var(--fm);font-size:12px;font-weight:600;color:var(--ink)}
+.blab span{color:var(--ink-3);font-size:11.5px}
+.bpair{display:flex;flex-direction:column;gap:5px}
+.bline{display:flex;align-items:center;gap:9px}
+.btrack{flex:1;height:13px;background:var(--surface-3);border-radius:2px;overflow:hidden;min-width:60px}
+.bfill{display:block;height:100%;border-radius:2px}
+.bfill.was{background:var(--s-nil)}
+.bfill.now{background:var(--s-on)}
+.bfill.now.worse{background:var(--s-off)}
+.bval{
+  font-family:var(--fm);font-size:12px;font-weight:600;
+  font-variant-numeric:tabular-nums;width:82px;flex:0 0 82px;
+}
+.bval.was{color:var(--ink-3);font-weight:400}
+.bkey{display:flex;gap:20px;font-size:12px;color:var(--ink-3);margin-top:18px}
+.bkey i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+/* ─── таблица поправок ─── */
+.fix{
+  display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  grid-template-columns:1fr;margin-top:6px;
+}
+.fx{background:var(--surface);padding:19px 20px 21px;display:grid;gap:11px;grid-template-columns:1fr}
+@media(min-width:900px){.fx{grid-template-columns:1.05fr 1.25fr .9fr;gap:26px}}
+.fx-q{font-family:var(--fd);font-weight:700;font-size:1.06rem;line-height:1.25}
+.fx-q em{display:block;font-family:var(--fm);font-size:11px;font-weight:500;font-style:normal;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--s-off);margin-bottom:6px}
+.fx-a{font-size:13.5px;line-height:1.52;color:var(--ink-2)}
+.fx-a b{color:var(--ink)}
+.fx-p{font-size:12.5px;line-height:1.48;color:var(--ink-3);border-left:2px solid var(--rule);padding-left:14px}
+.fx-p b{color:var(--s-off);font-weight:600}
+
+/* ─── обрывы ─── */
+.breaks{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:6px}
+@media(min-width:860px){.breaks{grid-template-columns:repeat(3,1fr)}}
+.bk{background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:9px}
+.bk-n{font-family:var(--fm);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.bk-t{font-family:var(--fd);font-weight:700;font-size:1.1rem;line-height:1.2}
+.bk-s{
+  display:inline-flex;align-self:flex-start;align-items:center;gap:6px;
+  font-family:var(--fm);font-size:11px;font-weight:600;
+  padding:3px 9px;border-radius:3px;letter-spacing:.03em;
+}
+.bk-s.off{background:var(--s-off-bg);color:var(--s-off)}
+.bk-s.part{background:var(--s-part-bg);color:var(--s-part)}
+.bk-b{font-size:13px;line-height:1.5;color:var(--ink-2)}
+.bk-b b{color:var(--ink)}
+
+/* ─── список включаемого ─── */
+.opt{display:grid;gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:6px}
+.op{background:var(--surface);padding:16px 18px;display:grid;gap:6px 22px;grid-template-columns:1fr}
+@media(min-width:820px){.op{grid-template-columns:190px 130px 1fr;align-items:baseline}}
+.op-n{font-family:var(--fm);font-size:13px;font-weight:600}
+.op-v{font-family:var(--fm);font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--s-off)}
+.op-b{font-size:13px;line-height:1.5;color:var(--ink-2)}
+
+/* ─── план ─── */
+.plan{display:grid;gap:26px;margin-top:6px}
+@media(min-width:860px){.plan{grid-template-columns:1fr 1fr;gap:40px}}
+.pl-h{display:flex;align-items:baseline;gap:12px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--rule)}
+.pl-h b{font-family:var(--fm);font-size:1.4rem;font-weight:600;font-variant-numeric:tabular-nums}
+.pl-h.done b{color:var(--s-on)}
+.pl-h.todo b{color:var(--s-off)}
+.pl-h span{font-family:var(--fd);font-weight:700;font-size:1.08rem}
+ul.pl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+ul.pl li{display:grid;grid-template-columns:20px 1fr;gap:10px;font-size:13.5px;line-height:1.48;color:var(--ink-2)}
+ul.pl li i{font-family:var(--fm);font-size:13px;font-style:normal;font-weight:600}
+ul.pl li.y i{color:var(--s-on)}
+ul.pl li.n i{color:var(--s-off)}
+ul.pl li b{color:var(--ink);font-weight:600}
+
+/* ─── врезка ─── */
+.pull{border-left:3px solid var(--accent);padding:6px 0 6px 22px;margin:34px 0;max-width:60ch}
+.pull p{font-family:var(--fd);font-size:1.22rem;line-height:1.34;margin:0 0 9px;max-width:none}
+.pull cite{display:block;font-style:normal;font-size:12.5px;color:var(--ink-3);line-height:1.45}
+
+/* ─── приоритеты ─── */
+.next{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:6px}
+.nx{background:var(--surface);padding:19px 20px;display:grid;gap:5px 20px;grid-template-columns:30px 1fr}
+@media(min-width:820px){.nx{grid-template-columns:30px 1fr 108px}}
+.nx-n{font-family:var(--fm);font-size:1.15rem;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.nx-t{font-family:var(--fd);font-weight:700;font-size:1.08rem;line-height:1.24;margin-bottom:4px}
+.nx-b{font-size:13px;line-height:1.5;color:var(--ink-2)}
+.nx-b b{color:var(--ink)}
+.nx-c{
+  font-family:var(--fm);font-size:11px;font-weight:600;letter-spacing:.03em;
+  align-self:start;padding:3px 8px;border-radius:3px;white-space:nowrap;
+  grid-column:2;justify-self:start;
+}
+@media(min-width:820px){.nx-c{grid-column:3;justify-self:end;margin-top:3px}}
+.nx-c.cheap{background:var(--s-on-bg);color:var(--s-on)}
+.nx-c.mid{background:var(--s-part-bg);color:var(--s-part)}
+.nx-c.big{background:var(--s-dead-bg);color:var(--s-dead)}
+
+footer{background:var(--surface);border-top:1px solid var(--rule);padding:34px 0 46px}
+footer p{font-size:12.5px;color:var(--ink-3);line-height:1.6;max-width:82ch}
+footer code{background:var(--surface-3)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="top">
+  <div class="wrap">
+    <div class="stamp">
+      <span>gid · промежуточная остановка</span>
+      <span>03.09.2026</span>
+      <span>2211 живых записей · 18 раундов</span>
+      <span>инвентаризация шестью агентами</span>
+    </div>
+    <h1>Приборная панель gid</h1>
+    <p class="dek">Что из накопительной машины работает, чем мы не пользуемся ни разу и где находимся по плану. Замеры сняты из журнала вызовов и самой базы, а не из документов проекта — <b>потому что три записи в документах оказались неверны, и одна из них стоила работоспособности целого механизма</b>.</p>
+    <div class="kfs">
+      <div class="kf"><b>7 из 14</b><span>инструментов памяти<br>вызывались хоть раз</span></div>
+      <div class="kf"><b>1 из 10</b><span>пар тематических слоёв<br>пересекается между собой</span></div>
+      <div class="kf"><b>3</b><span>ложных утверждения<br>о инструменте в своих же документах</span></div>
+      <div class="kf"><b>72,0%</b><span>записей от первоисточника<br>против 69,3% на базовой линии</span></div>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Поверхность инструмента</p>
+    <h2>Журнал вызовов знает точный ответ</h2>
+    <p class="lede">У Vestige есть таблица <code>agent_traces</code> — полная перепись обращений к памяти за всю жизнь проекта: 1636 вызовов с 17 августа по 2 сентября, и сумма сходится с двумя независимыми счётчиками. Поэтому «ноль вызовов» здесь — доказанное отрицание, а не пробел лога.</p>
+
+    <div class="legend">
+      <span class="lg"><i class="sw on"></i>Работает как задумано</span>
+      <span class="lg"><i class="sw part"></i>Вызывается, но не по назначению или почти не вызывается</span>
+      <span class="lg"><i class="sw off"></i>Ни разу — а стоило бы</span>
+      <span class="lg"><i class="sw dead"></i>Ни разу — и правильно</span>
+    </div>
+
+    <div class="tools">
+      <div class="tool on">
+        <div class="tool-h"><span class="tool-n">dedup</span><span class="tool-c">760</span></div>
+        <div class="tool-b">352 плана, 350 применённых погашений, 1 откат, 45 защищённых записей. Самый нагруженный инструмент — и единственный, чья страховка проверена в бою.</div>
+      </div>
+      <div class="tool on">
+        <div class="tool-h"><span class="tool-n">memory</span><span class="tool-c">289</span></div>
+        <div class="tool-b">Из них ~253 — <code>edit</code> на починку дословности партии <code>retro-15y</code>. Единственный способ править контент, не теряя FSRS.</div>
+      </div>
+      <div class="tool part">
+        <div class="tool-h"><span class="tool-n">recall</span><span class="tool-c">278</span></div>
+        <div class="tool-b">Но <b>mode=reason — только 17</b>, последний 30.08. Основной цикл требует его на каждый содержательный вопрос; за 01–02.09 при тысяче новых записей — ноль.</div>
+      </div>
+      <div class="tool on">
+        <div class="tool-h"><span class="tool-n">smart_ingest</span><span class="tool-c">252</span></div>
+        <div class="tool-b">3065 событий записи, 2561 узел. Поля <code>validFrom</code> и <code>validUntil</code> при этом не задействованы ни разу.</div>
+      </div>
+      <div class="tool part">
+        <div class="tool-h"><span class="tool-n">intention</span><span class="tool-c">48</span></div>
+        <div class="tool-b">43 намерения заведено, <b>ни одно не закрыто как выполненное</b>. Цикл «завёл вопрос → вернулся → закрыл» не замкнулся ни разу.</div>
+      </div>
+      <div class="tool part">
+        <div class="tool-h"><span class="tool-n">session_start</span><span class="tool-c">5</span></div>
+        <div class="tool-b">Пять вызовов за семнадцать дней при том, что это шаг 0 цикла и единственный механизм, который сам поднимает открытые вопросы. В трёх крупнейших раундах — ноль.</div>
+      </div>
+      <div class="tool part">
+        <div class="tool-h"><span class="tool-n">memory_status</span><span class="tool-c">4</span></div>
+        <div class="tool-b">Все четыре в августе. Вид <code>changelog</code> вернёт пустоту при любом запросе: таблица переходов состояний пуста — 0 строк.</div>
+      </div>
+      <div class="tool part">
+        <div class="tool-h"><span class="tool-n">maintain</span><span class="tool-c">0</span></div>
+        <div class="tool-b">Действие <code>consolidate</code> запрещено намеренно и навсегда. Но <code>backup</code> и <code>export</code> — из того же инструмента, и они не звались ни разу.</div>
+      </div>
+      <div class="tool off">
+        <div class="tool-h"><span class="tool-n">mark_reviewed</span><span class="tool-c">0</span></div>
+        <div class="tool-b">Единственный вход в FSRS-оценку. Отсюда <b><code>reps=0</code> и <code>lapses=0</code> у всех 2561 записи</b> — и 40% формулы доверия у нас константа.</div>
+      </div>
+      <div class="tool dead">
+        <div class="tool-h"><span class="tool-n">graph</span><span class="tool-c">0</span></div>
+        <div class="tool-b">Кормить нечем: 9 рёбер на 2561 узел, все созданы консолидацией 19.08, и <b>MCP-способа создать ребро вручную не существует</b>.</div>
+      </div>
+      <div class="tool dead">
+        <div class="tool-h"><span class="tool-n">receipt</span><span class="tool-c">0</span></div>
+        <div class="tool-b">Читает таблицу <code>memory_receipts</code>, в которую эта сборка <b>не делает ни одного INSERT</b> — проверено grep-ом по обоим бинарникам.</div>
+      </div>
+      <div class="tool dead">
+        <div class="tool-h"><span class="tool-n">suppress</span><span class="tool-c">0</span></div>
+        <div class="tool-b">Выключен обоснованно: фоновый воркер каскадит ускоренный распад на соседей 72 часа, а откат живёт 24.</div>
+      </div>
+      <div class="tool dead">
+        <div class="tool-h"><span class="tool-n">backfill</span><span class="tool-c">0</span></div>
+        <div class="tool-b">Ищет записи «в форме отказа» — краши и баги. В материале про рынок онлайн-рекламы такого класса нет.</div>
+      </div>
+      <div class="tool dead">
+        <div class="tool-h"><span class="tool-n">source_sync</span><span class="tool-c">0</span></div>
+        <div class="tool-b">Коннекторы только к GitHub Issues и Redmine. Заодно объясняет, почему все фильтры <code>source_*</code> у нас всегда вернут ноль.</div>
+      </div>
+      <div class="tool dead">
+        <div class="tool-h"><span class="tool-n">codebase</span><span class="tool-c">0</span></div>
+        <div class="tool-b">Заточен под coding-агентов: паттерны и решения по коду. Для research-базы бесполезен.</div>
+      </div>
+    </div>
+
+    <p class="mx-note" style="margin-top:20px">Пять последних плиток — не наш недосмотр, а свойство инструмента: их отсутствие в проекте правильно и менять его не нужно. Настоящая проблема в жёлтых.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Поправки к самим себе</p>
+    <h2>Три записи о том, «как работает инструмент», оказались неверны</h2>
+    <p class="lede">Все три внесены в документы проекта как проверенные находки. Первая стоила работоспособности календаря напоминаний — механизма, ради которого затевалась накопительная петля.</p>
+
+    <div class="fix">
+      <div class="fx">
+        <div class="fx-q"><em>было записано</em>Дата у <code>intention</code> через MCP не ставится</div>
+        <div class="fx-a">Ставится — <b>вложенным объектом <code>trigger: {"type":"time","at":"…"}</code></b>. Замер перебрал <code>next_check</code>, <code>trigger_at</code> и <code>nlp=true</code>: все три инструменту неизвестны, молча проигнорированы, и из <code>triggerAt: null</code> был сделан ложный общий вывод. В базе при этом уже лежали 18 намерений с рабочим триггером, два — заведённые тем же утром.</div>
+        <div class="fx-p"><b>Цена: 15 напоминаний</b> ушли без триггера, с датой только в тексте. Календарь не сработал бы ни разу. Починено переносом всех активных на <code>type=time</code>.</div>
+      </div>
+      <div class="fx">
+        <div class="fx-q"><em>было записано</em>Фоновая консолидация не запускалась с 21.08</div>
+        <div class="fx-a">Запускалась: в журнале есть прогоны <b>29.08 и 01.09</b>, оба с нулём слияний и без новых удалений. То есть деструктивный проход держит переменная <code>VESTIGE_AUTO_CONSOLIDATE_MERGE=0</code>, а вовсе не остановка цикла.</div>
+        <div class="fx-p">Опасно практически: <b>читатель мог снять замок</b>, решив, что цикл всё равно спит, — и получить ту же потерю 196 записей, что в августе.</div>
+      </div>
+      <div class="fx">
+        <div class="fx-q"><em>было записано</em>Колонки со счётом слияний в журнале консолидации нет</div>
+        <div class="fx-a">Есть — <code>duplicates_merged</code>, и она заполнена. Сумма по ней равна ровно <b>196</b>: столько же, сколько строк удаления в другой таблице.</div>
+        <div class="fx-p">Здесь ошибка была в нашу пользу: <b>число 196 опирается на два независимых счётчика</b>, а не на один, как считалось.</div>
+      </div>
+    </div>
+
+    <div class="pull">
+      <p>Ловушка одна и та же в обоих случаях: неизвестный ключ инструмент игнорирует молча, ошибки не возвращает и исполняет вызов с дефолтом.</p>
+      <cite>То же уже было описано в конвенциях проекта для <code>forceCreate</code> — и не помогло. Работающее правило короче: прежде чем объявить возможность отсутствующей, посмотри схему инструмента, она отдаётся одним вызовом</cite>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Главный замер</p>
+    <h2>База растёт параллельными слоями, а не компаундится</h2>
+    <p class="lede">Центральная идея проекта — не «ответить на вопрос», а накапливать: каждый следующий раунд должен опираться на предыдущие. Проверяется это прямо — сколько записей несут теги двух разных раундов сразу. Ниже все десять пар.</p>
+
+    <div class="mx-scroll">
+      <table class="mx">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="rot">gate:feeds<span class="sz">628 записей</span></th>
+            <th class="rot">retro-15y<span class="sz">541</span></th>
+            <th class="rot">litigation-15y<span class="sz">184</span></th>
+            <th class="rot">litigation-gaps<span class="sz">141</span></th>
+            <th class="rot">merge-restored<span class="sz">249</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th class="rh">gate:feeds</th>
+            <td class="cell self">—</td>
+            <td class="cell zero">0</td>
+            <td class="cell zero">0</td>
+            <td class="cell zero">0</td>
+            <td class="cell zero">0</td>
+          </tr>
+          <tr>
+            <th class="rh">retro-15y</th>
+            <td class="cell na"></td>
+            <td class="cell self">—</td>
+            <td class="cell zero">0</td>
+            <td class="cell zero">0</td>
+            <td class="cell zero">0</td>
+          </tr>
+          <tr>
+            <th class="rh">litigation-15y</th>
+            <td class="cell na"></td>
+            <td class="cell na"></td>
+            <td class="cell self">—</td>
+            <td class="cell hit">141</td>
+            <td class="cell zero">0</td>
+          </tr>
+          <tr>
+            <th class="rh">litigation-gaps</th>
+            <td class="cell na"></td>
+            <td class="cell na"></td>
+            <td class="cell na"></td>
+            <td class="cell self">—</td>
+            <td class="cell zero">0</td>
+          </tr>
+          <tr>
+            <th class="rh">merge-restored</th>
+            <td class="cell na"></td>
+            <td class="cell na"></td>
+            <td class="cell na"></td>
+            <td class="cell na"></td>
+            <td class="cell self">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mx-note">Единственная ненулевая клетка — это две половины одного сентябрьского раунда, разделённые сутками. А <code>retro-15y</code> и <code>litigation-15y</code>, у которых <b>общий предмет — пятнадцать лет Google и Meta</b>, пересекаются ровно нулём. <b>Поправка того же дня:</b> первый в истории проекта прогон <code>dedup scan</code> показал, что материал у этих раундов действительно разный — ретроспектива про куки, рекламные тарифы и ITP, судебный раунд про дела, — и все двадцать кандидатов на слияние оказались <code>possible</code>, ни одного <code>match</code>. Значит нулевое пересечение отчасти закономерно, а дефект накопления не в дублях. Теги гейтов (<code>gate:web</code>) из матрицы исключены — они стоят на всех записях сразу и пересечение с ними тождественно.</p>
+
+    <h3>Второе число того же диагноза</h3>
+    <p>Настоящих склеек версий факта — записей с маркером <code>[Updated]</code>, куда гейтинг дописал новую редакцию поверх старой, — за всю историю базы <b>шесть</b>, и ни одной после 30 августа. Причина не в инструменте: почти весь ингест шёл с <code>batchMergePolicy=force_create</code>, то есть проверка на похожесть отключалась руками ради предсказуемости загрузки. Следствие: таймлайны фактов, ради которых и выбран этот субстрат, не растут.</p>
+    <p>Дефект точнее виден на паре, которую нашёл тот же прогон: охват рекламного Prime Video — 200 млн на Upfront 14.05.2024 против «более 315 млн» на unBoxed 11.11.2025. Одна величина в двух моментах времени, которая должна была стать таймлайном факта, а лежит двумя параллельными записями. Проблема не в том, что записи повторяются, а в том, что версии факта не склеиваются.</p>
+    <p>И третье: из 43 заведённых напоминаний <b>ноль было закрыто как выполненное</b>. По ремедиям виргинского дела вместо возврата к прежнему вопросу было заведено четыре параллельные записи. <b>Исправлено в тот же день:</b> ревизит по решению Бринкемы закрыл три из них через <code>intention complete</code> — первое замыкание цикла «вопрос → возврат → закрытие» за всю жизнь проекта.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Три обрыва накопительной петли</p>
+    <h2>Ни один не закрыт полностью, но состояние у них разное</h2>
+    <p class="lede">Диагностика после тринадцати раундов назвала три места, где петля рвётся. Вот что с ними стало.</p>
+
+    <div class="breaks">
+      <div class="bk">
+        <span class="bk-n">Обрыв 1</span>
+        <span class="bk-t">Фиды собираются в никуда</span>
+        <span class="bk-s off">Хуже, чем считалось</span>
+        <div class="bk-b">В логе дистилляции за всю историю <b>ни разу</b> нет строки успеха — автоматический разбор не отработал никогда. Все 630 фактов из фидов залиты руками 29–30 августа. Добавилась вторая, незамеченная поломка: сборщик режет улов по лимиту <b>в порядке фидов</b>, а оба первоисточника стоят в реестре последними. Сегодняшний прогон принёс 57 кандидатов — в разбор попали три издания, тир-1 отброшен целиком.</div>
+      </div>
+      <div class="bk">
+        <span class="bk-n">Обрыв 2</span>
+        <span class="bk-t">Память пишется, но не читается</span>
+        <span class="bk-s part">Реально чинится</span>
+        <div class="bk-b">Число разных старых записей, прочитанных за раунд, выросло с <b>12–19 в конце августа до 291</b> на 1 сентября, а раунд 31 августа вообще ничего не записал и прочитал 77 старых — память впервые отработала как память. Но доля непрочитанного выросла: 1484 живые записи из 2211 не выдавались ни разу, и вся последняя партия — 141 из 141 — не прочитана.</div>
+      </div>
+      <div class="bk">
+        <span class="bk-n">Обрыв 3</span>
+        <span class="bk-t">Нет механизма изменения</span>
+        <span class="bk-s part">Сдвинулся формально</span>
+        <div class="bk-b">Погашенных записей стало 350 против нуля в диагностике. Но разбор по возрасту: 291 погашена <b>в день создания</b> как брак ингеста, 58 — последствия старой консолидации, и <b>ровно одна</b> потому, что факт устарел. Содержательных гашений три, все из единственного ревизита.</div>
+      </div>
+    </div>
+
+    <div class="pull">
+      <p>Прямо сейчас в необработанном инбоксе лежит ответ на наш собственный открытый вопрос: решение судьи Бринкемы по ремедиям в adtech-деле, опубликовано 2 сентября в 19:11.</p>
+      <cite>Гейт его принёс. Память о нём не знает. Справочник «Лестница исков» до сих пор утверждает, что решения нет, а напоминание проверить это стоит на 15 сентября</cite>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Состояние базы</p>
+    <h2>Дисциплина разметки, наоборот, держится</h2>
+    <p class="lede">Пять ортогональных осей провенанса вводились как страховка от бесконтрольного роста. Замер по всей живой базе, а не по последней партии: они не только соблюдаются, но и улучшаются от раунда к раунду.</p>
+
+    <div class="bars">
+      <div class="brow">
+        <div class="blab"><b>chan:primary</b><span>записей от самого документа</span></div>
+        <div class="bpair">
+          <div class="bline"><span class="btrack"><span class="bfill was" style="width:69.3%"></span></span><span class="bval was">69,3%</span></div>
+          <div class="bline"><span class="btrack"><span class="bfill now" style="width:72.0%"></span></span><span class="bval">72,0%</span></div>
+        </div>
+      </div>
+      <div class="brow">
+        <div class="blab"><b>cred:primary-confirmed</b><span>подтверждено первоисточником</span></div>
+        <div class="bpair">
+          <div class="bline"><span class="btrack"><span class="bfill was" style="width:62.7%"></span></span><span class="bval was">62,7%</span></div>
+          <div class="bline"><span class="btrack"><span class="bfill now" style="width:70.8%"></span></span><span class="bval">70,8%</span></div>
+        </div>
+      </div>
+      <div class="brow">
+        <div class="blab"><b>num:unsourced</b><span>чисел неизвестного происхождения — чем меньше, тем лучше</span></div>
+        <div class="bpair">
+          <div class="bline"><span class="btrack"><span class="bfill was" style="width:21.8%"></span></span><span class="bval was">21,8%</span></div>
+          <div class="bline"><span class="btrack"><span class="bfill now" style="width:19.9%"></span></span><span class="bval">19,9%</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="bkey">
+      <span><i style="background:var(--s-nil)"></i>базовая линия 28.08.2026, 472 записи</span>
+      <span><i style="background:var(--s-on)"></i>вся живая база 03.09.2026, 2211 записей</span>
+    </div>
+
+    <h3>Что ещё сошлось</h3>
+    <p>Записей без обязательной оси — <b>ноль</b>: у всех 2211 живых стоит ровно по одному тегу <code>chan:</code>, <code>num:</code> и <code>cred:</code>. Расхождений между тегом и слотом внутри строки источника — <b>4 на 2211</b>, то есть 0,18%; после предыдущей партии их было 13 на 184. Простыни ушли полностью: медиана длины записи 379 знаков, максимум 1786 — при том, что крупнейшая склейка августа была 13 466 знаков с 26 вклеенными фактами.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Чем не пользуемся — и стоило бы</p>
+    <h2>Шесть возможностей, включённых нулём вызовов</h2>
+    <p class="lede">Отсортировано по тому, насколько это влияет на главную ценность — накопление проверенного знания с провенансом.</p>
+
+    <div class="opt">
+      <div class="op">
+        <div class="op-n">smart_ingest<br>validFrom / validUntil</div>
+        <div class="op-v">0 из 2561</div>
+        <div class="op-b">Прямое лекарство от того, что «отрицание тухнет быстрее утверждения». Факту «апелляции на эту дату нет» ставится срок, и он сам перестаёт быть свежим. Сейчас дата протухания пишется прозой внутрь текста факта, и никакой запрос её не видит.</div>
+      </div>
+      <div class="op">
+        <div class="op-n">mark_reviewed</div>
+        <div class="op-v">0 вызовов</div>
+        <div class="op-b">Единственный вход в FSRS-оценку. Его неиспользование измеримо: <code>reps=0</code> и <code>lapses=0</code> у всех записей, а в формуле доверия эти два слагаемых дают 40% веса — то есть у каждой записи они константа, и потолок trust ≈ 0,8. Это арифметика за жалобой «trust только печатает».</div>
+      </div>
+      <div class="op">
+        <div class="op-n">memory promote</div>
+        <div class="op-v">26 на 2561</div>
+        <div class="op-b">Один процент базы. При доказанном «чтение не укрепляет» остальные 99% движутся по распаду только вниз. Шаг 5 основного цикла существует, но исполняется на промилле материала.</div>
+      </div>
+      <div class="op">
+        <div class="op-n">dedup scan</div>
+        <div class="op-v">~12 из 760</div>
+        <div class="op-b">Читающая операция: ищет кластеры по косинусу поверх всей базы. Четыре тематически перекрывающиеся партии, и склейки между ними никто не искал ни разу — при том что матрица выше показывает нулевое пересечение слоёв.</div>
+      </div>
+      <div class="op">
+        <div class="op-n">maintain backup</div>
+        <div class="op-v">0 вызовов</div>
+        <div class="op-b">Единственная копия базы была снята вручную 28 августа и весит 4,5 МБ против нынешних 17,2. Самая дешёвая страховка из всего списка. Сделана в ходе этой остановки — впервые за шесть дней.</div>
+      </div>
+      <div class="op">
+        <div class="op-n">maintain export<br>memory_status timeline</div>
+        <div class="op-v">0 вызовов</div>
+        <div class="op-b">Штатная замена ручным SQL-сверкам после каждой партии: выгруз с фильтрами по тегу и дате плюс хронология «что легло в базу в такой-то день». Сейчас то же делается запросами к SQLite напрямую.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Позиция по плану</p>
+    <h2>Неделя закрыта целиком, месяц — один пункт из восьми</h2>
+    <p class="lede">План взят из пере-скана ландшафта после тринадцати раундов. Статус каждого пункта проверен фактами в репозитории, а не по отметкам в документе.</p>
+
+    <div class="plan">
+      <div>
+        <div class="pl-h done"><b>6 / 6</b><span>Недельная часть</span></div>
+        <ul class="pl">
+          <li class="y"><i>✓</i><b>Замки консолидации</b> и чистка конвенций от разрушающих вызовов</li>
+          <li class="y"><i>✓</i><b>Профили субагентов</b> с аллоулистом инструментов и страж записи в корень</li>
+          <li class="y"><i>✓</i><b>Схема провенанса</b> — пять ортогональных осей вместо одного тега достоверности</li>
+          <li class="y"><i>✓</i><b>Правило лестницы счёта</b> — ни одного числа уникальных сущностей без ступеней</li>
+          <li class="y"><i>✓</i><b>Реестр резолверов</b> и ось <code>claim:</code> — 204 записи несут явную пометку о резолве</li>
+          <li class="y"><i>✓</i><b>Разбор склеек</b> — 249 фактов возвращены дословно, 58 повреждённых записей погашены обратимо</li>
+        </ul>
+      </div>
+      <div>
+        <div class="pl-h todo"><b>1 / 8</b><span>Месячная часть</span></div>
+        <ul class="pl">
+          <li class="y"><i>✓</i><b>Архив первоисточников</b> — 108 документов с манифестом. Сделан вручную, скилла под это нет</li>
+          <li class="n"><i>·</i>Гейт архива и <code>archive.py</code> — снимки Wayback вместо ручного сохранения</li>
+          <li class="n"><i>·</i>Патч структурного конверта источника в ингест</li>
+          <li class="n"><i>·</i><code>normalize.py</code> с канонизацией имён и лестницей счёта</li>
+          <li class="n"><i>·</i>Золотой набор и прогон качества извлечения</li>
+          <li class="n"><i>·</i>Телеметрия и трассировка раундов</li>
+          <li class="n"><i>·</i>Собственный замер детектора галлюцинаций на русских парах</li>
+          <li class="n"><i>·</i>Стадия отбора проверяемых утверждений и деконтекстуализация</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Отдельный риск состояния</h3>
+    <p>Рабочая ветка ушла от основной на <b>двенадцать коммитов и 118 файлов</b>. Весь архив первоисточников, два справочника и текущая редакция конвенций существуют только в ней — а все фоновые задания и MCP-сервер стартуют из основного чекаута, то есть видят проект на 28 августа. Удалённого репозитория нет вовсе.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Что дальше</p>
+    <h2>Порядок задан ценой промедления, а не размером задачи</h2>
+
+    <div class="next">
+      <div class="nx">
+        <span class="nx-n">1</span>
+        <div>
+          <div class="nx-t">Разобрать инбокс и закрыть вопрос по ремедиям</div>
+          <div class="nx-b">Решение по adtech-делу уже лежит в необработанном виде. Это ревизит «Лестницы исков», а не новый раунд — и заодно <b>первое настоящее замыкание цикла</b> «вопрос → возврат → закрытие», которого не случалось ни разу.</div>
+        </div>
+        <span class="nx-c cheap">дёшево</span>
+      </div>
+      <div class="nx">
+        <span class="nx-n">2</span>
+        <div>
+          <div class="nx-t">Снять отсечку в сборщике, поднять тир-1 в начало реестра</div>
+          <div class="nx-b">Час работы, максимальный эффект на целевую метрику: сейчас гейт <b>по построению</b> носит trade-прессу и режет первоисточники, потому что лимит применяется в порядке перечисления фидов.</div>
+        </div>
+        <span class="nx-c cheap">час</span>
+      </div>
+      <div class="nx">
+        <span class="nx-n">3</span>
+        <div>
+          <div class="nx-t">Включить дистилляцию правильно — не «одной строкой»</div>
+          <div class="nx-b">Скрипт запускает агента с правом записи в память <b>без верификатора</b>, а адверсариальный слой правит 115 утверждений из 141. Нужны три вещи: ключ, карантинный тег по образцу уже применявшегося, и жёсткий кап на партию.</div>
+        </div>
+        <span class="nx-c mid">час</span>
+      </div>
+      <div class="nx">
+        <span class="nx-n">4</span>
+        <div>
+          <div class="nx-t">Слить ветку в основную</div>
+          <div class="nx-b">Пока не слито, вся автоматика работает со снимком недельной давности: без архива первоисточников, без последней редакции конвенций и без уроков двух сентябрьских раундов.</div>
+        </div>
+        <span class="nx-c cheap">полчаса</span>
+      </div>
+      <div class="nx">
+        <span class="nx-n">5</span>
+        <div>
+          <div class="nx-t">Вернуть гейтинг на партии</div>
+          <div class="nx-b">Либо режим склейки для фактов, обновляющих известное, либо обязательный <code>dedup scan</code> свежей партии против старого слоя. Дорого и структурно — но это <b>ровно то, ради чего выбран этот субстрат</b>.</div>
+        </div>
+        <span class="nx-c big">полдня</span>
+      </div>
+      <div class="nx">
+        <span class="nx-n">6</span>
+        <div>
+          <div class="nx-t">Линтер конвенций — мишень уже измерена</div>
+          <div class="nx-b">78 записей с посчитанным числом без ссылки на метод, 25 со счётчиком без даты снимка, 4 расхождения тега и слота. Скрипт на пятьдесят строк с заранее известным первым уловом.</div>
+        </div>
+        <span class="nx-c cheap">час</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>Замеры сняты 03.09.2026 шестью субагентами по пяти независимым срезам — поверхность инструмента, инфраструктура, план, метрики базы, накопительная петля — плюс адверсариальный критик полноты поверх их результатов. 610 тысяч токенов, 227 инструментальных вызовов; один срез упал на сетевой ошибке и был перезапущен отдельно. Критик снял пять утверждений собственных срезов и уточнил ещё четыре — в частности, поправил число настоящих склеек с двух на шесть и показал, что «напоминание не сработало ни разу» ничего не доказывает, потому что первый срок наступал только сегодня.</p>
+    <p>Все обращения к базе — read-only через <code>sqlite3 'file:…?mode=ro'</code>; ни один субагент не имел инструментов записи. В ходе остановки исправлены три ложных утверждения в конвенциях и хэндоффе, снят параметр <code>recall</code> из профилей субагентов (любой инструмент памяти в аллоулисте поднимает субагенту отдельный процесс сервера против общей базы — замерено четыре одновременных), перевыставлены все активные напоминания и сделана резервная копия базы: 2561 запись, проверка целостности пройдена.</p>
+  </div>
+</footer>

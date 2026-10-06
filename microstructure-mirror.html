@@ -1,0 +1,320 @@
+<title>Микроструктура как зеркало RTB</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --mark:#B4540A; --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1040px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.1rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.38rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:72ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:40px}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:78ch; margin:6px 0 16px; font-size:.92rem}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.86em; background:var(--chip-bg); padding:1px 5px; border-radius:3px}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:74ch}
+  .bars{display:grid; gap:10px}
+  .brow{display:grid; grid-template-columns:minmax(150px,270px) 1fr 96px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:18px}
+  .bar{height:18px; border-radius:2px 4px 4px 2px; background:var(--c)}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:420px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:82ch}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:80ch}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:780px}
+  th{text-align:left; font-size:.71rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
+  td{padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.86rem}
+  tr:last-child td{border-bottom:none}
+  .st{display:inline-block; border-radius:4px; padding:1px 8px; font-size:.72rem; font-weight:600; white-space:nowrap}
+  .st.str{background:rgba(78,122,28,.16); color:var(--s4)}
+  .st.par{background:var(--chip-bg); color:var(--muted)}
+  .st.sup{background:rgba(180,84,10,.14); color:var(--mark)}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:800px){ .cons{grid-template-columns:1fr} .brow{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px}
+  .box h3{margin:0 0 8px}
+  .box ul,.box ol{margin:0; padding-left:19px}
+  .box li{margin-bottom:7px; font-size:.88rem}
+  .pred{background:var(--card); border:1px solid var(--line); border-left:3px solid var(--cc,var(--s1)); border-radius:0 6px 6px 0; padding:14px 17px; margin-top:10px}
+  .pred .h{font-weight:600; margin-bottom:4px; font-size:.95rem}
+  .pred .b{color:var(--muted); font-size:.88rem}
+  .pred .sig{color:var(--faint); font-size:.79rem; margin-top:7px; border-top:1px solid var(--line); padding-top:6px}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:82ch}
+</style>
+<main>
+  <h1>Микроструктура финансовых рынков как зеркало RTB</h1>
+  <p class="lede">Рынки ценных бумаг прошли путь, на который рынок рекламы только выходит: фрагментация, уход в непубличные каналы, плата за поток заявок, гонка задержек, клиринг. Вопрос был — что из этого действительно переносится и какие предсказания даёт. Ответ оказался жёстче, чем гипотеза.</p>
+  <p class="meta">Ресёрч gid · 20.08.2026 · пять срезов микроструктуры, по одному верификатору на срез с отдельной задачей проверять не факты, а КАЧЕСТВО аналогий</p>
+
+  <div class="eyebrow">01 · Калибровка</div>
+  <h2>Из сорока соответствий выжило одно</h2>
+  <div class="viz">
+    <h3>Вердикт проверки аналогий</h3>
+    <p class="sub">Верификатору было велено понижать без колебаний и называть конкретно, что не совпадает: кто несёт риск, кто выбирает контрагента, что предмет торга, обязательна ли сделка, есть ли обязанность перед клиентом.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Structural<em>совпадает механика И структура стимулов И тип рыночного провала</em></div>
+        <div class="track"><div class="bar" style="width:2.5%; --c:var(--s4)"></div></div>
+        <div class="bval">1</div>
+        <div class="tip">Рынок лимонов Акерлофа ↔ сегрегация инвентаря между PMP и открытым аукционом. Единственное соответствие, выдержавшее проверку полностью.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Partial<em>совпадает часть, есть существенное расхождение</em></div>
+        <div class="track"><div class="bar" style="width:62.5%; --c:var(--s2)"></div></div>
+        <div class="bval">25</div>
+        <div class="tip">Годятся как источник диагнозов и дизайн-шаблонов, но не как источник готовых решений и никогда — количественных переносов.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Superficial или отклонено<em>совпадает только метафора</em></div>
+        <div class="track"><div class="bar" style="width:35%; --c:var(--mark)"></div></div>
+        <div class="bval">14</div>
+        <div class="tip">Включая почти всё ядро исходной гипотезы про клиринг: новация, default fund и initial margin понижены до поверхностных.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Практическое следствие: любая фраза вида «в adtech происходит то же, что в акциях в 2005 году» — почти наверняка завышение. Рамка работает как источник диагнозов, а не решений.</p>
+  </div>
+
+  <div class="eyebrow">02 · Границы</div>
+  <h2>Шесть различий, без которых остальное — вранье</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 330" role="img" aria-label="Шесть структурных различий между рынком ценных бумаг и RTB">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--s1)" font-size="12" font-weight="600">РЫНОК ЦЕННЫХ БУМАГ</text>
+        <text x="940" y="14" fill="var(--mark)" font-size="12" font-weight="600" text-anchor="end">RTB</text>
+        <g>
+          <rect x="0" y="26" width="940" height="44" rx="5" fill="var(--card)" stroke="var(--line)"/>
+          <text x="14" y="45" fill="var(--ink)" font-weight="600">Предмет торга</text>
+          <text x="14" y="61" fill="var(--muted)">взаимозаменяем, вечен, торгуется на 17 площадках</text>
+          <text x="926" y="45" fill="var(--ink)" font-weight="600" text-anchor="end">уникален и потребляется в момент поставки</text>
+          <text x="926" y="61" fill="var(--muted)" text-anchor="end">контролируемое сравнение одинаковых сделок невозможно физически</text>
+
+          <rect x="0" y="76" width="940" height="44" rx="5" fill="var(--card)" stroke="var(--line)"/>
+          <text x="14" y="95" fill="var(--ink)" font-weight="600">Стоячая котировка</text>
+          <text x="14" y="111" fill="var(--muted)">цена публична ДО сделки — на этом стоит весь Reg NMS</text>
+          <text x="926" y="95" fill="var(--ink)" font-weight="600" text-anchor="end">покупатель не котирует, а отвечает на приглашение</text>
+          <text x="926" y="111" fill="var(--muted)" text-anchor="end">RTB — это RFQ-рынок, а не CLOB</text>
+
+          <rect x="0" y="126" width="940" height="44" rx="5" fill="var(--card)" stroke="var(--line)"/>
+          <text x="14" y="145" fill="var(--ink)" font-weight="600">Обязательность исполнения</text>
+          <text x="14" y="161" fill="var(--muted)">маркетабельный ордер обязан быть исполнен</text>
+          <text x="926" y="145" fill="var(--ink)" font-weight="600" text-anchor="end">бид опционален, показ может исчезнуть</text>
+          <text x="926" y="161" fill="var(--muted)" text-anchor="end">главная маржа реакции — no-bid rate, канала которого нет ни в одной модели</text>
+
+          <rect x="0" y="176" width="940" height="44" rx="5" fill="var(--card)" stroke="var(--line)"/>
+          <text x="14" y="195" fill="var(--ink)" font-weight="600">Кто несёт риск</text>
+          <text x="14" y="211" fill="var(--muted)">дилер берёт инструмент на баланс: inventory и adverse selection risk</text>
+          <text x="926" y="195" fill="var(--ink)" font-weight="600" text-anchor="end">у SSP и куратора позиции нет вообще</text>
+          <text x="926" y="211" fill="var(--muted)" text-anchor="end">спред не содержит компенсации за риск — это чистая рента за доступ</text>
+
+          <rect x="0" y="226" width="940" height="44" rx="5" fill="var(--card)" stroke="var(--line)"/>
+          <text x="14" y="245" fill="var(--ink)" font-weight="600">Обязанность перед клиентом</text>
+          <text x="14" y="261" fill="var(--muted)">best execution выводится из agency duty of loyalty</text>
+          <text x="926" y="245" fill="var(--ink)" font-weight="600" text-anchor="end">DSP принципал, SSP агент паблишера, куратор ничей агент</text>
+          <text x="926" y="261" fill="var(--muted)" text-anchor="end">«конфликт интересов» юридически не существует — правило не к чему прикрепить</text>
+
+          <rect x="0" y="276" width="940" height="44" rx="5" fill="var(--card)" stroke="var(--line)"/>
+          <text x="14" y="295" fill="var(--ink)" font-weight="600">Направление асимметрии</text>
+          <text x="14" y="311" fill="var(--muted)">токсичен информированный ПОКУПАТЕЛЬ (Кайл, Glosten–Milgrom)</text>
+          <text x="926" y="295" fill="var(--ink)" font-weight="600" text-anchor="end">ПРОДАВЕЦ знает качество товара лучше покупателя</text>
+          <text x="926" y="311" fill="var(--muted)" text-anchor="end">это Акерлоф, а не Кайл — весь словарь «toxic flow» отпадает</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption>Шестое различие — самое важное: оно объясняет, почему единственное structural-соответствие оказалось именно про лимоны, а не про клиринг или маршрутизацию. И седьмое, обычно упускаемое: <b>эталон движется в сторону adtech</b>. Rule 611 и 610(e) предложены к полной отмене (Rel. 34-105655, 17.06.2026), Regulation Best Execution и Order Competition Rule отозваны 12.06.2025, RTS 28 удалён Директивой 2024/790 с формулировкой «отчёты почти не читают». Рамка «adtech догоняет финансы» неверна как вектор.</figcaption>
+  </figure>
+
+  <div class="eyebrow">03 · Что переносится</div>
+  <h2>Карта уцелевших соответствий</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Финансовая сторона</th><th>Adtech</th><th>Сила</th><th>Что именно не совпадает</th></tr></thead>
+      <tbody>
+        <tr><td><b>Рынок лимонов</b> (Акерлоф): продавец знает качество единицы и сливает худшие в непроверяемый канал</td><td>Сегрегация инвентаря PMP / открытый RTB. Эмпирика: «Lemon Ads», Management Science 71(12), 2025 — dual-channel паблишеры продают худшие показы в RTB дороже, чем они стоят</td><td><span class="st str">structural</span></td><td>Ничего существенного. Две правки: потери несут <b>RTB-only паблишеры</b> через пулинговую скидку, а не покупатели без доступа к PMP; и в финансах аналог есть — originate-to-distribute в MBS/ABS, внебиржевые облигации</td></tr>
+        <tr><td><b>Сокращение дилерской панели в RFQ</b>: меньше опрошенных = меньше утечки ценой меньшей конкуренции</td><td>Supply path optimization покупателя</td><td><span class="st par">partial</span> <span style="color:var(--faint);font-size:.75rem">верхняя граница</span></td><td>Ближе всего к structural: инициатор сам режет панель и сам несёт последствия. Не совпадает делимость (parent order дробится, показ неделим) и целевая функция — SOR оптимизирует цену для бенефициара, SPO издержки доступа для себя</td></tr>
+        <tr><td><b>Payment for order flow</b> (Rule 606, ст. 39a MiFIR)</td><td>Курационная надбавка, зашитая в спред между флором курированной сделки и флором открытого аукциона</td><td><span class="st par">partial</span></td><td><b>Направление платежа инвертировано</b>: PFOF — inducement ОТ площадки К агенту клиента; курация — наценка ИЗ денег клиента ЧЕРЕЗ посредника. Точный аналог — недекларированный markup при riskless-principal исполнении. И по Jounce 50% курированных сделок надбавки сверх take rate вообще не несут</td></tr>
+        <tr><td><b>Systematic internaliser</b>: двусторонняя сделка вне многосторонней системы, цена назначается самостоятельно</td><td>Private marketplace и preferred deal</td><td><span class="st par">partial</span></td><td>У SI есть принципальный риск на книге, обязанность публиковать твёрдые котировки и best execution перед клиентом. В PMP нет ни риска, ни клиента, ни обязательной котировки. Точнее ложится <b>member preferencing</b></td></tr>
+        <tr><td><b>Price-time priority</b> в CLOB (CME Globex FIFO)</td><td><code>getHighestCpm</code> в Prebid: максимум по CPM, при равенстве — меньший <code>timeToRespond</code></td><td><span class="st par">partial</span></td><td>«Время» означает физически разное: в CLOB — момент постановки покоящейся заявки (позиция в очереди, оплаченная риском); в Prebid — задержка ответа, а быстрый ответ обычно значит МЕНЬШЕ обогащения. Правило вознаграждает отказ от информации</td></tr>
+        <tr><td><b>Tick size</b> как котировочная сетка (Rule 612, Tick Size Pilot)</td><td>Гранулярность <code>hb_pb</code>: medium = 201 корзина, high = 2001, округление вниз</td><td><span class="st par">partial</span></td><td><b>Котировочный тик без клирингового</b> — округление влияет на аукцион ад-сервера, но не на платёж. В акциях тик экзогенен и обязателен; в Prebid это конфигурация паблишера под лимит кардинальности key-values</td></tr>
+        <tr><td><b>Билатеральный кредитный риск OTC</b> до реформ 2009</td><td>Sequential liability: неоплата покупателя уезжает вниз к паблишеру</td><td><span class="st par">partial</span></td><td>В adtech носитель риска контрагента <b>не выбирал, не видит и не может ему отказать</b>, и премии не получает. Хуже: у паблишера нет договора с DSP и нет требования в банкротстве. Тип провала разный — в OTC внешний эффект (лечится инфраструктурой), в adtech договор присоединения (лечится правом)</td></tr>
+        <tr><td><b>Сегрегация клиентских активов</b> (EMIR ст. 39, MF Global 2011)</td><td>SSP держит деньги паблишеров без сегрегации</td><td><span class="st par">partial</span></td><td>Стимулы НЕ совпадают: для FCM использование сегрегированных средств противозаконно, у SSP выгода от float легальна и является нормальной частью модели. Правовая природа расходится с момента сделки: у FCM траст, у SSP договорный долг — паблишер торговый кредитор с первого дня</td></tr>
+        <tr><td><b>Сокращение расчётного цикла</b> (T+1 с 28.05.2024, клиринговый фонд NSCC −23%)</td><td>Платёжные сроки 60–120 дней и рынок финансирования дебиторки</td><td><span class="st par">partial</span></td><td>Коэффициент непереносим: −23% есть свойство VaR-маржи. И 60–120 дней — это <b>торговый кредит, а не расчётный цикл</b>: сумма обязательства не определена до сверки показов. Вектор противоположен, потому что отсрочка — бесплатный float посредника</td></tr>
+        <tr><td><b>Frequent batch auctions</b> (Budish–Cramton–Shim)</td><td>Окно header bidding: враппер собирает ответы до таймаута и клирит одновременно</td><td><span class="st par">partial</span></td><td>Совпадает только отсутствие ценового приоритета по порядку прихода. FBA — многолотовый двусторонний call; RTB — однолотовый односторонний sealed-bid. Цена промаха: следующий батч через 100 мс против <b>безвозвратной потери показа</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="eyebrow">04 · Что не переносится</div>
+  <h2>Ложные параллели, которые дают неверный прогноз</h2>
+  <p class="note">Каждая из них — популярная фигура речи. При буквальном употреблении ведёт не туда.</p>
+  <div class="cons">
+    <div class="box">
+      <h3>Отклонено верификатором</h3>
+      <ul>
+        <li><b>«PMP — это дарк-пул».</b> Дарк-МТП по конструкции НЕ создаёт цену, а берёт её у лит-рынка, и обязан работать по недискреционным правилам. PMP назначает собственный флор и является двусторонним договором с дискрецией продавца — и вообще не зарегистрированная площадка</li>
+        <li><b>«Traffic shaping — это order flow segmentation».</b> Совпадает ничего, кроме того, что кто-то чего-то не отправляет. Сегментация в смысле SEC — отбор по неинформированности контрагента, делаемый агентом клиента, с возвратом части выигрыша через измеримое улучшение цены</li>
+        <li><b>«Rev-share — это maker-taker рибейт».</b> Рибейт получает третья сторона, выставляющая двусторонние котировки и несущая ценовой риск. Rev-share получает <b>владелец товара</b>. Аналог паблишера на бирже — эмитент, которому рибейтов не платят вовсе</li>
+        <li><b>«sellers.json — зачаточная consolidated tape».</b> Ни цен, ни объёмов, ни таймстемпов. Это реестр идентичностей — аналог Form ATS-N, а не ленты</li>
+        <li><b>«ARTF — это колокация».</b> Колокация продаёт только близость; колокант физически не может прикоснуться к чужим ордерам. ARTF даёт стороннему коду право <b>мутировать объект аукциона внутри процесса хоста</b>. Ни одна биржа такого не даёт</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Три терминологические ошибки, дорогие на практике</h3>
+      <ul>
+        <li><b>«Флор = тик».</b> Нет. Флор — резервная цена по Myerson, меняющая <b>аллокацию</b> (часть инвентаря не продаётся). Тик — сетка, меняющая <b>рационирование</b> при равных ценах. Разные объекты с разной сравнительной статикой</li>
+        <li><b>«SPO ≈ неттинг».</b> Нет. SPO сокращает число путей к одному показу; неттинг сокращает число платежей при неизменных позициях</li>
+        <li><b>«Шейдинг = пейсинг».</b> Нет. Множитель бюджетного ограничения существует и во второй цене, где стратегического шейдинга нет вовсе, и реагирует на конкуренцию иначе</li>
+      </ul>
+      <h3 style="margin-top:14px">И одна нормативная ловушка</h3>
+      <ul>
+        <li>Вывод «кэп на курацию не нужен, европейский опыт доказал waterbed» доказательной базы не имеет: рост SI с 5,1% до 10% начался за три с половиной года до первого расчёта volume cap, а ESMA сама называет переток «preliminary indication» на очень коротком окне</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">05 · Гипотеза</div>
+  <h2>Клиринговый слой: проверено и понижено</h2>
+  <p class="note">Исходная формулировка: отсутствие центрального контрагента в adtech соответствует доCCP-состоянию финансов, значит клиринговый слой появится и здесь. Проверка оставила от неё немного.</p>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 300" role="img" aria-label="Три условия неизбежности клиринга и их статус в adtech">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">ТРИ УСЛОВИЯ, ДЕЛАВШИЕ КЛИРИНГ НЕИЗБЕЖНЫМ В ФИНАНСАХ</text>
+        <rect x="0" y="26" width="300" height="88" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="14" y="46" fill="var(--ink)" font-weight="600">а · Операционный коллапс</text>
+        <text x="14" y="64" fill="var(--muted)">рынок физически перестаёт считать</text>
+        <text x="14" y="80" fill="var(--faint)">paperwork crisis 1967–70 → DTC, NSCC, SIPC</text>
+        <text x="14" y="102" fill="var(--mark)" font-weight="600">В ADTECH — НЕТ</text>
+        <text x="150" y="102" fill="var(--muted)">неоплата не мешает: показ уже состоялся</text>
+
+        <rect x="320" y="26" width="300" height="88" rx="5" fill="var(--card)" stroke="var(--s2)" stroke-width="2"/>
+        <text x="334" y="46" fill="var(--ink)" font-weight="600">б · Дефолт с внешними эффектами</text>
+        <text x="334" y="64" fill="var(--muted)">удар выходит за пределы контрагентов</text>
+        <text x="334" y="80" fill="var(--faint)">Lehman: реестр показал $5,2 млрд нетто из $72 млрд</text>
+        <text x="334" y="102" fill="var(--s2)" font-weight="600">ЧАСТИЧНО</text>
+        <text x="420" y="102" fill="var(--muted)">но сигнал глушится: убыток уезжает вниз</text>
+
+        <rect x="640" y="26" width="300" height="88" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="654" y="46" fill="var(--ink)" font-weight="600">в · Регуляторный мандат с датой</text>
+        <text x="654" y="64" fill="var(--muted)">G20 «by end-2012»: США 2013, ЕС 2016</text>
+        <text x="654" y="80" fill="var(--faint)">шесть-семь лет даже при выигранном суде</text>
+        <text x="654" y="102" fill="var(--mark)" font-weight="600">НЕТ</text>
+        <text x="700" y="102" fill="var(--muted)">регулятора расчётов рекламы не существует</text>
+
+        <rect x="0" y="128" width="940" height="52" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="14" y="148" fill="var(--ink)" font-size="12" font-weight="600">Доказательство, что одного дефолта мало: Эйнар Аас, Nasdaq Clearing, 11.09.2018.</text>
+        <text x="14" y="167" fill="var(--muted)" font-size="12">Съел €114 млн при фонде €166 млн — больше двух третей, из них €107 млн взносы других членов. Не породил ни одного нового института: предупреждение, штраф и правка маржинальной модели.</text>
+
+        <text x="0" y="208" fill="var(--accent)" font-size="12" font-weight="600">ШЕСТЬ СТРУКТУРНЫХ ЛОМОК, КОТОРЫЕ ВАЖНЕЕ УСЛОВИЙ</text>
+        <g fill="var(--muted)" font-size="11.5">
+          <text x="14" y="230" fill="var(--ink)">1 · Нет рыночного риска</text><text x="180" y="230">цена между клирингом и платежом не переоценивается — вся математика IM/VM адресует переоценку</text>
+          <text x="14" y="248" fill="var(--ink)">2 · Нечего портировать</text><text x="180" y="248">портфель мёртвого DSP — это долг, а не позиция</text>
+          <text x="14" y="266" fill="var(--ink)">3 · DVP невозможен</text><text x="180" y="266">показ нельзя не отдать и нельзя вернуть: обязательство возникает после безвозвратной поставки</text>
+          <text x="14" y="284" fill="var(--ink)">4–6 · Нет правовой базы</text><text x="180" y="284">enforceability неттинга, settlement finality, банкротные safe harbors; экспозиции непрозрачны by design; сбор в б.п. против take rate в десятках процентов</text>
+        </g>
+      </g>
+    </svg>
+    <figcaption><b>Оценка:</b> CCP в смысле PFMI для open RTB в горизонте пяти лет — единицы процентов. Корректный прообраз не LCH, а расчётно-гарантийная схема <b>карточного типа</b> (там товар тоже поставлен до расчёта, поэтому схема вынуждена брать риск-ориентированное обеспечение) внутри отдельного крупного оператора — эта вероятность умеренная.</figcaption>
+  </figure>
+  <p class="note"><b>Почему существующие заменители не считаются зачаточной формой.</b> Все они билатеральны и ни один не мутуализирует риск, а структура стимулов прямо противоположна CCP: в default fund пред-финансирует создатель риска, взнос откалиброван на его риск, участие принудительно, ресурсы банкротно обособлены. В Payment Protection Plan платит <b>жертва</b> риска — паблишер, добровольно, по плоскому тарифу около 3% выплаты, что на порядок-два выше правдоподобного ожидаемого убытка, то есть это рента, а не актуарная премия. И обещание необеспечено — обесценивается ровно в том сценарии, ради которого default fund и строят.</p>
+  <p class="note"><b>Что подтвердит гипотезу, причём парадоксально: исчезновение клаубек-оговорок.</b> Пока убыток уезжает вниз к фрагментированным паблишерам, у игроков с капиталом нет мотива платить за инфраструктуру. Как только он начнёт оставаться на балансах SSP, у них немедленно появится интерес и к измерению экспозиции, и к обеспечению — то есть договорная правка окажется триггером инфраструктуры, а не её заменой. Второй подтверждающий сигнал — дефолт покупателя, ударивший по игроку с балансом и лоббистским весом, а не по хвосту паблишеров. <b>Опровергнет:</b> сохранение sequential liability в типовых T&amp;C и отсутствие согласованной единицы поставки через пять лет.</p>
+
+  <div class="eyebrow">06 · Предсказания</div>
+  <h2>Шесть проверяемых, из них одно с сильным основанием</h2>
+  <div class="pred" style="--cc:var(--s4)">
+    <div class="h">П1 · из structural. Рост курации будет самоусиливающе ухудшать открытый аукцион, и рынок ответит не кэпом, а инструментарием секьюритизации</div>
+    <div class="b">Механизм подтверждён эмпирически: dual-channel паблишеры продают худшие показы в открытом RTB дороже, чем они стоят, а потери несут RTB-only паблишеры через пулинговую скидку. Ответом будут конструкции, прямо заимствованные из originate-to-distribute: представления и гарантии по качеству пула, раскрытие его характеристик, обязательство куратора удерживать долю (risk retention) или отвечать за make-good.</div>
+    <div class="sig">Сигнал: расхождение post-view метрик между курированным и открытым каналом при контроле на паблишера и формат; ускоряющийся отток RTB-only предложения.</div>
+  </div>
+  <div class="pred" style="--cc:var(--s2)">
+    <div class="h">П2 · partial. Регулирование курации пойдёт по модели «раскрой роль и наценку», а не «запрети платёж»</div>
+    <div class="b">Курационная комиссия — наценка из денег покупателя, то есть аналог недекларированного markup, а не inducement. Даже прецеденты запрета PFOF строились на inducement-правилах, которые в adtech не к чему прикрепить.</div>
+    <div class="sig">Сигнал: disclosed markup и обязательное объявление роли по Deal ID в требованиях крупных рекламодателей. Опровергнет: норма прямого действия, запрещающая платёж как таковой.</div>
+  </div>
+  <div class="pred" style="--cc:var(--s2)">
+    <div class="h">П3 · partial. Цены за сообщения в adtech не появится; экстерналия и дальше будет гаситься непубличным рационированием</div>
+    <div class="b">Нет нейтрального шлюза — узкое место принадлежит заинтересованной стороне; генератор запросов и носитель издержки разъединены. И сам инструмент оказался слабым: Nasdaq снял свой взвешенный сбор 13.03.2025 как малоприменимый.</div>
+    <div class="sig">Сигнал: отсутствие публичных QPS-тарифов при росте доли server-side; расширение shaping-продуктов как коммерческого предложения.</div>
+  </div>
+  <div class="pred" style="--cc:var(--s2)">
+    <div class="h">П4 · partial. Платёжные сроки не сократятся; расти будет рынок, который отсрочку финансирует</div>
+    <div class="b">Вектор противоположен T+1, потому что противоположен стимул: в финансах высвобожденная маржа возвращается участникам, в adtech отсрочка — бесплатный оборотный капитал среднего звена. И до тех пор, пока не решена сверка поставленного количества, сокращать технически нечего.</div>
+    <div class="sig">Сигнал: объёмы факторинга рекламной дебиторки и ставки payment-protection планов. Опровергнет: появление в MSA обязательства сегрегировать средства паблишеров.</div>
+  </div>
+  <div class="pred" style="--cc:var(--s2)">
+    <div class="h">П5 · partial. Рента будет смещаться в слой отбора участников ДО аукциона, а не в правила клиринга</div>
+    <div class="b">Реальное аллокационное правило RTB живёт не в аукционе, а в traffic shaping и курации. Агентный слой — следующая точка приложения, и предмет покупки там сильнее колокации: это право мутировать чужой бид-реквест внутри процесса хоста.</div>
+    <div class="sig">Сигнал: появление или отсутствие в спецификации платы за размещение, нормы недискриминации и конструктивного уравнивания задержки.</div>
+  </div>
+  <div class="pred" style="--cc:var(--s2)">
+    <div class="h">П6 · partial. Прозрачность будет прирастать реестрами идентичности, а не записями о цене и об отказах</div>
+    <div class="b">Причина структурная: у SSP положительный стимул <b>не создавать</b> запись, потому что shaping и есть продукт. Поэтому мандат на доступ бесполезен без предшествующего мандата на создание.</div>
+    <div class="sig">Сигнал: доля новых отраслевых спецификаций про identity против доли про логирование решений. Опровергнет: требование хранить журнал неотправленных бид-реквестов.</div>
+  </div>
+
+  <div class="eyebrow">07 · Практика</div>
+  <h2>Что с этим делать</h2>
+  <div class="cons">
+    <div class="box">
+      <h3>Продавцу трафика</h3>
+      <ul>
+        <li>Главный риск — не цена, а договор: без сегрегации вы <b>торговый кредитор с первого дня</b>, и sequential liability гасит ваше единственное требование. Приоритет — вычёркивать клаубек-оговорки, прецеденты отказа публичны</li>
+        <li>Payment protection оценивать не как страховку, а как постоянный вычет около 3% валовой выручки — против правдоподобного ожидаемого убытка это рента, и обещание обесценивается при несостоятельности самого SSP</li>
+        <li><b>Проверить price granularity.</b> Округление вниз действует только на аукцион ад-сервера, платёж непрерывен — на low и medium ваш header-bidding-спрос систематически входит в юнифицированный аукцион заниженным против бида, подаваемого с полной точностью</li>
+        <li>Флор — это резервная цена, а не тик: оптимизировать контекстно и по типу покупателя, реалистичный масштаб — единицы процентов годовой выручки, а не «в разы»</li>
+        <li>Осознать своё место в лемонной динамике: работаете и в PMP, и в RTB — вы участник механизма, портящего цену для RTB-only; только в RTB — вы платите скидку за чужое поведение</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Покупателю и тому, кто строит инфраструктуру</h3>
+      <ul>
+        <li>SPO — самое близкое к structural, и это ваш собственный выбор с вашими последствиями. Но не пытайтесь лечить цепочку «обязанностью best execution»: паблишер вам не клиент, должать некому</li>
+        <li>Единственное место, где агентский конфликт настоящий, — агентство или DSP с чужим бюджетом. Именно там курационная надбавка юридически уязвима и там стоит требовать disclosed markup</li>
+        <li>Не стройте NBBO, trade-through и защиту котировки: нет предмета, и модель демонтируется на её собственном рынке. Максимум переносимого — <b>post-trade агрегация с отсрочкой по облигационной модели</b></li>
+        <li>Реальный дефицит — не лента цен, а <b>журнал отказов</b>: сначала обязанность создавать запись о нерассылке, потом доступ. Обратный порядок бесполезен</li>
+        <li>Предложение из теории аукционов здесь не «сделайте батч» — батч де-факто уже есть в окне враппера — а <b>uniform-price клиринг внутри окна</b>: единая цена и есть то, что снимает стимул к шейдингу</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">08 · Границы знания</div>
+  <h2>Слепые зоны сравнения</h2>
+  <p class="note"><b>Со стороны adtech.</b> Traffic shaping не логируется нигде — это не «плохо раскрыто», а отсутствие записи, поэтому масштаб изъятия в принципе неоценим снаружи. Курационные спреды: базовый источник вторичен и единичен, а «зашитый спред» является свойством меньшинства сделок, а не конструкции. Цифра «73% бид-возможностей с курированным Deal ID» непригодна без определения знаменателя — доля реквестов, доля показов и доля расхода это три разных числа, и первое сильно завышает картину.</p>
+  <p class="note"><b>Не проверить ни с одной стороны.</b> Чистого измерения эффекта перехода на first-price не существует и не будет: у Google формат и резервные цены поменяли одним движением в 2019, а публичного референсного бенчмарка, относительно которого в казначейском эксперименте и мерили эффект, в adtech нет в принципе. Самоусиливающийся характер лемонной динамики — вывод из модели, а не эмпирический результат.</p>
+  <p class="note"><b>Системная зона, ограничивающая рамку целиком: эталон нестабилен.</b> Rule 611 — proposal, не норма. Reg Best Ex и Order Competition Rule отозваны, поэтому определения, на которые опираются популярные adtech-выводы, существуют только в отозванных проектах. Полупенсовый тик и кэп access fee приняты, но дважды отложены — до ноября 2027. Tick Size Pilot свёрнут как неудачный. Nasdaq снял сбор за избыточные сообщения. Значит, вопрос «куда пойдёт рынок рекламы, если повторит путь бумаг» плохо поставлен: <b>путь бумаг сам сейчас переписывается</b>. Переносить надо не институты, а причинные связки — какой провал каким механизмом лечили и что было триггером — и каждый раз проверять, существует ли в adtech сторона, которая несёт риск, обязана перед клиентом и может быть принуждена.</p>
+
+  <footer>
+    Собрано агентом gid 20.08.2026: пять research-агентов по срезам микроструктуры, по одному верификатору на срез. У верификатора было две задачи, и вторая считалась главной — пересмотреть силу каждой заявленной аналогии и понижать без колебаний, называя конкретно, что не совпадает.
+    <br><br>
+    Результат этой второй задачи и есть главный вывод раунда: из примерно сорока соответствий structural осталось одно, 14 понижены до поверхностных — включая почти всё ядро исходной гипотезы про клиринговый слой, которую этот раунд и должен был проверить. Гипотеза выдвигалась автором ресёрча и была им же опровергнута; это ожидаемый и правильный исход адверсариальной проверки, а не сбой.
+    <br><br>
+    Полный справочник со всеми срезами, вердиктами по каждой аналогии и правками по фактам — <code>docs/microstructure-mirror.md</code> в репозитории проекта.
+  </footer>
+</main>

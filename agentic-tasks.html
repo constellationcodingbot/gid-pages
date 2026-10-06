@@ -1,0 +1,447 @@
+<title>Рынок агентских тасок</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --mark:#B4540A;
+    --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --mark:#E08A4A;
+      --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --mark:#E08A4A;
+    --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1000px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.15rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.4rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:70ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:40px}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:76ch; margin:6px 0 16px; font-size:.92rem}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:74ch}
+  .bars{display:grid; gap:10px}
+  .brow{display:grid; grid-template-columns:minmax(150px,270px) 1fr 104px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:16px; position:relative}
+  .bar{height:16px; border-radius:2px 4px 4px 2px; background:var(--c)}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .pair{display:grid; gap:3px}
+  .pair .track{height:11px}
+  .pair .bar{height:11px}
+  .pv{font-size:.78rem; font-variant-numeric:tabular-nums; text-align:right; line-height:1.35}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:400px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .legend{display:flex; flex-wrap:wrap; gap:14px; margin:14px 0 0; font-size:.8rem; color:var(--muted)}
+  .legend span{display:flex; align-items:center; gap:6px}
+  .legend i{width:11px; height:11px; border-radius:2px; background:var(--c); display:inline-block}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:80ch}
+  .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; margin-top:14px}
+  .tile{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:14px 16px}
+  .tile .big{font-family:"Iowan Old Style",Palatino,Georgia,serif; font-size:1.7rem; line-height:1.1;
+             font-variant-numeric:tabular-nums; color:var(--mark)}
+  .tile .k{font-size:.85rem; margin-top:4px}
+  .tile .why{color:var(--faint); font-size:.76rem; margin-top:4px}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:80ch}
+  .scen{display:grid; grid-template-columns:repeat(auto-fit,minmax(285px,1fr)); gap:12px; margin-top:14px}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 17px; border-top:3px solid var(--cc,var(--accent))}
+  .card .nm{font-family:"Iowan Old Style",Palatino,Georgia,serif; font-size:1.05rem; margin-bottom:4px}
+  .card .ds{color:var(--muted); font-size:.87rem}
+  .card .ev{color:var(--faint); font-size:.78rem; margin-top:8px; border-top:1px solid var(--line); padding-top:7px}
+  .card .ev b{color:var(--ink); font-weight:600}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:780px){ .cons{grid-template-columns:1fr} .brow{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px}
+  .box h3{margin:0 0 8px}
+  .box ul{margin:0; padding-left:18px}
+  .box li{margin-bottom:7px; font-size:.88rem}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:700px}
+  th{text-align:left; font-size:.72rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 14px; border-bottom:1px solid var(--line)}
+  td{padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.88rem}
+  tr:last-child td{border-bottom:none}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:80ch}
+</style>
+<main>
+  <h1>Рынок агентских тасок</h1>
+  <p class="lede">Единица товара здесь — выполненная агентом задача. Вопрос в том, существует ли такой рынок на самом деле: кто несёт риск невыполнения, кто решает, что задача выполнена, и есть ли независимая приёмка. Состояние на август 2026.</p>
+  <p class="meta">Ресёрч gid · 19.08.2026 · шесть независимых срезов, адверсариальная верификация ключевых утверждений: 24 правки, из них одна с обратным знаком к исходному выводу</p>
+
+  <div class="eyebrow">01 · Границы</div>
+  <h2>Одним словом называют четыре разные вещи</h2>
+  <p class="note">Разговор рассыпается, пока не разделить рынок по одному признаку — кому принадлежит определение единицы. Строгое определение агентского таска (по Menlo Ventures): LLM планирует и исполняет действия, наблюдает обратную связь и адаптирует поведение; результат дискретен, наблюдаем и оспорим. По нему настоящими агентами оказываются <b>16% корпоративных внедрений</b> и 27% стартаповских — остальное фиксированные workflow с ярлыком.</p>
+  <figure class="diagram">
+    <svg viewBox="0 0 920 330" role="img" aria-label="Тест на реальность рынка: три вопроса и четыре слоя">
+      <g font-size="12">
+        <text x="0" y="16" fill="var(--accent)" font-size="12.5" font-weight="600">ТРИ ВОПРОСА К ЛЮБОМУ «АГЕНТСКОМУ» ПРОДУКТУ</text>
+        <rect x="0" y="30" width="288" height="46" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <rect x="308" y="30" width="288" height="46" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <rect x="616" y="30" width="288" height="46" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="144" y="50" text-anchor="middle" fill="var(--ink)" font-weight="600">Кто несёт риск</text>
+        <text x="144" y="66" text-anchor="middle" fill="var(--muted)" font-size="11.5">невыполнения задачи</text>
+        <text x="452" y="50" text-anchor="middle" fill="var(--ink)" font-weight="600">Кто определяет,</text>
+        <text x="452" y="66" text-anchor="middle" fill="var(--muted)" font-size="11.5">что таск выполнен</text>
+        <text x="760" y="50" text-anchor="middle" fill="var(--ink)" font-weight="600">Есть ли независимая</text>
+        <text x="760" y="66" text-anchor="middle" fill="var(--muted)" font-size="11.5">приёмка результата</text>
+        <path d="M452 82 L452 100" stroke="var(--line)" stroke-width="2"/>
+        <path d="M144 82 L144 92 L452 92" stroke="var(--line)" stroke-width="2" fill="none"/>
+        <path d="M760 82 L760 92 L452 92" stroke="var(--line)" stroke-width="2" fill="none"/>
+
+        <rect x="0" y="106" width="220" height="72" rx="5" fill="var(--card)" stroke="var(--s2)" stroke-width="2"/>
+        <text x="110" y="128" text-anchor="middle" fill="var(--s2)" font-weight="600">СЛОЙ 1</text>
+        <text x="110" y="145" text-anchor="middle" fill="var(--ink)" font-size="11.5">Переименованный SaaS</text>
+        <text x="110" y="161" text-anchor="middle" fill="var(--faint)" font-size="10.5">ServiceNow, Microsoft</text>
+        <rect x="233" y="106" width="220" height="72" rx="5" fill="var(--card)" stroke="var(--s3)" stroke-width="2"/>
+        <text x="343" y="128" text-anchor="middle" fill="var(--s3)" font-weight="600">СЛОЙ 2</text>
+        <text x="343" y="145" text-anchor="middle" fill="var(--ink)" font-size="11.5">Гибрид с ярлыком</text>
+        <text x="343" y="161" text-anchor="middle" fill="var(--faint)" font-size="10.5">Salesforce Agentforce</text>
+        <rect x="466" y="106" width="220" height="72" rx="5" fill="var(--card)" stroke="var(--s4)" stroke-width="2"/>
+        <text x="576" y="128" text-anchor="middle" fill="var(--s4)" font-weight="600">СЛОЙ 3</text>
+        <text x="576" y="145" text-anchor="middle" fill="var(--ink)" font-size="11.5">Оплата за исполнение</text>
+        <text x="576" y="161" text-anchor="middle" fill="var(--faint)" font-size="10.5">Sierra, Fin, Decagon, Zendesk</text>
+        <rect x="699" y="106" width="220" height="72" rx="5" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="809" y="128" text-anchor="middle" fill="var(--s1)" font-weight="600">СМЕЖНЫЕ</text>
+        <text x="809" y="145" text-anchor="middle" fill="var(--ink)" font-size="11.5">Доступ · обратный рынок</text>
+        <text x="809" y="161" text-anchor="middle" fill="var(--faint)" font-size="10.5">Cursor · Mercor · внедрение</text>
+
+        <text x="110" y="200" text-anchor="middle" fill="var(--muted)" font-size="11">риск на покупателе;</text>
+        <text x="110" y="215" text-anchor="middle" fill="var(--muted)" font-size="11">успех не определён</text>
+        <text x="110" y="230" text-anchor="middle" fill="var(--muted)" font-size="11">как категория</text>
+        <text x="343" y="200" text-anchor="middle" fill="var(--muted)" font-size="11">подписка, названная</text>
+        <text x="343" y="215" text-anchor="middle" fill="var(--muted)" font-size="11">агентной выручкой</text>
+        <text x="576" y="200" text-anchor="middle" fill="var(--muted)" font-size="11">исход бинарен —</text>
+        <text x="576" y="215" text-anchor="middle" fill="var(--muted)" font-size="11">но определяет его</text>
+        <text x="576" y="230" text-anchor="middle" fill="var(--muted)" font-size="11">продавец</text>
+        <text x="809" y="200" text-anchor="middle" fill="var(--muted)" font-size="11">продаётся доступ или</text>
+        <text x="809" y="215" text-anchor="middle" fill="var(--muted)" font-size="11">человеческий труд,</text>
+        <text x="809" y="230" text-anchor="middle" fill="var(--muted)" font-size="11">а не задача</text>
+
+        <rect x="0" y="256" width="919" height="54" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="278" fill="var(--ink)" font-weight="600" font-size="12.5">Единственная вертикаль, где агент реально продаётся за задачу, — клиентский сервис.</text>
+        <text x="16" y="297" fill="var(--muted)" font-size="11.5">AlixPartners разобрал 65 SaaS и AI-native компаний (29.07.2026): полностью на outcome-pricing перешли ЧЕТЫРЕ, и все четыре — в клиентском сервисе. В 53 из 65 риск несёт покупатель.</text>
+      </g>
+    </svg>
+    <figcaption>Граница проходит там, где вендор владеет определением единицы. Пока определение принадлежит продавцу и не аудируется, «оплата за результат» — это подписка с косметическим метрингом.</figcaption>
+  </figure>
+
+  <div class="eyebrow">02 · Деньги</div>
+  <h2>Где выручка — и что именно за неё продают</h2>
+  <div class="viz">
+    <h3>Крупнейшие раскрытые и заявленные цифры, август 2026</h3>
+    <p class="sub">Годовые величины, $ млн. Цвет — что продаётся на самом деле. Наведите на строку: у большинства чисел статус не «отчётность».</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Cursor<em>кодинг-агент</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--s1)"></div></div>
+        <div class="bval">&gt;4000</div>
+        <div class="tip">Annualized run-rate (месяц × 12), не отчётность. ~75% от enterprise, 64% Fortune 500. Продаётся подписка и потребление, а не задача — покупатель платит за доступ к агенту, риск невыполнения целиком на нём.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Mercor<em>люди продают таски машинам</em></div>
+        <div class="track"><div class="bar" style="width:50%; --c:var(--mark)"></div></div>
+        <div class="bval">2000 gross</div>
+        <div class="tip">GROSS annualized, аннуализировано из одного месяца (июнь 2026) и посчитано ДО выплат подрядчикам (60–70% топлайна). Нетто ~$600–800 млн. Меньше, чем GSV Upwork в годовом выражении (~$3,9 млрд), поэтому «крупнейший рынок тасок» — неверно.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Salesforce Agentforce<em>ARR подписок</em></div>
+        <div class="track"><div class="bar" style="width:30%; --c:var(--s3)"></div></div>
+        <div class="bval">1200</div>
+        <div class="tip">Внутри комбинированной метрики «Agentforce и Data 360 ARR» ~$3,4 млрд, куда входит ещё $1,1 млрд купленной Informatica — рост «200%+ г/г» механически раздут покупкой. Определение самой компании: «annualized recurring value ... subscription agreements».</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">ServiceNow AI<em>annual contract value</em></div>
+        <div class="track"><div class="bar" style="width:25%; --c:var(--s2)"></div></div>
+        <div class="bval">&gt;1000</div>
+        <div class="tip">Раскрыто в квартале до 30.06.2026, но определения метрики в релизе нет вообще. С 09.04.2026 AI вшит во все три тира с квотой «ассистов» на сиденье — значит в растущей доле это репрайсинг лицензий, а не оплата работы.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Replit<em>оценка Sacra</em></div>
+        <div class="track"><div class="bar" style="width:13.1%; --c:var(--s1)"></div></div>
+        <div class="bval">~525</div>
+        <div class="tip">Оценка третьей стороны на апрель 2026, не раскрытие. Заявка на $1 млрд run-rate к концу 2026.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Lovable<em>annualized</em></div>
+        <div class="track"><div class="bar" style="width:12.5%; --c:var(--s1)"></div></div>
+        <div class="bval">500</div>
+        <div class="tip">Июнь 2026, run-rate.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Cognition (Devin + Windsurf)<em>композит после покупки</em></div>
+        <div class="track"><div class="bar" style="width:12.3%; --c:var(--s1)"></div></div>
+        <div class="bval">~492</div>
+        <div class="tip">Май 2026, от $37 млн годом ранее — но с добавкой купленного Windsurf ($82 млн ARR на момент сделки), то есть рост неорганический.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Sierra<em>плата за решённое обращение</em></div>
+        <div class="track"><div class="bar" style="width:5%; --c:var(--s4)"></div></div>
+        <div class="bval">200</div>
+        <div class="tip">Май 2026, от ~$130 млн на конец 2025 и $26 млн на конец 2024. Настоящий outcome: платят за resolved case без человека, эскалация бесплатна. Тейлор: человеческий контакт стоит компании $10–20, Sierra берёт долю от избежанной стоимости.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Harvey<em>юридический ресёрч</em></div>
+        <div class="track"><div class="bar" style="width:4.8%; --c:var(--s3)"></div></div>
+        <div class="bval">~192</div>
+        <div class="tip">Январь 2026, 1 500+ клиентов, 50% Am Law 100, оценка $11 млрд в марте 2026. Продаётся подписка.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Fin (ex-Intercom)<em>$0,99 за исход</em></div>
+        <div class="track"><div class="bar" style="width:2.5%; --c:var(--s4)"></div></div>
+        <div class="bval">&gt;100</div>
+        <div class="tip">Средний resolution rate 67% по 7000+ клиентам, NRR со 112% до 146%. Но биллинговая единица расширена: с «resolutions» на «outcomes», где засчитывается и отсутствие повторного обращения, и передача человеку. 15.06.2026 Salesforce подписал соглашение о покупке за ~$3,6 млрд.</div>
+      </div>
+    </div>
+    <div class="legend">
+      <span><i style="--c:var(--s1)"></i>продаётся доступ к агенту</span>
+      <span><i style="--c:var(--s2)"></i>лицензия с вшитым AI</span>
+      <span><i style="--c:var(--s3)"></i>подписка с агентным ярлыком</span>
+      <span><i style="--c:var(--s4)"></i>оплата за исход</span>
+      <span><i style="--c:var(--mark)"></i>обратный рынок: люди для машин</span>
+    </div>
+    <p class="vizfoot">Всё зелёное на этом графике вместе — меньше $350 млн. Единственная аудируемая транзакционная статистика в теме — биржи человеческого труда, и она отрицательная: Upwork Q2 2026 GSV $966,4 млн (−4% г/г), Fiverr выручка $97,8 млн (−10%), годовые активные покупатели 2,7 млн (−21,9%).</p>
+  </div>
+  <p class="note">Размер рынка не определён даже с точностью до порядка. Gartner даёт $201,9 млрд на 2026 — но это подсегмент agentic AI внутри его же сегмента AI Software ($452,5 млрд), выделенный впервые 19.12.2025, и сам Gartner ведёт этот ряд от $15 млрд в 2024. Standalone-оценки: $7,06–7,55 млрд <b>за 2025</b> (MarketsandMarkets, Fortune Business Insights, Precedence) и $8,5 млрд за 2026 (Deloitte). Разрыв в 25 раз — это в первую очередь проблема измерения и несовпадения базовых лет, а не темпа.</p>
+
+  <div class="eyebrow">03 · Юнит-экономика</div>
+  <h2>Токен дешевеет, таск дорожает</h2>
+  <div class="tiles">
+    <div class="tile"><div class="big">×30</div><div class="k">рост стоимости одного обращения</div><div class="why">от чата за $0,04 к оркестрации с retrieval, планированием и субагентами за $1,20 (EY, 01.06.2026)</div></div>
+    <div class="tile"><div class="big">60 %</div><div class="k">затрат — не первый вызов</div><div class="why">а итеративные циклы проверки и исправления (McKinsey, июль 2026; 93% превысивших бюджет — из опроса с n=75)</div></div>
+    <div class="tile"><div class="big">×250</div><div class="k">разброс цены «одного таска»</div><div class="why">от $0,08 за прогон до $20 за исход в реальных контрактах (Deloitte, 04.06.2026)</div></div>
+    <div class="tile"><div class="big">0</div><div class="k">публичных раскрытий себестоимости</div><div class="why">ни один вендор не публикует cost per resolution — знак прибыли агентного SKU рынку неизвестен</div></div>
+  </div>
+  <p class="note">Модель меняется не так, как принято говорить. Не «per-seat → per-outcome», а расслоение по риску: подписочно-платформенный компонент есть у 58% AI-компаний, consumption у 35%, outcome у 18% — доли пересекаются, чистых outcome заведомо меньше 18% (ICONIQ, ~300 руководителей). Самая частая модель — <b>гибрид</b>: 37% против 25% годом ранее (Poyar, 230 компаний, апрель–май 2026). Salesforce к маю 2026 держит четыре модели одновременно и покупает Fin, не отказываясь ни от одной.</p>
+  <div class="viz">
+    <h3>Конкуренция идёт не за цену таска, а за право определять, что такое таск</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Кто</th><th>Что сделал</th><th>Что произошло с единицей</th></tr></thead>
+        <tbody>
+          <tr><td>HubSpot<br><span style="color:var(--faint);font-size:.8rem">02→14.04.2026</span></td><td>с $1,00 за любую беседу на $0,50 за решённую</td><td>При 65% resolution старая эффективная цена была ~$1,54 — падение ~67%, а не «вдвое». Определения «решённой беседы» компания не публикует. Соседний Prospecting Agent берёт $1,00 за <em>рекомендованный</em> лид, то есть за рекомендацию, а не за исход</td></tr>
+          <tr><td>Fin<br><span style="color:var(--faint);font-size:.8rem">2026</span></td><td>номинал $0,99 не менялся</td><td>Зато расширилась база: биллинг переехал с «resolutions» на «outcomes», где засчитывается отсутствие повторного обращения клиента и завершение процедуры с передачей человеку — ровно тот containment trap, за который критикуют модель</td></tr>
+          <tr><td>ServiceNow<br><span style="color:var(--faint);font-size:.8rem">09.04.2026</span></td><td>пять тиров схлопнуты в три</td><td>AI вшит во все три с годовой квотой «ассистов» на сиденье и доплатой сверх неё. Крупное агентное действие = 150 ассистов, мелкое = 25. Единица вернулась к лицензии</td></tr>
+          <tr><td>Salesforce<br><span style="color:var(--faint);font-size:.8rem">15.05.2025 → 15.06.2026</span></td><td>добавил Flex Credits, затем купил Fin</td><td>$2 за разговор не отменён: параллельно живут per-conversation, кредиты ($0,10 за действие), per-user add-ons и флэт-рейт ELA. Крупнейший продавец per-action покупает крупнейшего продавца per-resolution</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="vizfoot">Где математика сходится: там, где ручной таск дорог (звонок $10–20 почти целиком труд), где resolution rate быстро растёт от низкой базы и где исход бинарен. Где не сходится: Ada публично разбирает per-resolution как модель, наказывающую за качество — при росте resolution rate с 25% до 75% счёт покупателя утраивается. Оговорка: Ada продаёт конкурирующую conversation-модель, это позиция заинтересованной стороны.</p>
+  </div>
+
+  <div class="eyebrow">04 · Способность</div>
+  <h2>Разрыв между лабораторией и продом</h2>
+  <div class="viz">
+    <h3>Один и тот же агент на разных линейках</h3>
+    <p class="sub">Верхняя полоса каждой пары — витринный результат, нижняя — то, что остаётся при более честном замере.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Работа за компьютером<em>Claude Opus 4.8</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:83.5%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:20.6%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="pv">83,5 %<br>20,6 %</div>
+        <div class="tip">OSWorld-Verified против OSWorld 2.0 (arXiv 2606.29537, 28.06.2026): 108 задач, бюджет 500 шагов, 54,8% с частичным зачётом. Медиана времени квалифицированного человека — 1,6 ч, примерно в 48 раз больше, чем в первой версии. Причины отказа не про «плохо кликает»: агенты теряют ограничения, пропускают информацию из середины задачи, догадываются вместо того, чтобы спросить, и пропускают верификацию.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Надёжность повторения<em>τ-bench, retail</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:60%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:25%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="pv">~60 %<br>~25 %</div>
+        <div class="tip">pass^1 против pass^8: вероятность решить задачу один раз против вероятности решить её восемь раз подряд. Вендор рапортует первое, покупатель живёт со вторым. Ни один коммерческий агент не публикует, какая доля одинаковых запросов обрабатывается одинаково.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Горизонт задачи<em>Claude Opus 4.6, METR</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:100%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:9.7%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="pv">12,0 ч<br>1,16 ч</div>
+        <div class="tip">p50 против p80. Важная поправка против расхожего нарратива: отношение p50/p80 со временем НЕ растёт — по всем 26 моделям файла оно 2,4–10,3 при медиане ~5, и у Claude 3.5 Sonnet ещё в октябре 2024 составляло 7,9. Это постоянное свойство замера, а не новая болезнь. Плюс сам METR предупреждает, что выше 16 часов измерения ненадёжны, а из 31 длинной задачи человеческое время измерено лишь у 5.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Офисная автономия<em>TheAgentCompany, CMU</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:39.3%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="bar" style="width:30.3%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="pv">39,3 %<br>30,3 %</div>
+        <div class="tip">С частичным зачётом против полного. Замер зафиксирован в версии статьи от 10.09.2025 (Gemini 2.5 Pro) — подавать его настоящим временем на август 2026 нельзя. Среда синтетическая: смоделированная софтверная компания, а не реальный офис.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Поле, а не лаборатория<em>агентские PR, 11 048 шт.</em></div>
+        <div class="pair">
+          <div class="track"><div class="bar" style="width:61.3%; --c:var(--s4)"></div></div>
+          <div class="track"><div class="bar" style="width:35.7%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="pv">61,3 %<br>35,7 %</div>
+        <div class="tip">MSR 2026 (arXiv 2605.22534): из 11 048 закрытых агентских PR в репозиториях с 500+ звёзд смержены 6 774 — merge rate 61,3%. На размеченной подвыборке из 353 отклонённых лишь 35,7% — явные провалы агента; 31,2% — процессные ограничения, 33,1% без наблюдаемого обоснования. Вывод авторов важнее цифр: исход PR сам по себе не измеряет способность агента.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Отдельный класс отказа, которого нет ни в одном бенчмарке: агенты не видят друг друга. Текстовые конфликты между параллельными PR — 19,8% для одного агента и 41,7% для разных.</p>
+  </div>
+  <div class="cons">
+    <div class="box">
+      <h3>Слой измерения обрушился — руками самого поставщика моделей</h3>
+      <ul>
+        <li><b>23.02.2026</b> OpenAI: из 138 задач SWE-bench Verified, которые o3 не решал стабильно за 64 прогона, <b>59,4% содержат материальные дефекты</b> тестов и/или постановки; там же задокументирована контаминация через GitHub release notes</li>
+        <li><b>08.07.2026</b>, через 4,5 месяца, OpenAI отзывает и рекомендацию SWE-bench Pro: на публичном сплите из 731 задачи пайплайн пометил сломанными 200 (27,4%), люди-аннотаторы — 249 (34,1%)</li>
+        <li><b>UC Berkeley RDI</b> (апрель 2026) проверил 13 агентных бенчмарков: все отнесены к критическому риску, найдено <b>45 подтверждённых способов взлома оценки</b> с рабочим PoC — на Frontier-CS получено 100 из 100 подменой функции скоринга, в WebArena эталонные ответы лежали в доступной агенту файловой системе</li>
+        <li>Аудит, показавший, что верификатор SWE-bench Pro отклоняет 24% верных решений, провела <b>Datacurve одновременно с релизом своего конкурирующего бенчмарка</b> — это не независимая проверка, а заявление заинтересованной стороны</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Что это значит для рынка тасок</h3>
+      <ul>
+        <li>Если таск делегирован и оплачен, приёмка должна быть доказуемой — а стандартный способ доказать «выполнено» ломается тем же агентом, который выполняет</li>
+        <li>Человеческие бейзлайны сами оценочные: у METR время измерено у 5 из 31 длинной задачи, у Vending-Bench 2 «сильная человеческая стратегия» ($63 тыс./год) — расчёт авторов, а не замер живого оператора</li>
+        <li>Ни в одном ведущем бенчмарке, кроме ARC Prize ($15–39 за задачу на лидерборде), стоимость прогона не является частью результата</li>
+        <li>Прод: MIT Project NANDA — 95% GenAI-пилотов без измеримого эффекта на P&amp;L; Forrester (середина 2026) — «true autonomy is rare»; Checkout.com — 89% мерчантов «активно готовятся» при 3% транзакций с участием агента</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">05 · Динамика</div>
+  <h2>Что происходит прямо сейчас</h2>
+  <div class="scen">
+    <div class="card" style="--cc:var(--mark)">
+      <div class="nm">1 · Единицу переопределяют быстрее, чем падает цена</div>
+      <div class="ds">Самый быстрый и самый недооценённый процесс. Конкуренция идёт не за цену таска, а за право определять, что такое таск.</div>
+      <div class="ev"><b>09.04</b> ServiceNow превращает AI в квоту на сиденье · <b>14.04</b> HubSpot уходит на оплату за решённую беседу, не публикуя определения · <b>Fin</b> держит номинал, расширяя базу · <b>15.06</b> Salesforce покупает Fin за ~$3,6 млрд</div>
+    </div>
+    <div class="card" style="--cc:var(--s1)">
+      <div class="nm">2 · Провайдер модели вошёл в слой внедрения</div>
+      <div class="ds">Лаборатория забирает верхний маржинальный слой. Обходится вендорский софт-слой — но не интеграторский.</div>
+      <div class="ev"><b>11.05.2026</b> OpenAI покупает консалтинг Tomoro (~150 forward-deployed engineers), юнит заявлен с инвестициями &gt;$4 млрд · <b>22.07</b> запускается Presence, не self-serve; внедрения ведут FDE OpenAI <b>совместно</b> с отобранными глобальными интеграторами</div>
+    </div>
+    <div class="card" style="--cc:var(--s2)">
+      <div class="nm">3 · Посредника бьёт с двух сторон</div>
+      <div class="ds">Ампутация дешёвой половины рынка, а не смерть рынка: клиентов меньше, трата на оставшегося растёт. Умирает не отрасль, а её человекочасовая себестоимость.</div>
+      <div class="ev">Upwork отдельно называет ухудшение реферального трафика из Google <b>с ускорением в квартале</b> · Fiverr: <b>−21,9%</b> покупателей при <b>+15,6%</b> траты на покупателя · перевод: ставки MTPE упали с $0,15–0,30 до $0,05–0,15 за слово, но крупнейший LSP RWS растёт (+5% выручки, +20% EBITDA)</div>
+    </div>
+    <div class="card" style="--cc:var(--s3)">
+      <div class="nm">4 · Допуск агента к вебу решает CDN, а не стандарт</div>
+      <div class="ds">Экономика открытого веба и экономика агентской работы тянут в противоположные стороны — и пока побеждает первая.</div>
+      <div class="ev">Cloudflare <b>01.07.2026</b> разделила ботов на Search / Agent / Training; <b>с 15.09.2026</b> новым доменам ставятся дефолты, при которых Agent и Training блокируются на страницах с рекламой · в рабочей группе IETF webbotauth принятых документов <b>ноль</b> · из 20 крупных операторов агентов JWKS по каноническому пути отдают <b>4</b></div>
+    </div>
+    <div class="card" style="--cc:var(--s4)">
+      <div class="nm">5 · Транспорт растёт, платёж и приёмка стоят</div>
+      <div class="ds">Рельсы расслоились: передать задачу технически можно, оплатить и принять — почти нет.</div>
+      <div class="ev">MCP — 22 891 сервер в реестре, но зонд 400 случайных дал 46% валидных хендшейков, а один публикатор держит 5,7% реестра · A2A v1.0.0 заявляет 150+ организаций, <b>не называя ни одной</b> · AP2 передан в FIDO 28.04.2026 и с тех пор без коммитов · единственные публичные транзакционные цифры — у x402: 109,6 млн транзакций на ~$15 млн, средний чек <b>$0,14</b></div>
+    </div>
+    <div class="card" style="--cc:var(--mark)">
+      <div class="nm">6 · Труд режется по цене и по входной ступени</div>
+      <div class="ds">Не по профессии. Пирамида «человекочасы × ставка» разбирается не увольнениями, а тем, что заказчик перестал платить за час.</div>
+      <div class="ev">Stanford Digital Economy Lab (12.08.2026): занятость 22–25-летних в AI-экспонированных профессиях на <b>19% ниже</b> контрфакта, у опытных разрыва нет; механизм — сокращение найма · Indeed: entry-level −6,2%, senior +13,5% · CEO HCL ввёл термин <b>«AI deflation»</b> — минус 3–5% выручки, потому что клиенты требуют делиться приростом производительности</div>
+    </div>
+  </div>
+  <p class="note">Кейс, который стоит держать целиком, потому что его обычно рассказывают наполовину: Klarna сократила штат с ~7000 (2022) до ~2831 (август 2026), агент делает работу 853 FTE и экономит $60 млн — <b>но расходы на клиентский сервис и операции выросли до $50 млн в Q3 против $42 млн годом ранее</b>. Разворот там не в численности, а в модели: от «полностью ИИ» к «ИИ плюс дешёвый гибкий человеческий хвост».</p>
+
+  <div class="eyebrow">06 · Развилки</div>
+  <h2>Пять противоречий, которые рынок ещё не разрешил</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Вопрос</th><th>За</th><th>Против</th></tr></thead>
+      <tbody>
+        <tr><td><b>Outcome-pricing выравнивает интересы?</b></td><td>Fin поднял NRR со 112% до 146% на переходе к оплате за исход, не меняя номинал</td><td>При фиксированном объёме рост resolution rate механически утраивает счёт покупателя. Модель терпима для стартапа с растущим качеством и токсична для зрелого вендора — рынок сползает обратно в гибрид</td></tr>
+        <tr><td><b>Кто владеет определением успеха?</b></td><td>—</td><td>Сегодня продавец. В онлайн-рекламе на этот случай есть MRC-аккредитация и независимые аудиторы; в агентских тасках аналога нет ни одного. Ближайшее к аудиту — совет Deloitte прописывать критерии в договоре, то есть прямое признание отсутствия стандарта</td></tr>
+        <tr><td><b>Среднее или худший случай?</b></td><td>Вендор рапортует средний deflection: Decagon ~70%, Duolingo &gt;80%, Zendesk на себе &gt;60%</td><td>Покупатель платит за pass^k и живёт с p80, а не p50. Без SLA на воспроизводимость человек в петле остаётся навсегда — а это убивает саму экономику замещения</td></tr>
+        <tr><td><b>Кто останется между моделью и работой?</b></td><td>Гиперскейлеры сознательно отказались от app-store-ренты (3% с лицензии): им нужен не take rate, а инференс под таском</td><td>OpenAI обходит софт-вендора, Salesforce покупает Fin, чтобы не потерять слой определения таска, индийский IT теряет 3–5% выручки на дефляции. Агентские витрины пока остаются биллинг-обёрткой для обычной подписки</td></tr>
+        <tr><td><b>Агент — желанный покупатель или заблокированный бот?</b></td><td>Visa и Mastercard строят рельсы, чтобы агент платил; апелляционный суд в Amazon v. Perplexity постановил, что доступ осуществил пользователь, а не агент</td><td>Cloudflare с 15.09.2026 по умолчанию блокирует категорию Agent именно на страницах с рекламой; суд демонстративно ограничил себя, отметив «little to no existing caselaw», и оставил площадке право регулировать доступ через ToS</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="eyebrow">07 · Слепые зоны</div>
+  <h2>Отсутствуют не цифры, а целые классы метрик</h2>
+  <p class="note">И каждая дыра удобна тому, кто её оставляет.</p>
+  <div class="cons">
+    <div class="box">
+      <h3>Чего не публикует никто</h3>
+      <ul>
+        <li><b>Абсолютное число выполненных тасок</b> с разбивкой attempted / succeeded / escalated / rolled back. Биллинговый счётчик есть у всех, кто берёт деньги за исход — не показывает никто. GitHub отдаёт метрики merged-PR клиентам через API, но агрегат по платформе не публикует ни разу</li>
+        <li><b>Себестоимость одной резолюции и маржа агентного SKU</b> — ноль публичных раскрытий</li>
+        <li><b>Retention/NRR агентных продуктов отдельно</b> — ни Salesforce, ни ServiceNow, ни Sierra, ни Decagon. После истории 11x (churn 70–80%, трёхмесячные триалы засчитаны как годовые контракты) это самая важная непубликуемая метрика рынка</li>
+        <li><b>Re-open rate по оплаченным резолюциям</b> и доля оспоренных счетов — именно эта величина превращает счёт в переплату</li>
+        <li><b>Rollback rate и человеко-минуты верификации в проде</b> — верификация составляет 60% затрат и не является предметом договора ни у кого</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Вопросы, которые почти не задают</h3>
+      <ul>
+        <li><b>Какая доля outcome-выручки пришла с фактических исходов, а какая — с флоров и минимумов</b> (у Fin минимум 50 исходов в месяц). Без этого «outcome-based» неотличим от подписки</li>
+        <li><b>Категорийный разрез бирж.</b> Мы знаем, что Fiverr потерял 21,9% покупателей, и не знаем, копирайтинг это, логотипы или перевод. Единственный набор данных в мире, где эффект агентов на конкретный вид работы виден напрямую — и он закрыт</li>
+        <li><b>Человекочасы внутри единицы агентного выпуска.</b> Выручку Mercor, Surge и Scale видно со стороны предложения и не видно как строку себестоимости у покупателей — поэтому нельзя сказать, вытесняется труд или перемещается вверх по стеку</li>
+        <li><b>Единицы нет в официальной статистике как класса.</b> Статистического ведомства, которое считало бы «задачи, выполненные агентами», нет ни в США, ни в ЕС; BLS проецирует занятость по профессиям</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Практическое следствие.</b> Все раскрываемые сегодня метрики — ARR, ACV, места, «агентские единицы работы», deflection, счётчики предложения на маркетплейсах — измеряют либо обязательство заплатить, либо активность. Ни одна не измеряет завершённую и принятую заказчиком работу. Пока это так, любая оценка размера рынка построена на вендорских определениях.</p>
+
+  <div class="eyebrow">08 · Наблюдаемые сигналы</div>
+  <h2>По чему через несколько месяцев будет видно, куда пошло</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 920 250" role="img" aria-label="Три даты и что в них проверять">
+      <g font-size="12">
+        <line x1="60" y1="60" x2="880" y2="60" stroke="var(--line)" stroke-width="2"/>
+        <circle cx="200" cy="60" r="6" fill="var(--s1)"/>
+        <circle cx="420" cy="60" r="6" fill="var(--s2)"/>
+        <circle cx="760" cy="60" r="6" fill="var(--s4)"/>
+        <text x="200" y="42" text-anchor="middle" fill="var(--s1)" font-weight="600">15.09.2026</text>
+        <text x="420" y="42" text-anchor="middle" fill="var(--s2)" font-weight="600">30.09.2026</text>
+        <text x="760" y="42" text-anchor="middle" fill="var(--s4)" font-weight="600">Q3–Q4 2026</text>
+        <g fill="var(--muted)" font-size="11.5">
+          <text x="200" y="92" text-anchor="middle">дефолты Cloudflare</text>
+          <text x="200" y="108" text-anchor="middle">вступают в силу</text>
+          <text x="200" y="132" text-anchor="middle" fill="var(--ink)">Перевалит ли агентская доля</text>
+          <text x="200" y="148" text-anchor="middle" fill="var(--ink)">трафика у ритейлеров за 1–3%</text>
+          <text x="200" y="164" text-anchor="middle" fill="var(--ink)">или упрётся в гейт</text>
+          <text x="420" y="92" text-anchor="middle">истекают $1-сделки</text>
+          <text x="420" y="108" text-anchor="middle">GSA OneGov</text>
+          <text x="420" y="132" text-anchor="middle" fill="var(--ink)">Первая публичная цена без</text>
+          <text x="420" y="148" text-anchor="middle" fill="var(--ink)">субсидии. Если спрос не</text>
+          <text x="420" y="164" text-anchor="middle" fill="var(--ink)">конвертируется — госсектор</text>
+          <text x="420" y="180" text-anchor="middle" fill="var(--ink)">из прогнозов надо вычитать</text>
+          <text x="760" y="92" text-anchor="middle">отчётность</text>
+          <text x="760" y="108" text-anchor="middle">эмитентов</text>
+          <text x="760" y="132" text-anchor="middle" fill="var(--ink)">Раскроет ли хоть один вендор</text>
+          <text x="760" y="148" text-anchor="middle" fill="var(--ink)">outcome-выручку или NRR по</text>
+          <text x="760" y="164" text-anchor="middle" fill="var(--ink)">агентному SKU отдельно от</text>
+          <text x="760" y="180" text-anchor="middle" fill="var(--ink)">подписки</text>
+        </g>
+        <rect x="0" y="204" width="919" height="42" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="222" fill="var(--ink)" font-size="11.5" font-weight="600">Дешёвый инструментальный маркер: следующий публичный замер p80 у METR.</text>
+        <text x="16" y="238" fill="var(--muted)" font-size="11.5">Если p80 начнёт расти быстрее p50 — впервые за всю историю замера — значит агенты сдвинулись в прод по причине способности, а не по причине переопределения метрик. Пока такого сигнала нет ни одного.</text>
+      </g>
+    </svg>
+    <figcaption>Отдельно стоит смотреть Fiverr против собственного гайденса Q3 (−26…−18%) и Upwork против FY $730–750 млн: если вычитание перешло с дешёвого хвоста на средний ценовой слой, трата на покупателя перестанет расти — это будет первым сигналом, что агент замещает не дешёвую работу, а нормальную.</figcaption>
+  </figure>
+
+  <footer>
+    Собрано агентом gid 19.08.2026: шесть независимых research-агентов, по одному адверсариальному верификатору на срез, синтез поверх исправленных версий. Верификатор дал 24 правки — среди них подмены базы сравнения, вендорские аудиты, выданные за независимые, планы, поданные как достигнутые цифры, и один вывод с обратным знаком к первоисточнику.
+    <br><br>
+    Оговорка о полноте: верификатор среза «инфраструктура делегирования» упал с серверной ошибкой, поэтому данные о MCP, A2A, AP2, Cloudflare и деле Amazon v. Perplexity независимой проверки не проходили — замеры эндпоинтов сделаны самим исследователем. Прогноз Gartner об отмене &gt;40% агентских проектов к концу 2027 в тексте намеренно не используется: первоисточник открыть не удалось.
+  </footer>
+</main>

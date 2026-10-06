@@ -1,0 +1,746 @@
+<title>Карта юрлиц онлайн-рекламы</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --accent-ink:#0F4756; --offshore:#96660F; --offshore-bg:#F6EDD9;
+    --chip-bg:#EFEBE1; --mono-bg:#F1EEE7; --thead:#6B7280; --mark:#B4540A;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  :root:not([data-theme="light"]){ }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --accent-ink:#8CC6D4; --offshore:#D9A24C; --offshore-bg:#33291A;
+      --chip-bg:#262B33; --mono-bg:#232830; --thead:#8A8F98; --mark:#E08A4A;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --accent-ink:#8CC6D4; --offshore:#D9A24C; --offshore-bg:#33291A;
+    --chip-bg:#262B33; --mono-bg:#232830; --thead:#8A8F98; --mark:#E08A4A;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px;
+  }
+  main{max-width:1060px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.2rem; font-weight:600; margin:56px 0 8px}
+  h2{font-size:1.45rem; font-weight:600; margin:0 0 4px}
+  h3{font-size:1.05rem; font-weight:600; margin:26px 0 10px}
+  .lede{color:var(--muted); max-width:68ch; margin:0 0 10px}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:44px}
+  .eyebrow{
+    font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent);
+    font-weight:600; margin:52px 0 6px;
+  }
+  section p.note{color:var(--muted); max-width:74ch; margin:6px 0 18px; font-size:.92rem}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card)}
+  table{border-collapse:collapse; width:100%; min-width:860px}
+  th{
+    text-align:left; font-size:.72rem; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--thead); font-weight:600; padding:10px 14px; border-bottom:1px solid var(--line);
+  }
+  td{padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.9rem}
+  tr:last-child td{border-bottom:none}
+  td.co{min-width:180px}
+  td.co b{font-size:.95rem}
+  td.co .sub{color:var(--faint); font-size:.8rem; display:block; margin-top:2px}
+  td.jur{min-width:190px}
+  td.role{color:var(--muted); min-width:170px}
+  td.fmt{min-width:260px}
+  .chip{
+    display:inline-block; background:var(--chip-bg); border-radius:4px; padding:1px 7px;
+    font-size:.78rem; color:var(--ink); margin:0 4px 4px 0; white-space:nowrap;
+  }
+  .chip.off{background:var(--offshore-bg); color:var(--offshore)}
+  .reg{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:.74rem; background:var(--mono-bg); border-radius:4px; padding:1px 6px;
+    color:var(--muted); white-space:nowrap;
+  }
+  .v{color:var(--faint); font-size:.78rem}
+  .num{font-variant-numeric:tabular-nums}
+  .strip{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:10px; margin:16px 0 6px;
+  }
+  .strip .cell{
+    background:var(--card); border:1px solid var(--line); border-radius:6px; padding:12px 14px;
+  }
+  .strip .cell .k{font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:var(--thead); font-weight:600}
+  .strip .cell .where{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; font-size:1.05rem; margin:4px 0 2px}
+  .strip .cell .why{color:var(--muted); font-size:.82rem}
+  .stack{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:820px){ .stack{grid-template-columns:1fr} }
+  .layer{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:16px 18px}
+  .layer h3{margin:0 0 4px}
+  .layer .tag{font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; font-weight:600}
+  .layer .tag.open{color:var(--accent)}
+  .layer .tag.prop{color:var(--mark)}
+  .layer ul{margin:10px 0 0; padding-left:18px}
+  .layer li{margin-bottom:7px; font-size:.9rem}
+  .layer li b{font-weight:600}
+  .layer li .v{display:block}
+  .flow{
+    background:var(--card); border:1px solid var(--line); border-radius:6px; padding:14px 18px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:.8rem; color:var(--muted);
+    overflow-x:auto; white-space:nowrap; margin-top:14px;
+  }
+  .flow b{color:var(--accent-ink); font-weight:600}
+  footer{margin-top:64px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:78ch}
+  footer p{margin:6px 0}
+  a{color:var(--accent)}
+
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:16px}
+  .viz h3{margin:0 0 4px}
+  .viz .sub{color:var(--muted); font-size:.88rem; margin:0 0 14px; max-width:72ch}
+  .legend{display:flex; flex-wrap:wrap; gap:16px; margin:0 0 16px}
+  .legend span{display:inline-flex; align-items:center; gap:6px; font-size:.78rem; color:var(--muted)}
+  .legend i{width:11px; height:11px; border-radius:2px; display:inline-block; flex:none}
+  .bars{display:grid; gap:9px}
+  .brow{display:grid; grid-template-columns:minmax(140px,235px) 1fr 62px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.82rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:15px; position:relative}
+  .bar{height:15px; border-radius:2px 4px 4px 2px; background:var(--c); margin-left:var(--x,0)}
+  .bval{font-size:.82rem; font-variant-numeric:tabular-nums; text-align:right}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:340px;
+       opacity:0; pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .axis{display:flex; justify-content:space-between; margin-top:8px; padding-left:calc(min(235px,40%) + 12px);
+        padding-right:74px; font-size:.72rem; color:var(--faint); font-variant-numeric:tabular-nums}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:12px 0 0; max-width:76ch}
+  figure.diagram{margin:16px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:76ch}
+  @media (max-width:700px){ .brow{grid-template-columns:minmax(110px,150px) 1fr 52px} .axis{display:none} }
+</style>
+<main>
+  <h1>Карта юрлиц онлайн-рекламы</h1>
+  <p class="lede">Крупнейшие игроки каждой категории медиабаинга: роль в системе, где инкорпорировано юрлицо, с кем и в каком формате работает — плюс технологический стек, через который всё это транзачится.</p>
+  <p class="meta">Ресёрч gid · собрано 2026-08-17 · юрисдикции проверены по первоисточникам (SEC/реестры/суды); пометка «не перепроверено» значит ровно это</p>
+
+  <div class="eyebrow">01 · Покупатели: агентские холдинги</div>
+  <h2>Кто управляет бюджетами брендов</h2>
+  <p class="note">Формат у всех общий: master service agreement / agency-of-record с клиентом, вознаграждение — комиссия от спенда или fee, закупка через seats в DSP от имени клиента. Растущее исключение — principal buying: агентство выкупает медиа на себя и перепродаёт с нераскрытой наценкой (58% маркетологов сталкивались, ANA 2026).</p>
+  <div class="tablewrap"><table>
+    <tr><th>Игрок</th><th>Юрлицо</th><th>Роль</th><th>Масштаб и формат</th></tr>
+    <tr>
+      <td class="co"><b>WPP plc</b><span class="sub">Лондон (executive office)</span></td>
+      <td class="jur"><span class="chip off">Джерси</span><br><span class="v">инкорп. 25.10.2012, St Helier (20-F)</span></td>
+      <td class="role">Холдинг №1 по медиабиллингам (WPP Media)</td>
+      <td class="fmt num">$63,9 млрд биллингов (2025). По net revenue уступила Publicis ещё в 2024</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Publicis Groupe S.A.</b><span class="sub">Париж</span></td>
+      <td class="jur"><span class="chip">Франция</span><br><span class="v">société anonyme, отчётность в AMF</span></td>
+      <td class="role">Крупнейший холдинг по net revenue (2024–25)</td>
+      <td class="fmt num">€13,9 млрд net revenue (2024); биллинги $62,4 млрд (+12,8%)</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Omnicom Group Inc.</b><span class="sub">Нью-Йорк</span></td>
+      <td class="jur"><span class="chip">США</span><br><span class="v">шт. Нью-Йорк по 10-K (не перепроверено)</span></td>
+      <td class="role">Крупнейший холдинг после поглощения IPG (26.11.2025)</td>
+      <td class="fmt num">Pro forma выручка &gt;$25 млрд; биллинги Omnicom+IPG $75,6 млрд</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Havas N.V.</b><span class="sub">операции — Франция</span></td>
+      <td class="jur"><span class="chip">Нидерланды</span><br><span class="v">Euronext Amsterdam c 16.12.2024, спин-офф из Vivendi</span></td>
+      <td class="role">Холдинг «второй лиги»</td>
+      <td class="fmt num">Капитализация ~€1,77 млрд на листинге</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Horizon Media</b><span class="sub">Нью-Йорк</span></td>
+      <td class="jur"><span class="chip">США</span><br><span class="v">частная компания</span></td>
+      <td class="role">Крупнейший независимый медиабаер</td>
+      <td class="fmt num">$7,4 млрд биллингов (23% всех независимых, 2025)</td>
+    </tr>
+  </table></div>
+
+  <div class="eyebrow">02 · Платформы (walled gardens)</div>
+  <h2>Кто продаёт основную массу инвентаря</h2>
+  <p class="note">Общий приём: головная корпорация в США, а контрактно-биллинговый хаб для остального мира — Ирландия или Люксембург. Основная масса их выручки приходит не от агентств, а от self-serve длинного хвоста.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Игрок</th><th>Юрлицо</th><th>Контрагент вне США</th><th>Масштаб и формат</th></tr>
+    <tr>
+      <td class="co"><b>Alphabet / Google LLC</b><span class="sub">Mountain View</span></td>
+      <td class="jur"><span class="chip">Delaware</span></td>
+      <td class="jur"><span class="chip off">Google Ireland Ltd</span><br><span class="v">Дублин, <span class="reg">рег. 368047</span> — биллинг EMEA для Ads/AdSense/AdMob/GAM</span></td>
+      <td class="fmt num">Ad revenue $294,7 млрд (10-K 2025). Self-serve аукцион + DV360-seats для агентств</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Meta Platforms, Inc.</b><span class="sub">Menlo Park</span></td>
+      <td class="jur"><span class="chip">Delaware</span><span class="v"> (2004)</span></td>
+      <td class="jur"><span class="chip off">Meta Platforms Ireland</span><br><span class="v">все, кроме США/Канады (Self-Serve Ad Terms)</span></td>
+      <td class="fmt num">$196,2 млрд (2025); топ-100 клиентов давали &lt;20% выручки — база это SMB self-serve</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Amazon.com, Inc.</b><span class="sub">Сиэтл</span></td>
+      <td class="jur"><span class="chip">Delaware</span><span class="v"> (1996)</span></td>
+      <td class="jur"><span class="chip off">Amazon Europe Core S.à r.l.</span><br><span class="v">Люксембург — data controller / бенефициар, основной контрагент по APS с 2024 — A9.com LLC</span></td>
+      <td class="fmt num">$68,6 млрд (2025); ядро — self-serve Sponsored Products селлеров + Amazon DSP</td>
+    </tr>
+    <tr>
+      <td class="co"><b>ByteDance / TikTok</b><span class="sub">HQ Лос-Анджелес и Сингапур</span></td>
+      <td class="jur"><span class="chip off">Каймановы о-ва</span><br><span class="v">ByteDance Ltd + VIE-структура (КНР)</span></td>
+      <td class="jur"><span class="chip">TikTok USDS JV (США)</span><br><span class="v">с 22.01.2026: Oracle/Silver Lake/MGX 45%, прочие ~35%, ByteDance 19,9%</span></td>
+      <td class="fmt num">US-спенд ~$11,8 млрд (2025); TikTok Shop $15,8 млрд GMV; agency-аккаунты — официальный механизм</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Microsoft / LinkedIn</b><span class="sub">Редмонд</span></td>
+      <td class="jur"><span class="chip">шт. Вашингтон</span><br><span class="v">редкий не-Delaware в big tech</span></td>
+      <td class="jur"><span class="v">—</span></td>
+      <td class="fmt num">LinkedIn Ads ~$8,2 млрд (2025) — дефолт B2B; DSP Invest закрыт к 02.2026</td>
+    </tr>
+  </table></div>
+
+  <div class="eyebrow">03 · Независимый adtech</div>
+  <h2>Трубопровод между баерами и паблишерами</h2>
+  <div class="tablewrap"><table>
+    <tr><th>Игрок</th><th>Юрлицо</th><th>Роль</th><th>Формат работы</th></tr>
+    <tr>
+      <td class="co"><b>The Trade Desk, Inc.</b><span class="sub">Ventura, CA</span></td>
+      <td class="jur"><span class="chip">Невада</span><br><span class="v">реинкорпорация из Delaware 14.11.2024</span></td>
+      <td class="role">Крупнейший независимый DSP (UI Kokai)</td>
+      <td class="fmt num">Take rate ~20% (21,6% при $13,4 млрд spend, 2025); seats агентств и инхаус-команд; автор UID2</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Criteo</b><span class="sub">Париж → Люксембург</span></td>
+      <td class="jur"><span class="chip off">Люксембург</span><br><span class="v">редомицилирование из Франции завершено в 2026 (было RCS Paris <span class="reg">484 786 249</span>)</span></td>
+      <td class="role">Retail media + ретаргетинг/commerce DSP</td>
+      <td class="fmt num">Комиссия с performance-закупок; инфраструктура retail media для ритейлеров</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Taboola.com Ltd</b><span class="sub">Нью-Йорк (операции)</span></td>
+      <td class="jur"><span class="chip">Израиль</span><br><span class="v">в реестре не перепроверено</span></td>
+      <td class="role">Native-сеть №1 открытого веба</td>
+      <td class="fmt num">$1,9 млрд выручки (2025); rev share с паблишерами; платформа Realize под performance-баеров</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Teads Holding Co.</b><span class="sub">Нью-Йорк</span></td>
+      <td class="jur"><span class="chip">Delaware</span><br><span class="v">экс-Outbrain; купила люксембургскую Teads S.A. 03.02.2025</span></td>
+      <td class="role">Омниканальная платформа: web, CTV, in-app</td>
+      <td class="fmt num">Сделка ~$900 млн; квартальная выручка $286–343 млн (2025)</td>
+    </tr>
+    <tr>
+      <td class="co"><b>PubMatic / Magnite</b></td>
+      <td class="jur"><span class="chip">Delaware</span><span class="v"> (по 10-K, не перепроверено)</span></td>
+      <td class="role">Публичные SSP</td>
+      <td class="fmt">Take rate с паблишера (не раскрывают); подключаются в основном Prebid-адаптерами</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Index Exchange</b><span class="sub">Торонто</span></td>
+      <td class="jur"><span class="chip">Канада</span><span class="v"> частная</span></td>
+      <td class="role">SSP/биржа</td>
+      <td class="fmt">Take rate с паблишера</td>
+    </tr>
+    <tr>
+      <td class="co"><b>IAS · DoubleVerify</b><span class="sub">Нью-Йорк</span></td>
+      <td class="jur"><span class="chip">Delaware</span><span class="v"> обе</span></td>
+      <td class="role">Дуополия verification/measurement</td>
+      <td class="fmt num">Модель DV — measured CPM: ~$0,070 за 1000 измеренных показов (9,5 трлн транзакций, 2025)</td>
+    </tr>
+  </table></div>
+
+  <div class="eyebrow">04 · Мобильный UA-контур</div>
+  <h2>Кто продаёт и меряет инсталлы</h2>
+  <div class="tablewrap"><table>
+    <tr><th>Игрок</th><th>Юрлицо</th><th>Роль</th><th>Формат работы</th></tr>
+    <tr>
+      <td class="co"><b>AppLovin</b><span class="sub">Пало-Альто</span></td>
+      <td class="jur"><span class="chip">США</span></td>
+      <td class="role">Крупнейшая performance-сеть (движок Axon)</td>
+      <td class="fmt num">$5,48 млрд выручки (2025, +70%); медиация MAX; владеет MMP Adjust (Берлин, с 2021); Axon Ads Manager — self-serve с 2026</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Unity (Grow)</b></td>
+      <td class="jur"><span class="chip">США</span></td>
+      <td class="role">Медиация LevelPlay + сеть</td>
+      <td class="fmt num">ironSource влит 07.11.2022 (~$4,4 млрд); Grow $338 млн за Q4 2025</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Moloco</b><span class="sub">Redwood City</span></td>
+      <td class="jur"><span class="chip">США</span><span class="v"> (инкорп. не проверена)</span></td>
+      <td class="role">ML-DSP на first-party данных</td>
+      <td class="fmt num">45 из топ-50 кассовых издателей закупали в 2025; альтернатива Meta/Google/AppLovin</td>
+    </tr>
+    <tr>
+      <td class="co"><b>AppsFlyer Ltd</b><span class="sub">Герцлия</span></td>
+      <td class="jur"><span class="chip">Израиль</span> <span class="reg">LEI 5493…3273</span></td>
+      <td class="role">MMP №1: атрибуция, постбеки, антифрод</td>
+      <td class="fmt">SDK у рекламодателя; подписка + плата за атрибутированные конверсии</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Kochava Inc.</b><span class="sub">Сэндпойнт, Айдахо</span></td>
+      <td class="jur"><span class="chip">Delaware</span><span class="v"> (из иска FTC)</span></td>
+      <td class="role">MMP + дата-брокер (по оценке FTC)</td>
+      <td class="fmt">С 05.2026 — запрет FTC на продажу чувствительной геолокации без согласия</td>
+    </tr>
+  </table></div>
+
+  <div class="eyebrow">05 · Ограниченные вертикали</div>
+  <h2>Гэмблинг, адалт и их посредники</h2>
+  <p class="note">Мейнстрим-платформы пускают только лицензированных и только в разрешённые гео — поэтому здесь юрисдикция сама по себе бизнес-инструмент.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Игрок</th><th>Юрлицо</th><th>Роль</th><th>Формат работы</th></tr>
+    <tr>
+      <td class="co"><b>Stake.com</b><span class="sub">разработка — Easygo, Мельбурн</span></td>
+      <td class="jur"><span class="chip off">Кюрасао</span><br><span class="v">Medium Rare N.V., лицензия <span class="reg">OGL/2024/1451/0918</span></span></td>
+      <td class="role">Крупнейшее крипто-казино</td>
+      <td class="fmt num">~$4,7 млрд GGR (2024); маркетинг: стримеры (Kick), спорт (титул команды F1), Drake (~$100 млн/год — слух)</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Kick</b><span class="sub">та же группа Easygo</span></td>
+      <td class="jur"><span class="chip">Австралия</span><br><span class="v">Kick Streaming Pty Ltd, <span class="reg">ACN 663 807 645</span>, Виктория</span></td>
+      <td class="role">Стриминг-платформа, где гэмблинг-контент разрешён</td>
+      <td class="fmt num">Контракты стримеров: xQc $70–100 млн (2023) + ~$200 тыс. за гэмблинг-стрим (со слов стримера)</td>
+    </tr>
+    <tr>
+      <td class="co"><b>1xBet</b></td>
+      <td class="jur"><span class="chip off">Кюрасао</span><br><span class="v">1X Corp N.V. — банкрот по суду (Hoge Raad, 2023), продолжает работать</span></td>
+      <td class="role">Букмекер серого рынка</td>
+      <td class="fmt">Аффилиаты-CPA, реклама на 1200+ пиратских сайтов, финансировал пиратский дубляж (Group-IB)</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Better Collective A/S</b><span class="sub">Копенгаген</span></td>
+      <td class="jur"><span class="chip">Дания</span> <span class="reg">CVR 27652913</span><br><span class="v">листинг Nasdaq Stockholm/Copenhagen</span></td>
+      <td class="role">Крупнейший гэмблинг-аффилиат</td>
+      <td class="fmt num">€371 млн выручки (2024) на revenue share / CPA за приведённых игроков</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Catena Media plc</b></td>
+      <td class="jur"><span class="chip off">Мальта</span><span class="v"> · Nasdaq Stockholm</span></td>
+      <td class="role">Гэмблинг-аффилиат (лидогенерация)</td>
+      <td class="fmt num">€49,6 млн (2024, −35%); 88% выручки — Северная Америка</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Aylo (экс-MindGeek)</b><span class="sub">штаб Монреаль</span></td>
+      <td class="jur"><span class="chip off">Люксембург</span><br><span class="v">Aylo Holdings S.à r.l.; владелец ECP «из Оттавы» зарегистрирован на BVI (The Logic)</span></td>
+      <td class="role">Адалт-холдинг (Pornhub и др.) + сеть TrafficJunky</td>
+      <td class="fmt num">TrafficJunky ~4,6 млрд показов/день; DPA с прокуратурой США (2023, монитор 3 года)</td>
+    </tr>
+    <tr>
+      <td class="co"><b>ExoClick</b><span class="sub">Барселона, EXOGROUP</span></td>
+      <td class="jur"><span class="chip">Испания</span><span class="v"> (реестром не подтверждено)</span></td>
+      <td class="role">Крупнейшая независимая адалт-сеть</td>
+      <td class="fmt num">12+ млрд показов/день на 65 тыс. сайтов (самоотчёт)</td>
+    </tr>
+  </table></div>
+
+  <div class="eyebrow">06 · Арбитражная инфраструктура</div>
+  <h2>Трафик вне агентств и площадок первого яруса</h2>
+  <div class="tablewrap"><table>
+    <tr><th>Игрок</th><th>Юрлицо</th><th>Роль</th><th>Формат работы</th></tr>
+    <tr>
+      <td class="co"><b>PropellerAds / AdTech Holding</b></td>
+      <td class="jur"><span class="chip off">Кипр</span> <span class="reg">HE353513</span><br><span class="v">+ о. Мэн, Чехия, Дубай, Гонконг — сеть юрлиц по собственным ToS</span></td>
+      <td class="role">Push/popunder-сеть №1</td>
+      <td class="fmt num">15+ млрд показов/день (self-report); Infoblox «Vane Viper» атрибутирует как канал malware-трафика (обвинение исследователей, не суд)</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Adsterra · RichAds · TrafficStars</b></td>
+      <td class="jur"><span class="chip off">Кипр</span><br><span class="v">Лимассол / Пафос <span class="reg">HE412901</span></span></td>
+      <td class="role">Push/pop/adult-сети второго яруса</td>
+      <td class="fmt">Self-serve кабинеты, CPC push от $0.003; главные вертикали — нутра, дейтинг, гэмблинг</td>
+    </tr>
+    <tr>
+      <td class="co"><b>MGID Inc</b><span class="sub">Санта-Моника + R&amp;D Киев</span></td>
+      <td class="jur"><span class="chip">США</span> <span class="v">укр. ООО <span class="reg">ЄДРПОУ 43120912</span></span></td>
+      <td class="role">Native-сеть второго яруса</td>
+      <td class="fmt num">~185 млрд показов/мес (self-report); мягче по модерации, чем Taboola/Teads</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Zeropark + Voluum</b><span class="sub">Краков</span></td>
+      <td class="jur"><span class="chip">Великобритания</span><br><span class="v">Team Internet Group plc (LSE AIM: TIG)</span></td>
+      <td class="role">Биржа трафика + трекер</td>
+      <td class="fmt">Search-арбитраж рухнул после закрытия AdSense for Domains; c 11.2025 — распродажа сегментов</td>
+    </tr>
+    <tr>
+      <td class="co"><b>ClickBank · MaxBounty</b></td>
+      <td class="jur"><span class="chip">США / Канада</span><br><span class="v">Click Sales Inc. (Айдахо); MaxBounty ULC (Оттава)</span></td>
+      <td class="role">CPA-сети (network of record)</td>
+      <td class="fmt num">Держат деньги рекламодателей → onshore; ClickBank выплатил &gt;$7,3 млрд комиссий за 27 лет</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Affiliate World / iStack</b></td>
+      <td class="jur"><span class="chip off">Гонконг</span> <span class="reg">рег. 2431092</span></td>
+      <td class="role">Флагманские конференции индустрии</td>
+      <td class="fmt num">Дубай 2025: 7000+ участников, 180+ CPA-сетей</td>
+    </tr>
+  </table></div>
+
+  <div class="eyebrow">07 · Паттерн</div>
+  <h2>География как функция риска</h2>
+  <p class="note">Чем ближе юрлицо к деньгам рекламодателей — тем оно onshore-нее; чем ближе к регуляторному риску — тем офшорнее.</p>
+  <div class="strip">
+    <div class="cell"><div class="k">Платформы</div><div class="where">Delaware + Ирландия/Люксембург</div><div class="why">биллинг-хабы для мира вне США</div></div>
+    <div class="cell"><div class="k">Гэмблинг-операторы</div><div class="where">Кюрасао</div><div class="why">лицензия; «мозги» — в Австралии</div></div>
+    <div class="cell"><div class="k">Арбитражные сети</div><div class="where">Кипр</div><div class="why">EU + 12,5% + терпимые банки</div></div>
+    <div class="cell"><div class="k">Публичные аффилиаты</div><div class="where">Дания · Мальта</div><div class="why">биржа требует прозрачности</div></div>
+    <div class="cell"><div class="k">CPA-деньги</div><div class="where">США · Канада</div><div class="why">банковская респектабельность</div></div>
+    <div class="cell"><div class="k">Ивенты</div><div class="where">Гонконг</div><div class="why">iStack Conferences Ltd</div></div>
+  </div>
+
+  <div class="eyebrow">08 · Технологический стек</div>
+  <h2>Через что всё это взаимодействует</h2>
+  <div class="stack">
+    <div class="layer">
+      <span class="tag open">Открытый слой — протоколы IAB Tech Lab</span>
+      <h3>Общая шина индустрии</h3>
+      <ul>
+        <li><b>OpenRTB 2.6</b> — JSON-протокол аукциона (imp/site/device/user → seatbid/bid). <span class="v">Версия 3.0 индустрией отвергнута — вернулись к 2.x</span></li>
+        <li><b>ads.txt 1.1 · sellers.json · SupplyChain</b> — триада прозрачности цепочки против domain spoofing</li>
+        <li><b>Prebid.js / Server / Mobile</b> — open source header bidding (Apache-2.0, консорциум Prebid.org), сотни адаптеров</li>
+        <li><b>VAST 4.3 + SIMID</b> — доставка видео; <b>OM SDK 1.6</b> — единая прослойка verification</li>
+        <li><b>TCF v2.3</b> — consent-строка GDPR через всю цепочку <span class="v">(дедлайн миграции 28.02.2026)</span></li>
+        <li><b>UID2</b> — единственный крупный open source identity (создан TTD, код в IAB Tech Lab); RampID и ID5 — проприетарные</li>
+      </ul>
+    </div>
+    <div class="layer">
+      <span class="tag prop">Проприетарный слой — порталы, где ходят деньги</span>
+      <h3>Buy-side и sell-side консоли</h3>
+      <ul>
+        <li><b>Google Ads</b> (API v22) · <b>DV360</b> (API v4) · <b>Google Ad Manager</b> — sell-side монополист: 91% рынка ad server по решению суда EDVA (2025)</li>
+        <li><b>Meta Ads Manager + Marketing API</b>, Business Manager как контейнер прав</li>
+        <li><b>The Trade Desk Kokai</b> + REST/GraphQL API — самый API-first независимый DSP</li>
+        <li><b>Amazon Ads console + DSP</b>; clean rooms: <b>AMC</b> (SQL, с 09.2025 бесплатен) и Ads Data Hub</li>
+        <li><b>TikTok Ads Manager + Business API</b>, agency-аккаунты; <b>LinkedIn Campaign Manager</b> — самый UI-first</li>
+        <li><span class="v">Microsoft Invest (экс-Xandr) закрыт к 02.2026 — DSP-рынок сжимается вокруг Google/TTD/Amazon</span></li>
+      </ul>
+    </div>
+    <div class="layer">
+      <span class="tag prop">Мобильный контур</span>
+      <h3>Атрибуция и медиация</h3>
+      <ul>
+        <li><b>MMP</b> (AppsFlyer, Adjust, Singular, Kochava) — SDK, атрибуция, S2S-постбеки в сети, антифрод</li>
+        <li><b>Apple:</b> SKAdNetwork → <b>AdAttributionKit</b> (агрегированные постбеки). <b>Android:</b> Privacy Sandbox свёрнут 17.10.2025 — всё осталось на GAID + постбеках</li>
+        <li><b>Медиация:</b> AppLovin MAX · Unity LevelPlay · AdMob — in-app-bidding аукцион между сетями за показ</li>
+        <li><b>UA-консоли:</b> Google App Campaigns, Meta Advantage+ App, AppLovin Axon, Moloco Ads — «чёрные ящики», принимающие цель+бюджет</li>
+      </ul>
+    </div>
+    <div class="layer">
+      <span class="tag prop">Аффилиатный контур</span>
+      <h3>Трекеры и постбеки</h3>
+      <ul>
+        <li><b>Трекеры:</b> Voluum (Team Internet), Keitaro (self-hosted, Apliteni: Таллин + Delaware), Binom, RedTrack — клик-URL с subid, split-тесты, маршрутизация</li>
+        <li><b>S2S-постбек</b> — нерв всей модели: оффер → клик → конверсия → постбек → выплата; на нём же сверяются деньги</li>
+        <li><b>Платформы CPA-сетей:</b> Everflow (GraphQL), TUNE/HasOffers, Affise</li>
+        <li><b>Серый край:</b> аренда agency-аккаунтов (3–4% от спенда), клоакинг (иски Meta 2020–2026), антидетект-браузеры (AdsPower: 9M+ пользователей, self-claim)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="flow">рекламодатель → агентство/инхаус → <b>DSP</b> (Kokai/DV360/…) → <b>ad exchange</b> —OpenRTB 2.6→ <b>SSP</b> (+Prebid у паблишера) → ad server (<b>GAM, 91%</b>) → показ · verification-тег (IAS/DV) и consent-строка (TCF) едут в том же запросе</div>
+
+  <div class="eyebrow">09 · Деньги</div>
+  <h2>Как физически движутся выплаты</h2>
+  <p class="note">Показ разыгрывается за ~100 мс, а оплата за него идёт обратно месяцами — каскадом двусторонних расчётов без центрального клиринга. Договорное ядро — IAB/4A's Standard Terms v3.0 (2010): <b>sequential liability</b> — каждое звено платит вниз только из того, что реально получило сверху; биллинг — по числам агентского ad-сервера; сверка лишь при расхождении &gt;10%. Итог: кредитный риск съезжает вниз, на паблишера.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Звено</th><th>Срок оплаты</th><th>Механика</th></tr>
+    <tr>
+      <td class="co"><b>Рекламодатель → агентство</b></td>
+      <td class="jur num">30 → ~60 дней в среднем; до 120 «стандартом» в питчах, RFP до 150–360</td>
+      <td class="fmt num">ANA: 46 дней (2013) → 58 (2019). 90-дневные условия стоили бы топ-холдингам ~$12 млрд заёмного капитала (4A's, 2023)</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Агентство → площадка</b></td>
+      <td class="jur num">контракт net-30, фактически 90–120 дней (случай 210)</td>
+      <td class="fmt">Классический float: разница крутится в низкорисковых фондах (Digiday 2017); Притчард (P&amp;G): «контракт этого не запрещал»</td>
+    </tr>
+    <tr>
+      <td class="co"><b>DSP → SSP</b></td>
+      <td class="jur num">net 30–90</td>
+      <td class="fmt num">Кредитный риск DSP: банкротство MediaMath (30.06.2023) — долги &gt;$125 млн (Magnite $12,6 млн, PubMatic ~$10,5 млн)</td>
+    </tr>
+    <tr>
+      <td class="co"><b>SSP → паблишер</b></td>
+      <td class="jur num">net-90 по умолчанию (PubMatic MSA, порог $200)</td>
+      <td class="fmt">SSP платит паблишеру раньше, чем соберёт с DSP — sell-side кредитует цепочку; из выплат вычитаются IVT и bad debt покупателей (счета 120+ дней)</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Google → паблишер</b></td>
+      <td class="jur num">21–26 число следующего месяца, порог $100</td>
+      <td class="fmt num">Самое быстрое звено индустрии; AdSense: паблишеру 80% после buy-side комиссии (~68% при покупке через Google Ads)</td>
+    </tr>
+    <tr>
+      <td class="co"><b>Платформа ← рекламодатель</b></td>
+      <td class="jur">автосписание с карты; invoicing net-30 — только крупным</td>
+      <td class="fmt">Amazon с 04.2026 вычитает рекламу прямо из выручки селлера до её выплаты; реального кредита SMB не даёт никто</td>
+    </tr>
+  </table></div>
+
+  <div class="stack">
+    <div class="layer">
+      <span class="tag prop">Стресс-тест цепочки</span>
+      <h3>MediaMath, 2023 — единственный рентген</h3>
+      <ul>
+        <li><b>Chapter 11</b> 30.06.2023, долги &gt;$125 млн перед 200+ кредиторами — в основном за уже показанную рекламу</li>
+        <li><b>Clawback:</b> PubMatic, Magnite и Wunderkind забрали уже выплаченное у паблишеров по sequential liability; Index Exchange, GumGum и Google — отказались</li>
+        <li><b>Последствия:</b> кредитные проверки DSP; PubMatic теперь <i>продаёт</i> Payment Protection Plan — платный отказ от sequential liability</li>
+        <li><b>Возвраты за фрод</b> идут тем же каскадом сверху вниз до паблишера; Pixalate Clawback Report (11.2025) — первая стандартизация таких споров</li>
+        <li><b>Платёжный риск у платформ:</b> заморозка «за invalid traffic» с невыплатой остатка — штатная практика (Google платил $11 млн по class action Free Range Content)</li>
+      </ul>
+    </div>
+    <div class="layer">
+      <span class="tag prop">Финансирование разрыва и серые рельсы</span>
+      <h3>Кто живёт на кассовом разрыве</h3>
+      <ul>
+        <li><b>Факторинг/финансирование:</b> OAREX (аванс 80–90% инвойса, fee ~2%), PvX Partners ($750 млн UA-обязательств), Braavo, Wayflyer</li>
+        <li><b>CPA-сети:</b> MaxBounty — net-15, затем еженедельно, с ретроактивными реверсами; ClickBank — резервы под окно возвратов 60–364 дня, штрафы за chargeback</li>
+        <li><b>iGaming:</b> revshare 20–45% NGR «пожизненно» + ловушка negative carryover (минус месяца съедает будущие комиссии)</li>
+        <li><b>USDT — рельс серых вертикалей:</b> выплаты аффилиатам (Capitalist), топ-ап agency-кабинетов (4–10% для grey), крипто-выплаты стримерам казино</li>
+        <li><b>Enforcement догоняет:</b> Chainalysis отследил $55 млн крипты у 69 пиратских IPTV (Europol, 11.2025); Coinbase/Binance блокировали счета</li>
+      </ul>
+    </div>
+  </div>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 300" role="img" aria-label="Схема: показ доставляется за миллисекунды, деньги идут обратной дорогой месяцами">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--s2)"/>
+        </marker>
+        <marker id="ai" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0 L10 5 L0 10 z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+      <text x="0" y="16" fill="var(--accent)" font-size="13" font-weight="600">Показ — мгновенно</text>
+      <line x1="880" y1="42" x2="60" y2="42" stroke="var(--accent)" stroke-width="2" marker-end="url(#ai)"/>
+      <text x="470" y="34" fill="var(--accent)" font-size="12" text-anchor="middle">инвентарь отдан за ~100 мс, ещё до всякой оплаты</text>
+      <g font-size="13" text-anchor="middle">
+        <rect x="10" y="70" width="150" height="52" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="85" y="94" fill="var(--ink)">Рекламодатель</text><text x="85" y="111" fill="var(--faint)" font-size="11">платит первым</text>
+        <rect x="205" y="70" width="150" height="52" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="280" y="94" fill="var(--ink)">Агентство</text><text x="280" y="111" fill="var(--faint)" font-size="11">сидит на float</text>
+        <rect x="400" y="70" width="150" height="52" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="475" y="94" fill="var(--ink)">DSP</text><text x="475" y="111" fill="var(--faint)" font-size="11">take rate ~20%</text>
+        <rect x="595" y="70" width="150" height="52" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="670" y="94" fill="var(--ink)">SSP / биржа</text><text x="670" y="111" fill="var(--faint)" font-size="11">кредитует цепочку</text>
+        <rect x="790" y="70" width="140" height="52" rx="5" fill="var(--card)" stroke="var(--s2)" stroke-width="2"/>
+        <text x="860" y="94" fill="var(--ink)">Паблишер</text><text x="860" y="111" fill="var(--s2)" font-size="11">ждёт дольше всех</text>
+      </g>
+      <g stroke="var(--s2)" stroke-width="2" marker-end="url(#ar)" fill="none">
+        <path d="M85 122 L85 178 L272 178"/><path d="M280 122 L280 206 L467 206"/>
+        <path d="M475 122 L475 234 L662 234"/><path d="M670 122 L670 262 L852 262"/>
+      </g>
+      <g font-size="11.5" fill="var(--muted)" font-variant-numeric="tabular-nums">
+        <text x="95" y="172">30–60 дн, в питчах — до 120</text>
+        <text x="290" y="200">90–210 дн — здесь живёт float</text>
+        <text x="485" y="228">30–90 дн</text>
+        <text x="678" y="256">net-90, минус IVT и чужие долги</text>
+      </g>
+      <text x="0" y="292" fill="var(--faint)" font-size="11.5">sequential liability: каждое звено платит вниз только из того, что реально получило сверху — при банкротстве DSP крайним остаётся паблишер</text>
+    </svg>
+    <figcaption>Товар движется мгновенно, деньги — месяцами и в обратную сторону. Каждая стрелка вниз — задержка, на которой кто-то зарабатывает; при разрыве цепочки убыток съезжает вправо, к тому, кто уже отдал показ.</figcaption>
+  </figure>
+
+  <div class="eyebrow">10 · Фрод</div>
+  <h2>Почему «20 % фрода» — это не одно число</h2>
+  <p class="note">Самое частое утверждение об этой индустрии разваливается, как только спросить: 20 % <em>чего</em>. Одиннадцать оценок ниже отличаются в 30 раз — и почти все они корректны, просто меряют разные вещи на разных популяциях. Наведи курсор на строку, чтобы увидеть, что именно измерялось.</p>
+  <div class="viz">
+    <h3>Оценки доли фрода по источникам, 2019–2025</h3>
+    <p class="sub">Цвет — что взято за знаменатель. Порядок — по возрастанию значения, а не по достоверности источника.</p>
+    <div class="legend">
+      <span><i style="background:var(--s1)"></i>доля показов</span>
+      <span><i style="background:var(--s2)"></i>доля кликов</span>
+      <span><i style="background:var(--s3)"></i>доля визитов на сайт</span>
+      <span><i style="background:var(--s4)"></i>доля рекламного спенда</span>
+    </div>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">DoubleVerify<em>SIVT на верифицируемых показах, 2025</em></div>
+        <div class="track"><div class="bar" style="width:2.0%; --c:var(--s1)"></div></div>
+        <div class="bval">0,7 %</div>
+        <div class="tip">Post-bid замер на защищённых кампаниях — нижняя граница всех оценок индустрии.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">IAS<em>кампании с антифрод-инструментами, 2024</em></div>
+        <div class="track"><div class="bar" style="width:2.0%; --c:var(--s1)"></div></div>
+        <div class="bval">0,7 %</div>
+        <div class="tip">Те же показы, но только там, где стоит пре-бид фильтрация.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Lunio<em>Google-каналы (Search, PMax, YouTube), 2023</em></div>
+        <div class="track"><div class="bar" style="width:15.7%; --c:var(--s2)"></div></div>
+        <div class="bval">5,5 %</div>
+        <div class="tip">Доля невалидных ПЛАТНЫХ КЛИКОВ — другой знаменатель, не показы.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">ANA / White Ops<em>оплаченный SIVT, desktop display, 2019</em></div>
+        <div class="track"><div class="bar" style="width:22.9%; --c:var(--s1)"></div></div>
+        <div class="bval">8 %</div>
+        <div class="tip">Оплаченный фрод после фильтрации: то, за что реально заплатили.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Lunio<em>весь платный трафик, 2023</em></div>
+        <div class="track"><div class="bar" style="width:24.3%; --c:var(--s2)"></div></div>
+        <div class="bval">8,5 %</div>
+        <div class="tip">2,6 млрд кликов по 60 тыс. аккаунтов.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">IAS<em>кампании БЕЗ антифрод-инструментов, 2024</em></div>
+        <div class="track"><div class="bar" style="width:31.1%; --c:var(--s1)"></div></div>
+        <div class="bval">10,9 %</div>
+        <div class="tip">Тот же вендор, та же метрика — разрыв с защищёнными кампаниями в 15 раз.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">ClickCease<em>paid search у SMB, 2020</em></div>
+        <div class="track"><div class="bar" style="width:40.3%; --c:var(--s2)"></div></div>
+        <div class="bval">14,1 %</div>
+        <div class="tip">Выборка смещена к клиентам антифрод-сервиса; в нишах до 65–71 %.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Lunio<em>не-Google каналы (Meta, Bing, LinkedIn), 2023</em></div>
+        <div class="track"><div class="bar" style="width:50.0%; --c:var(--s2)"></div></div>
+        <div class="bval">17,5 %</div>
+        <div class="tip">У LinkedIn — 25 %: качество трафика сильно зависит от площадки.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">CHEQ<em>визиты на сайты клиентов, 2023</em></div>
+        <div class="track"><div class="bar" style="width:51.1%; --c:var(--s3)"></div></div>
+        <div class="bval">17,9 %</div>
+        <div class="tip">Меряет ВИЗИТЫ на сайт целиком, а не рекламные клики или показы.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Juniper Research<em>доля рекламного СПЕНДА, 2023</em></div>
+        <div class="track"><div class="bar" style="width:62.9%; --c:var(--s4)"></div></div>
+        <div class="bval">22 %</div>
+        <div class="tip">$84,2 млрд — модельная оценка ДОЛЛАРОВ. Именно её пресса пересказывает как «22 % кликов».</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">ANA / White Ops<em>ПОПЫТКИ фрода до фильтрации, 2019</em></div>
+        <div class="track"><div class="bar" style="width:42.9%; --x:57.1%; --c:var(--s1)"></div></div>
+        <div class="bval">20–35 %</div>
+        <div class="tip">Ключ к расхождению: попыток фрода много, но большинство отсекается до оплаты или возвращается clawback'ами. Оплаченный фрод из того же отчёта — ~$5,8 млрд, около 1–2 % спенда.</div>
+      </div>
+    </div>
+    <div class="axis"><span>0 %</span><span>35 %</span></div>
+    <p class="vizfoot">Все значения — из отчётов, проверенных по первоисточникам (13 из 16 числовых утверждений подтверждены дословно, 3 скорректированы). Высокие цифры публикуют антифрод-вендоры, низкие — verification-вендоры и платформы: конфликт интересов есть у обеих сторон.</p>
+  </div>
+
+  <div class="eyebrow">11 · Регуляторика</div>
+  <h2>Три модели регулирования</h2>
+  <p class="note">Статус на август 2026. За десять лет вектор сместился от «согласия на cookies» к структурным вмешательствам в adtech, обязательной маркировке (рекламы и AI-контента) и прямым запретам целых рекламных категорий и аудиторий.</p>
+  <div class="stack">
+    <div class="layer">
+      <span class="tag open">ЕС — многослойный кодекс</span>
+      <h3>GDPR → DSA → DMA → AI Act → TTPA</h3>
+      <ul>
+        <li><b>GDPR</b> (2018): реклама привязана к согласию — штрафы Meta €390 млн (контракт — не база) и €1,2 млрд (трансферы); сага IAB TCF идёт с 2022 (TCF жив, ответственность IAB сужена); ePrivacy-реформа официально похоронена (2025)</li>
+        <li><b>DSA</b> (с 02.2024): прозрачность каждого объявления, запрет таргетинга по чувствительным данным и на несовершеннолетних, публичные ad-репозитории. Enforcement: X €120 млн (12.2025, в т.ч. за негодный репозиторий), AliExpress €550 млн, Temu €200 млн</li>
+        <li><b>DMA</b>: Meta €200 млн за бинарный pay-or-consent → компромисс «менее персонализированная реклама» (с 01.2026); Google €890 млн (07.2026, self-preferencing + анти-steering)</li>
+        <li><b>AI Act</b>: манипулятивные практики запрещены с 02.2025 (персонализация рекламы сама по себе — не манипуляция); ст. 50 — маркировка AI-контента и дипфейков — применяется со 02.08.2026</li>
+        <li><b>TTPA</b> (с 10.10.2025) убил сегмент: Google и Meta полностью прекратили политическую рекламу в ЕС</li>
+        <li><b>Antitrust</b>: €2,95 млрд за adtech (09.2025); принудительная дивестиция AdX — на столе</li>
+      </ul>
+    </div>
+    <div class="layer">
+      <span class="tag prop">США — лоскутное одеяло + суды</span>
+      <h3>Штаты, FTC и антимонопольные процессы</h3>
+      <ul>
+        <li><b>Приватность</b>: федерального закона нет; ~20 законов штатов, с 01.2026 двенадцать обязаны уважать GPC-сигнал (один клик отключает таргетинг); жёстче всех Maryland MODPA — полный запрет продажи sensitive data; WA My Health My Data породил волну исков к adtech</li>
+        <li><b>FTC</b>: правило о фейковых (в т.ч. AI) отзывах (2024), новое COPPA (2025), Kochava — запрет продажи геоданных, рекорд по dark patterns — $2,5 млрд с Amazon</li>
+        <li><b>Антимонополия</b>: search — Chrome не отбирают, но обязали делиться данными (Мехта, 09.2025, апелляции); adtech — Google виновен (04.2025), remedies до сих пор не вынесены; FTC v. Meta — правительство проиграло (11.2025)</li>
+        <li><b>Аудитории</b>: SCOTUS одобрил возрастную верификацию для адалта (FSC v. Paxton, 06.2025); KOSA завис между палатами; TikTok принудительно сменил владельца (JV, 01.2026)</li>
+        <li><b>AI</b>: федеральных правил нет; 31–33 штата — законы о политических дипфейках; Калифорния SB 942 — с 02.08.2026 синхронно с ЕС</li>
+      </ul>
+    </div>
+    <div class="layer">
+      <span class="tag prop">Контентно-контрольная модель</span>
+      <h3>Китай · Россия · Австралия · UK</h3>
+      <ul>
+        <li><b>Китай</b>: всё маркируется — «广告» на любой рекламе и стримах (2023), обязательные метки AI-контента, явные + скрытые (с 09.2025) — первый в мире действующий режим</li>
+        <li><b>Россия</b>: маркировка через ОРД/ЕРИР с токеном erid (2022), сбор 3% с интернет-рекламы (2025), запрет рекламы в Instagram/Facebook (09.2025)</li>
+        <li><b>Австралия</b>: первый в мире запрет соцсетей для &lt;16 (12.2025) — 4,7 млн детских аккаунтов удалено, подростковый инвентарь схлопнулся</li>
+        <li><b>UK</b>: Privacy Sandbox-дело закрыто вслед за cookies (2025); DMCC/SMS-режим для Google и Apple; возрастная верификация обвалила UK-трафик Pornhub на 77%; полный запрет онлайн-рекламы junk food (01.2026)</li>
+        <li><b>Канада</b>: единственная, где регулятор прямо требует продажи Google DFP+AdX (дело идёт)</li>
+      </ul>
+    </div>
+    <div class="layer">
+      <span class="tag prop">AI-реклама — сошлось 02.08.2026</span>
+      <h3>Маркировка, disclosure, AI slop</h3>
+      <ul>
+        <li><b>Три закона в одну дату</b>: ЕС ст. 50 AI Act и Калифорния SB 942 — с 02.08.2026 (Калифорния сдвинулась намеренно), Китай — уже с 09.2025</li>
+        <li><b>Платформы опередили законы</b>: disclosure синтетики в политрекламе — Google с 11.2023, Meta с 2024; метка «AI info» на креативах Advantage+; TikTok авто-маркирует по C2PA с 05.2024</li>
+        <li><b>Enforcement</b>: FTC Operation AI Comply — «AI» не меняет стандартов substantiation; NAD против AI-заявлений Apple/Samsung; IAB выпустил первый AI Disclosure Framework</li>
+        <li><b>IP</b>: Getty проиграла Stability в Лондоне (11.2025) — веса модели не «infringing copies»; остаточный риск закрывают индемнити (Adobe Firefly)</li>
+        <li><b>Новая боль — AI slop</b>: 1,3–2,4% programmatic-спенда, 88% совпадает с MFA и проходит метрики качества лучше «чистого» инвентаря</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tablewrap" style="margin-top:14px"><table>
+    <tr><th>Год</th><th>Ключевые изменения десятилетия</th></tr>
+    <tr><td class="co num"><b>2016–17</b></td><td class="fmt">Рибейт-скандал ANA/K2; P&amp;G режет digital на $200 млн — начало кризиса доверия</td></tr>
+    <tr><td class="co num"><b>2018</b></td><td class="fmt">GDPR (05.2018) + принятие CCPA — согласие становится валютой таргетинга</td></tr>
+    <tr><td class="co num"><b>2020–21</b></td><td class="fmt">CCPA в силе; Apple ATT (04.2021) ломает мобильную атрибуцию; Китай — PIPL</td></tr>
+    <tr><td class="co num"><b>2022</b></td><td class="fmt">Приняты DSA и DMA; APD против IAB TCF; Россия — маркировка ЕРИР</td></tr>
+    <tr><td class="co num"><b>2023</b></td><td class="fmt">Штрафы Meta €390 млн + €1,2 млрд; pay-or-consent; Китай — правила интернет-рекламы SAMR</td></tr>
+    <tr><td class="co num"><b>2024</b></td><td class="fmt">DSA/DMA применяются; принят AI Act; TikTok divest-or-ban; FTC — правило о фейковых отзывах; TTPA принят</td></tr>
+    <tr><td class="co num"><b>2025</b></td><td class="fmt">Год перелома: Google дважды признан монополистом (search remedies + adtech €2,95 млрд); cookies остаются — Sandbox свёрнут; TTPA выдавил политрекламу из ЕС; возрастная верификация (UK OSA, SCOTUS); Австралия &lt;16; Китай — маркировка AI</td></tr>
+    <tr><td class="co num"><b>2026</b></td><td class="fmt">Маркировка AI в ЕС и Калифорнии (02.08); DMA-штрафы Google €890 млн; DSA-рекорд AliExpress €550 млн; TikTok JV закрыт; remedies по adtech (США и ЕС) — всё ещё в подвешенном состоянии</td></tr>
+  </table></div>
+
+  <div class="eyebrow">12 · Компании: стек и вектор</div>
+  <h2>Что у них под капотом и куда они нанимают</h2>
+  <p class="note">Техстек заинферен из открытых вакансий (Greenhouse/Lever/LinkedIn/Built In), инженерных блогов и GitHub-организаций; вектор развития — из того, какие роли компания открывает в 2025–26. Выборочная проверка: 12 стек-утверждений сверены с текстами вакансий — 11 подтверждены дословно, 1 скорректирован. Стек — снимок на август 2026, устаревает быстро.</p>
+
+  <h3>США / Канада — adtech-инфраструктура и verification</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Компания</th><th>Стек (ядро)</th><th>Вектор найма</th></tr>
+    <tr><td class="co"><b>The Trade Desk</b></td><td class="fmt">C#/Java/C++/Scala · Aerospike, Vertica · K8s · 13 млн импр./с</td><td class="fmt">Ventura OS (своя ТВ-ОС, 8 ролей), Applied Science/AI, UID2</td></tr>
+    <tr><td class="co"><b>Teads</b></td><td class="fmt">Scala/Java · Spark, Kafka · AWS+GCP · 8 млн req/s, 500+ микросервисов</td><td class="fmt">CTV-supply, predictive AI</td></tr>
+    <tr><td class="co"><b>PubMatic</b></td><td class="fmt">C/C++/Go ад-сервер · Kafka/Spark/Flink · 1,9 трлн бидов/день</td><td class="fmt">Performance на sell-side, <b>AgenticOS</b> — роли «инженер AI-агентов»</td></tr>
+    <tr><td class="co"><b>Magnite</b></td><td class="fmt">Java/Scala · Kafka, Aerospike, ScyllaDB · 40 млрд событий/день</td><td class="fmt">Streaming Org: CTV-данные как ядро бизнеса</td></tr>
+    <tr><td class="co"><b>Index Exchange</b></td><td class="fmt">Go (+Perl-легаси) · event-driven · K8s · 350 млрд запросов/день</td><td class="fmt">Модернизация платформы и SRE + ML-роли</td></tr>
+    <tr><td class="co"><b>IAS</b></td><td class="fmt">Python · TF/PyTorch/Spark ML · K8s</td><td class="fmt">Почти целиком ML-инфраструктура (Staff MLE, MLOps)</td></tr>
+    <tr><td class="co"><b>DoubleVerify</b></td><td class="fmt">GCP · Snowflake/BigQuery/Databricks · .NET/Java · React+Angular</td><td class="fmt">Data-платформа «Big Data &amp; AI», StreamingTV-измерение</td></tr>
+    <tr><td class="co"><b>HUMAN</b></td><td class="fmt">Spark/S3 serverless на AWS · 20+ трлн взаимодействий/нед</td><td class="fmt">Сдержанный: Client Side Defense, research</td></tr>
+  </table></div>
+
+  <h3>США — mobile / performance / сервисный слой</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Компания</th><th>Стек (ядро)</th><th>Вектор найма</th></tr>
+    <tr><td class="co"><b>AppLovin</b></td><td class="fmt">GKE + NVIDIA L4 инференс · Vertex AI, BigQuery · 2,5 млн req/s</td><td class="fmt">Axon self-serve для web e-commerce (06.2026), GenAI-креативы</td></tr>
+    <tr><td class="co"><b>Moloco</b></td><td class="fmt">TensorFlow DNN · GCP (Beam/Dataflow) · 1M+ QPS @ 7 мс</td><td class="fmt">Commerce Media (Costco), Performance CTV</td></tr>
+    <tr><td class="co"><b>Kochava</b></td><td class="fmt">Go · Kafka · InfluxDB/Elasticsearch</td><td class="fmt">Агентный AI: StationOne (LLM + MCP + свои агенты), clean rooms</td></tr>
+    <tr><td class="co"><b>Mediaocean</b></td><td class="fmt">Java/Spring · Kafka · Oracle · разработка в Пуне</td><td class="fmt">Innovid+Flashtalking: omnichannel/CTV ad serving, AI Orchestrator</td></tr>
+    <tr><td class="co"><b>MGID</b></td><td class="fmt">PHP/Symfony + Go/C++ · ClickHouse · R&amp;D Киев</td><td class="fmt">Только коммерция: sales/BI по географиям, AI-ролей нет</td></tr>
+    <tr><td class="co"><b>ClickBank</b></td><td class="fmt">Java 8 + MySQL → AWS-микросервисы · Vue.js</td><td class="fmt">Performance e-commerce (физтовары), глобальные выплаты</td></tr>
+    <tr><td class="co"><b>OAREX</b></td><td class="fmt">Инженерных сигналов нет (ни вакансий, ни GitHub)</td><td class="fmt">Коммерческий: CRO из FastPay/Kriya</td></tr>
+  </table></div>
+
+  <h3>Европа / UK / Израиль</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Компания</th><th>Стек (ядро)</th><th>Вектор найма</th></tr>
+    <tr><td class="co"><b>Criteo</b></td><td class="fmt">C#/Java/Scala · Hadoop/Spark/Flink · 7 млрд событий/день, ~800 инж.</td><td class="fmt">Retail media (VP BD) + AI-инжиниринг · 133 вакансии</td></tr>
+    <tr><td class="co"><b>Taboola</b></td><td class="fmt">Java + Python/TF · Spark, Cassandra, Vertica</td><td class="fmt">Realize (выход за native в performance), ML/MLOps в 3 хабах</td></tr>
+    <tr><td class="co"><b>AppsFlyer</b></td><td class="fmt">Clojure + Go · Spark, Kafka, Druid, Aerospike · AWS · 150 млрд соб./день</td><td class="fmt">Единственный растущий MMP: 115 вакансий (+67% г/г)</td></tr>
+    <tr><td class="co"><b>Adjust</b></td><td class="fmt">Elixir/Go/PostgreSQL (историч.)</td><td class="fmt">Растворён в AppLovin (−304 чел. в 2024), найм ~нулевой</td></tr>
+    <tr><td class="co"><b>Team Internet (Zeropark/Voluum)</b></td><td class="fmt">Java + самописная стриминговая БД · Aerospike, ClickHouse</td><td class="fmt">Найм заморожен; распродажа сегментов после смерти search-арбитража</td></tr>
+    <tr><td class="co"><b>ExoClick / EXADS</b></td><td class="fmt">PHP/Symfony · MariaDB + ClickHouse</td><td class="fmt">Аккаунты/RTB-операции (вкл. русскоязычные роли), dev не на витрине</td></tr>
+    <tr><td class="co"><b>Better Collective</b></td><td class="fmt">AWS · Node.js + PHP/WordPress · Cloudflare Workers</td><td class="fmt">Медиагруппа: growth-маркетинг; инженерка — 3 роли в Нише</td></tr>
+    <tr><td class="co"><b>Catena Media</b></td><td class="fmt">React/Next.js · NestJS · PostgreSQL · AWS</td><td class="fmt">SEO-аффилиация рушится от AI-поиска (−39%) → пивот к AI-платформе</td></tr>
+    <tr><td class="co"><b>Apliteni (Keitaro)</b></td><td class="fmt">PHP + React/TS · ClickHouse · self-hosted</td><td class="fmt">Точечный найм: переписывание админки AngularJS→React</td></tr>
+  </table></div>
+
+  <h3>Офшорный контур</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Компания</th><th>Стек (ядро)</th><th>Вектор найма</th></tr>
+    <tr><td class="co"><b>AdTech Holding / PropellerAds</b></td><td class="fmt">PHP · >2 млн req/s; профиль на Хабр Карьере → «ЭдСервер» (СПб) — вероятный девцентр</td><td class="fmt">7 брендов (push→антифрод); публичный найм — единичные роли</td></tr>
+    <tr><td class="co"><b>Adsterra · RichAds</b></td><td class="fmt">PHP (Symfony) · ClickHouse, Kafka (вакансия 2023, рус.)</td><td class="fmt">Только sales/HR; инженерия непублична</td></tr>
+    <tr><td class="co"><b>TrafficStars</b></td><td class="fmt">Go под highload RTB — публичный GitHub (Prometheus-metrics, форк Echo, OpenRTB)</td><td class="fmt">PR Manager Global — вклад в публичность</td></tr>
+    <tr><td class="co"><b>Easygo (Stake/Kick)</b></td><td class="fmt">Go + Rust · AWS, Kafka, K8s, ArgoCD · TS/React/GraphQL</td><td class="fmt">41 роль: Kick (video/ads, creators, ML) + Латам с AML/compliance</td></tr>
+    <tr><td class="co"><b>Aylo / TrafficJunky</b></td><td class="fmt">PHP/Symfony + растущий Go · ELK, RabbitMQ</td><td class="fmt">Хаб в Греции; крен в legal/privacy/compliance + creator growth</td></tr>
+    <tr><td class="co"><b>MaxBounty</b></td><td class="fmt">React/Node/SQL Server поверх ColdFusion-легаси (.cfm)</td><td class="fmt">Рост через продажи; разработка — поддерживающая</td></tr>
+  </table></div>
+  <p class="note">Сквозные паттерны: белый US-контур живёт на Java/Scala/C#/Go + Kafka/Spark (Aerospike как hot-store), ML-ядра — на GCP; серый контур — почти поголовно PHP с непубличной русскоязычной инженерией; вектор у всех платёжеспособных один — CTV, commerce media и AI-агенты (PubMatic AgenticOS, Kochava StationOne с MCP, Innovid Orchestrator). AI-поиск при этом убивает SEO-аффилиацию как класс (Catena −39%).</p>
+
+  <footer>
+    <p><b>Достоверность.</b> Юрисдикции проверены адверсариальным верификатором по SEC/реестрам/судебным документам (18 утверждений: 13 подтверждено, 5 скорректировано). Раздел «Деньги» — отдельная проверка 16 утверждений (13 подтверждено, ключевые — по извлечённым текстам контрактов IAB/4A's и PubMatic MSA, 3 скорректировано). Раздел «Регуляторика» — 16 из 16 утверждений подтверждены по первоисточникам (EUR-Lex, пресс-релизы EC/FTC, судебные решения). Пометки «не перепроверено» и «self-report» — честные границы проверки. Цифры контрактов стримеров и сделки Drake×Stake — со слов участников или прессы, контракты не публичны.</p>
+    <p>Собрано research-агентом gid 17.08.2026 из ~60 первоисточников; все атомарные факты с provenance сохранены в памяти проекта.</p>
+  </footer>
+</main>

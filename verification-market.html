@@ -1,0 +1,291 @@
+<title>Верификация как рынок</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --mark:#B4540A; --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1040px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.1rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.38rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:72ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:40px}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:78ch; margin:6px 0 16px; font-size:.92rem}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.85em; background:var(--chip-bg); padding:1px 5px; border-radius:3px}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:74ch}
+  .bars{display:grid; gap:10px}
+  .brow{display:grid; grid-template-columns:minmax(140px,230px) 1fr 118px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .dual{display:grid; grid-template-columns:1fr 1fr; gap:8px; align-items:center}
+  .track{background:var(--track); border-radius:3px; height:17px; position:relative}
+  .bar{height:17px; border-radius:2px 4px 4px 2px; background:var(--c)}
+  .barneg{height:17px; border-radius:4px 2px 2px 4px; background:var(--c); margin-left:auto}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:440px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:82ch}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:80ch}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:780px}
+  th{text-align:left; font-size:.71rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
+  td{padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.85rem}
+  tr:last-child td{border-bottom:none}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:800px){ .cons{grid-template-columns:1fr} .brow{grid-template-columns:1fr} .dual{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px; border-top:3px solid var(--cc,var(--accent))}
+  .box h3{margin:0 0 8px}
+  .box ul,.box ol{margin:0; padding-left:19px}
+  .box li{margin-bottom:7px; font-size:.88rem}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:82ch}
+</style>
+<main>
+  <h1>Верификация как рынок</h1>
+  <p class="lede">Слой, который решает, что считать оплачиваемым показом, оказался дефлирующим коммодити. Обе публичные компании категории ушли с биржи за полтора года, институт, их аудирующий, живёт на бюджет в пятнадцать раз меньше прибыли одного из них, а точность вердикта не удостоверяет никто — включая аккредитацию.</p>
+  <p class="meta">Ресёрч gid · 26.08.2026 · пять срезов, адверсариальная верификация: 24 правки. Приоритет — 10-K и 10-Q, формы 990, реестры MRC и TAG, судебные документы</p>
+
+  <div class="eyebrow">01 · Главное</div>
+  <h2>Не «рост объёмный, а не ценовой» — устойчивая дефляция цены</h2>
+  <div class="viz">
+    <h3>DoubleVerify: объём измеренных транзакций и цена за единицу</h3>
+    <p class="sub">Все восемь чисел дословны из 10-K и 10-Q. Слева — рост объёма, справа — изменение Measured Transaction Fee.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">FY2024<em>выручка +14%</em></div>
+        <div class="dual">
+          <div class="track"><div class="bar" style="width:100%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="barneg" style="width:57%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="bval">+19 % / −4 %</div>
+        <div class="tip">Годовые цифры даны с оговоркой «excluding the impact of an introductory fixed fee deal for one large customer» — то есть публикуется факт за вычетом худшего куска, и оговорка тянется минимум два года подряд. Направление искажения DV не раскрывает.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">FY2025<em>выручка +13%</em></div>
+        <div class="dual">
+          <div class="track"><div class="bar" style="width:79%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="barneg" style="width:43%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="bval">+15 % / −3 %</div>
+        <div class="tip">Важная поправка верификатора: ряд НЕ монотонно ускоряется — −4% → −3% это замедление падения, ускорение начинается только с FY2025.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Q1 2026<em>выручка +9%</em></div>
+        <div class="dual">
+          <div class="track"><div class="bar" style="width:63%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="barneg" style="width:57%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="bval">+12 % / −4 %</div>
+        <div class="tip">В обоих 10-Q 2026 года слово «introductory» не встречается ни разу — то есть именно кварталы, несущие ускорение, опубликованы по другой базе. Ряд неоднороден.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Q2 2026<em>выручка +2%</em></div>
+        <div class="dual">
+          <div class="track"><div class="bar" style="width:47%; --c:var(--s1)"></div></div>
+          <div class="track"><div class="barneg" style="width:100%; --c:var(--mark)"></div></div>
+        </div>
+        <div class="bval">+9 % / −7 %</div>
+        <div class="tip">В этом же квартале Activation — сегмент pre-bid, куда компания уходила от дефлирующего измерения — ВПЕРВЫЕ снизилась: $107,7 млн против $108,95 млн, −1%, «driven by a decrease in revenue from programmatic channels». Ценовой якорь сорвало.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Две кривые расходятся одновременно и в разные стороны: объём тормозит (19→15→12→9), цена падает всё быстрее (−4→−3→−4→−7). Гайденс на 2026 ($810–826 млн) был арифметически недостижим при H1 в $374,6 млн — 06.08.2026 DV отозвал его целиком и отменил звонки с инвесторами «на время сделки».</p>
+  </div>
+  <p class="note"><b>Контрольный эксперимент по консолидации уже проведён, и тезис «меньше игроков — вернётся ценообразование» опровергнут.</b> Oracle Advertising шёл с $2 млрд выручки (2022) до ~$300 млн (FY2024) и полного закрытия Moat в сентябре 2024. В 2024 DV прибавил $84,3 млн, IAS около $57 млн — вместе ~$141 млн против примерно $1,7 млрд испарившейся выручки. Уход игрока номер три не дал победителям ценовой власти: MTF в том же году всё равно упал на 4%.</p>
+  <p class="note"><b>Размер рынка завышен вчетверо.</b> Синдицированная оценка «$4,82 млрд за 2024» не сопровождается раскрытой методологией, а тот же издательский контур параллельно публикует $1,26 млрд для смежного определения того же рынка. Счёт снизу за 2024: DV $656,8 млн плюс IAS $530,1 млн = <b>$1,19 млрд</b>. За 2025 like-for-like невозможен в принципе — IAS никогда не подавала 10-K за FY2025. По частным игрокам аудированных раскрытий нет ни одного, а агрегаторы противоречат друг другу вплоть до того, привлекала ли Zefr внешний капитал вообще.</p>
+
+  <div class="eyebrow">02 · Исход</div>
+  <h2>Обе публичные компании категории ушли с биржи</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Компания</th><th>Покупатель</th><th>Цена и мультипликаторы</th><th>Статус</th></tr></thead>
+      <tbody>
+        <tr><td><b>Integral Ad Science</b></td><td>Novacap</td><td>$10,30 за акцию, объявленная стоимость ~$1,9 млрд — 3,2× выручки TTM. Против IPO 2021 по $18 — <b>минус 43% за акцию при почти удвоившейся выручке</b></td><td><b>Закрыто 23.12.2025.</b> Одобрено письменным согласием фондов Vista с 52,6% голосов, без голосования акционеров. Form 15-12G подана 02.01.2026 — годовая выручка за FY2025 не будет опубликована никогда</td></tr>
+        <tr><td><b>DoubleVerify</b></td><td>Neptune BidCo US Inc. — холдинг <b>Nielsen</b> (вектор Elliott/Brookfield)</td><td>$13,60 за акцию, EV ~$2,15 млрд — 2,8–2,9× выручки, 8,1–8,8× adj. EBITDA, свыше 40× GAAP-прибыли. IPO 2021 по $27, пик $48,42: <b>продажа за половину цены размещения</b></td><td><b>Подписано 06.08.2026, не закрыто.</b> Финансирование ~$1,8 млрд committed debt плюс $200 млн equity от аффилиатов Elliott; break-up fee $60/144/175 млн; закрытие к Q1 2027</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Почему покупатель усиливает конфликт.</b> Объединённая компания будет одновременно продавать метрику аудитории и проверять доставку рекламы по этой метрике; в пресс-релизе слово «independent» встречается девять раз. У Nielsen в анамнезе приостановка MRC-аккредитации национального и локального ТВ-рейтинга (сентябрь 2021 — 2023). И экономика давит в ту же сторону: Nielsen — левериджованная структура после выкупа за $16 млрд, в январе 2026 рефинансировавшая долг на $1,5 млрд и берущая ещё около $1,8 млрд, чтобы купить актив с падающей ценой за единицу. Такой покупатель обязан выжимать цену вверх — а кейс Moat показывает, что рынок этого не даёт.</p>
+
+  <div class="eyebrow">03 · Институты</div>
+  <h2>Кто содержит арбитра</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 300" role="img" aria-label="Масштаб MRC и TAG против компаний, которые они аудируют">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">МАСШТАБ ИНСТИТУТА ПРОТИВ МАСШТАБА АУДИРУЕМОГО</text>
+        <rect x="0" y="26" width="450" height="104" rx="6" fill="var(--card)" stroke="var(--line)"/>
+        <text x="18" y="50" fill="var(--ink)" font-size="12.5" font-weight="600">MRC · 501(c)(6), FY2024</text>
+        <text x="18" y="72" fill="var(--muted)">выручка $3 166 242 · расходы $3 272 650 · дефицит −$106 408</text>
+        <text x="18" y="90" fill="var(--muted)">чистые активы $1,0 млн против $2,05 млн в 2017</text>
+        <text x="18" y="108" fill="var(--mark)" font-weight="600">убыток в шести из восьми последних лет</text>
+        <text x="18" y="124" fill="var(--faint)">94,5% выручки — взносы 162 членов; аудирует около 110 продуктов</text>
+
+        <rect x="490" y="26" width="450" height="104" rx="6" fill="var(--card)" stroke="var(--s1)" stroke-width="2"/>
+        <text x="508" y="50" fill="var(--s1)" font-size="12.5" font-weight="600">DoubleVerify · один из аудируемых, FY2025</text>
+        <text x="508" y="72" fill="var(--muted)">выручка $748,3 млн · adj. EBITDA $245,6 млн</text>
+        <text x="508" y="90" fill="var(--muted)">GAAP-прибыль $50,65 млн</text>
+        <text x="508" y="112" fill="var(--s1)" font-size="13" font-weight="600">Весь бюджет MRC в 15 раз меньше прибыли одного DV</text>
+
+        <rect x="0" y="146" width="940" height="66" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="18" y="168" fill="var(--ink)" font-size="12" font-weight="600">Аудит оплачивает аудируемый. В процедуре MRC дословно: «Pay for the Audit Costs (internal &amp; external)».</text>
+        <text x="18" y="188" fill="var(--muted)" font-size="12">В копии писем стоит EY — одна фирма обслуживает обоих конкурентов, выбирает и платит проверяемый, PCAOB над этим нет. Побочный эффект: выручка MRC</text>
+        <text x="18" y="206" fill="var(--muted)" font-size="12">не растёт от числа аудитов, институт структурно не масштабируется вслед за рынком.</text>
+
+        <rect x="0" y="228" width="940" height="62" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="18" y="252" fill="var(--mark)" font-size="12.5" font-weight="600">Голосуют измеряемые, а не измеряющие.</text>
+        <text x="290" y="252" fill="var(--muted)" font-size="12">В членах MRC — Google, Google DoubleClick, Meta, Amazon Ads, Netflix, X.</text>
+        <text x="18" y="274" fill="var(--ink)" font-size="12" font-weight="600">НЕТ: DoubleVerify, IAS, Nielsen, Comscore, HUMAN, Pixalate, Innovid.</text>
+        <text x="470" y="274" fill="var(--faint)" font-size="12">Кресло Digital Committee Chair в 2026 году вакантно.</text>
+      </g>
+    </svg>
+    <figcaption><b>Поправка к расхожему тезису «реестр не публикует статусы».</b> Механизм отзыва существует и наблюдаем: квартальный отчёт MRC Accreditation Decisions публикует поимённые действия — в Q1 2026 два сервиса IAS сняты с процесса «due to IAS' lack of intent to engage in third-party audit», Comscore Media Metrix «formally revoked» 12.04.2023. Но <b>ни одно наблюдаемое действие не является карательной санкцией</b>: хиатус и выход из аудита инициирует сам вендор. Не публикуются именно отозванные — сервис просто исчезает из списка.</figcaption>
+  </figure>
+  <p class="note"><b>TAG: спрос на печать падает.</b> 321 печать у 218 компаний (2024) → 307 у 196 (2026). 11.06.2026 P&G снял контрактное требование («encourages, but we do not contractually require»), Google отпустил три сертификации из четырёх как «redundant with their current MRC accreditation», The Trade Desk не переподавался ни по одной — при этом обе компании остались членами. Мандат Pritchard 2017 года был причиной, по которой печать стоила денег. Экономика самого TAG: FY2025 выручка $5,4 млн, дефицит −$384 105, чистые активы $322 941 — подушка меньше месячных расходов. Уровень заверения — <b>limited assurance</b>, слабейший из существующих; валидатором «may be any auditing company», реестра допущенных аудиторов TAG не ведёт.</p>
+  <p class="note"><b>Сенаторские письма от 07.02.2025</b> (Blackburn и Blumenthal) просили у MRC и TAG ровно то, что здесь важно: «past examples of certifications that have been revoked or suspended for noncompliance». Публичного ответа не дал никто. Единственный публичный документ MRC по кейсу появился 11.04.2025 и был направлен <b>против Adalytics</b> с дисквалификацией исследователя. Через 14 месяцев оба фигуранта расширили аккредитацию: DV — TikTok viewability и Authentic Attention (апрель 2026), IAS — pre-bid оптимизацию (июль 2026).</p>
+
+  <div class="eyebrow">04 · Вердикт</div>
+  <h2>Что аккредитация не удостоверяет</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 270" role="img" aria-label="Границы юрисдикции MRC по её собственному меморандуму">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">МЕМОРАНДУМ MRC ОТ 11.04.2025 — САМЫЙ НЕДООЦЕНЁННЫЙ ДОКУМЕНТ ОТРАСЛИ</text>
+        <rect x="0" y="26" width="940" height="40" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="52" fill="var(--mark)" font-weight="600" font-size="12.5">«It's very likely a material amount of SIVT goes undetected»</text>
+        <rect x="0" y="72" width="940" height="40" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="98" fill="var(--mark)" font-weight="600" font-size="12.5">«MRC does not require accredited SIVT vendors to identify all SIVT»</text>
+        <rect x="0" y="118" width="940" height="40" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="136" fill="var(--mark)" font-weight="600" font-size="12.5">«MRC does not require pre-bid filtration or blocking of IVT, in fact, our Standards discourage or caution against it»</text>
+        <text x="16" y="152" fill="var(--muted)">обоснование: блокировка телеграфирует детект и позволяет бот-операторам A/B-тестировать обход — непрозрачность кодифицирована как требование безопасности</text>
+        <rect x="0" y="164" width="940" height="40" rx="5" fill="var(--card)" stroke="var(--mark)" stroke-width="2"/>
+        <text x="16" y="190" fill="var(--mark)" font-weight="600" font-size="12.5">«MRC does not produce requirements for or have insight into billing or financial arrangements... per our mandate»</text>
+
+        <rect x="0" y="216" width="940" height="50" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="238" fill="var(--ink)" font-size="12.5" font-weight="600">Аудитор индустрии верификации не аудирует, вернулись ли деньги.</text>
+        <text x="470" y="238" fill="var(--muted)" font-size="12">Порог существенности в стандарте — 5%: всё ниже по определению не отражается.</text>
+        <text x="16" y="257" fill="var(--muted)" font-size="12">False positive и negative rates требуются только во ВНУТРЕННЕЙ отчётности и с оговоркой «(where known)». Decision Rate обязателен, MRC его собирает для бенчмаркинга — публично не называет ни один вендор.</text>
+      </g>
+    </svg>
+    <figcaption>Аккредитация удостоверяет три вещи: соответствие внешним стандартам, соответствие процедурам, <b>описанным самим вендором в ответах на MRC Questionnaire</b>, и соответствие процедурам из его же мануалов. Ставка обнаружения, доля пропусков и точность против внешней истины не удостоверяются ни одним из трёх пунктов — количественных порогов точности в письмах нет вовсе.</figcaption>
+  </figure>
+  <div class="cons">
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Отраслевой «уровень фрода» — замкнутый круг</h3>
+      <ul>
+        <li>TAG US Fraud Benchmark 2024 выполнен The 614 Group, нанятой TAG с 2017 года. Дословно: «<b>The 614 Group used the ad impression categorizations provided by the agencies' measurement vendors, including DoubleVerify and Integral Ad Science</b>»</li>
+        <li>То есть измеряется не сколько было невалидного, а сколько невалидного <b>назвали</b> невалидным сами же TAG-сертифицированные вендоры</li>
+        <li>Контрольной группы нет: сравниваются каналы с тремя и более сертифицированными участниками против каналов с одним-двумя. <b>Канала с нулём сертифицированных в исследовании нет вовсе</b></li>
+        <li>Результат — 0,79% против 1,19%. Для масштаба: Pixalate за Q3 2025 даёт 21% IVT в вебе, 33% в mobile app, 19% в CTV — разница в 20–40 раз, потому что меряются разные вселенные. Непойманный SIVT по построению зачисляется в валидный трафик</li>
+        <li>Единственный случай, когда MRC сравнивала вердикты аккредитованных между собой, — reconciliation по viewability <b>июля 2015</b>: 37% кампаний за порогом расхождения, со средним расхождением 34%. Аналога по IVT не публиковалось никогда</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Что происходит с теми, кто проверяет проверяющих</h3>
+      <ul>
+        <li><b>DoubleVerify v. Adalytics</b> (D. Md.): решение по motion to dismiss 27.04.2026 — устояли четыре счёта из пяти, то есть исход для DV лучше, чем принято пересказывать</li>
+        <li><b>Но клевета устояла исключительно по теории defamation by implication</b>, и суд дословно записал: «DoubleVerify has not alleged facts showing that the assertion that some ads were, in fact, delivered to bots at the pre-bid stage is actually false», а «the vast majority of the statements... are not literally false»</li>
+        <li>Основанием стало собственное признание DV в жалобе: pre-bid фильтрует «99% of unwanted GIVT impressions» и «not all IVT impressions are able to be detected». Никаких фактических установлений об истинности отчёта на этой стадии не сделано ни в одну сторону</li>
+        <li>Отдельная деталь: суд отверг защиту «это научная дискуссия», потому что отчёт опубликован «on the company's general website and was not a peer-reviewed... article». Единственный внешний аудитор аудиторов работает вне peer review, и это используется против него юридически</li>
+        <li>Регуляторный трек пуст: письма сенатора Warner в FTC и DOJ (март 2025) к августу 2026 не дали ни одного публичного действия</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Единственный независимый замер</b> (Adalytics, март 2025): IAS помечал <b>декларированных</b> ботов из известных дата-центров — самый лёгкий класс, в списке IAB Tech Lab с 2013 года — как валидный человеческий трафик в 17% случаев, недекларированных — в 77%; DV пропускал тех же ботов в 21%. И отдельный факт, объясняющий, почему возврата денег не видно: стандартный отраслевой контракт (4A's/IAB v3.0, 2010) <b>не содержал ни одного упоминания</b> fraud, invalid, non-human, NHT или bot — подтверждено полнотекстовым поиском и признано самим IAB. Только 20.05.2026 IAB финализировал каркас, где IVT объявлен non-billable с обязательным кредитом — но принятие добровольное и покрывает <b>только прямые закупки</b>, программатик-аддендум не выпущен.</p>
+
+  <div class="eyebrow">05 · Конфликты</div>
+  <h2>Чем верификаторы владеют помимо верификации</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Кто</th><th>Что</th><th>Почему это конфликт</th></tr></thead>
+      <tbody>
+        <tr><td><b>IAS</b></td><td>Владеет <b>Publica</b> — CTV-адсервером с unified auction и SSAI ($220 млн, 2021), 15,2% выручки и второй по темпам сегмент</td><td>Верификатор владеет узлом, который сам же должен проверять. На критику 2021 года IAS ответил, что конфликта «in no way» нет; методологического раскрытия — применяется ли к показам собственного адсервера иная процедура — не появилось</td></tr>
+        <tr><td><b>DoubleVerify</b></td><td>Купил <b>Scibids</b> (оптимизация ставок, $122,8 млн) и <b>Rockerbox</b> (атрибуция, $84,5 млн); в июне 2025 запустил DV Authentic AdVantage, где сигналы качества и Scibids AI сведены в один SKU</td><td>Измерение и закупка слились в одном продукте: тот же вендор оценивает качество инвентаря и на основании своей оценки направляет туда деньги</td></tr>
+        <tr><td><b>DoubleVerify</b></td><td>С 27.02.2025 продаёт данные <b>sell-side</b> — на SSP и curation-платформы; в 10-K описано как продажа паблишерам и retail media networks «to enable them to maximize revenue»</td><td>Верификатор стал поставщиком таргетинговых сегментов продавцу инвентаря, который он же проверяет для покупателя</td></tr>
+        <tr><td><b>Оба</b></td><td><b>Платят DSP долю выручки</b> от продуктов, продаваемых через эти же DSP</td><td>Материализовалось в цене актива: в DEFM14C IAS формулировка про «vulnerability to pricing risks associated with revenue sharing agreements with DSPs» встречается <b>трижды</b> как причина выхода потенциальных покупателей</td></tr>
+        <tr><td><b>Scope3 → Peer39</b></td><td>02.06.2026 Peer39 закрыл покупку <b>Adloox</b> у Scope3 — контекстный дата-селлер приобрёл MRC-аккредитованного верификатора</td><td>Scope3 купила Adloox в ноябре 2024 и через 19 месяцев продала, объяснив разворотом в агентную инфраструктуру. <b>Компания, ближе всех стоящая к агентной архитектуре, первой решила, что per-impression верификация в ней не нужна</b></td></tr>
+        <tr><td><b>Walled gardens</b></td><td>Определяют, что вообще измеряемо. Meta вышла из ежегодных аудитов в сентябре 2025 → MRC отозвала аккредитацию. На YouTube верификатор не наблюдает показ — выполняет SQL внутри Ads Data Hub с noise injection и запретом экспорта идентификаторов; допущены ровно трое</td><td>В письме MRC к DV дословно: «Video In-Feed, Display &amp; Rich Media, Masthead ads, YouTube TV, YouTube Kids, and <b>YouTube Shorts are out of scope and unaccredited</b>» — быстрорастущие форматы вне охвата</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>И структурная проверка тезиса «доход зависит от объёма, а не от точности».</b> Он подтверждается прямо: в DEF 14A DoubleVerify (апрель 2026) PSU за 2025 — 50% по выручке и 50% по relative TSR, годовой бонус тоже по выручке. Ни одной метрики качества детекции, false-negative rate или результатов аудита. Словосочетание «conflict of interest» в 10-K DV не встречается ни разу. Но есть и обратная сторона, которую простая версия тезиса упускает: издержки и выручка разошлись — скрининг идёт по всему потоку бид-реквестов, а платят только за выигранный показ, и у IAS cost of revenue в Q3 2025 вырос на 30% при выручке +16%. Экономика здесь товарная, а не рентная.</p>
+
+  <div class="eyebrow">06 · Агенты</div>
+  <h2>Метрики теряют смысл категориально, а категорию забирает другой стек</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--mark)">
+      <h3>Почему viewability и attention перестают работать</h3>
+      <ul>
+        <li>Стандарт viewability (50% пикселей ≥1 сек) — операционализация <i>opportunity to see</i> человеческим глазом. Агент, отрендеривший страницу в headless-браузере, даёт <b>100% viewability при нулевом внимании</b>. Это категориальная ошибка, а не погрешность — и она объясняет парадокс «рекордная viewability при растущем фроде»</li>
+        <li><b>Attention-метрики хуже, а не лучше:</b> dwell time, скролл, позиция курсора, звук — программируемые сигналы, и агент воспроизводит их точнее человека</li>
+        <li><b>Brand safety теряет предмет иначе:</b> соседство креатива и контента — визуальный факт, а агент читает accessibility tree или markdown и вёрстки не видит</li>
+        <li>Выживают конверсии и деньги, инкрементальность и MMM. Отдельно тревожно: в ритейл-панели Adobe самый конверсионный трафик — нечеловеческий, то есть правила IVT-фильтрации отсекают самых платёжеспособных «посетителей»</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s1)">
+      <h3>Категория уехала в bot/agent trust</h3>
+      <ul>
+        <li>Forrester переименовал категорию в <b>Bot and Agent Trust Management Software</b>; лидеры первой волны — DataDome, HUMAN и Kasada. <b>DV и IAS в волне отсутствуют</b></li>
+        <li>Web Bot Auth проверяется в проде у Cloudflare, AWS, Akamai, HUMAN и Vercel — при том что IETF-группа не приняла ни одного документа. Криптографическая подпись и есть «верификация агента», и делается она на CDN</li>
+        <li>С <b>15.09.2026</b> Cloudflare по умолчанию блокирует mixed-use краулеров на страницах с рекламой. Cloudflare стоит перед более чем 20% мирового веб-трафика: решение «увидит ли агент рекламную страницу» принимается до всякого ad call и без участия верификатора</li>
+        <li>Первый рекламный формат для агентов родился <b>вне слоя верификации</b>: Time продаёт FAQ-объявления внутри markdown-версий страниц через платформу Mobian. Viewability, OM SDK и аккредитация в формате не заявлены — markdown без JS физически не исполнит OM SDK</li>
+        <li>В Ad Context Protocol верификатор — <b>декларируемый атрибут инвентаря</b>: «the buyer accepts that provider as the source of truth». Отдельной биллинговой позиции за верификацию нет ни в одной из семи ценовых моделей</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Механика «заработать на созданной проблеме» видна в чистом виде:</b> слой определил агентский визит как GIVT → ударил по паблишерам → выпустил agent-aware продукты и объявил старую рамку негодной. CEO DV 23.07.2026: «For years, the industry treated non-human activity as something to avoid, filter or block. In an agentic world, that approach is too blunt» — <b>за две недели до объявления о продаже компании</b>. Но приз меньше проблемы: менее 9× forward EBITDA — цена не растущей категории; Activation, где живут pre-bid фильтры, уже сокращается; а если валидность агента подтверждается подписью на CDN и записью в реестре, посреднику, бравшему около $0,07 CPM за подтверждение человечности транзакции, нечего продавать. Наиболее вероятный исход: верификация агентов станет продуктом — но продадут его DataDome, HUMAN, Kasada и Cloudflare, а рекламная верификация войдёт в панельного измерителя как один из сигналов, а не как рынок с собственной ценой за транзакцию.</p>
+
+  <div class="eyebrow">07 · Слепые зоны</div>
+  <h2>Чего не публикует никто</h2>
+  <div class="cons">
+    <div class="box" style="--cc:var(--s2)">
+      <h3>Цена и деньги</h3>
+      <ul>
+        <li><b>Реализованная цена за единицу</b> — MTF подаётся за вычетом «introductory fixed fee deal» без раскрытия размера и направления эффекта; рейт-карта существует юридически («fixed retail rate card» в контрактах с DSP) и не опубликована ни разу. <b>С Q1 2027 публичных рядов не останется вовсе</b></li>
+        <li><b>Ставки revenue share</b>, которые верификаторы платят DSP, не раскрыты ни в процентах, ни поимённо — при том что покупатели IAS считали именно это дефектом актива</li>
+        <li><b>Деньги, вернувшиеся клиенту:</b> MRC вывела биллинг из мандата; в 10-K DV нет ни резерва, ни строки о кредитовании клиентов за IVT; агрегированных отраслевых цифр возврата не собирает никто, <b>потому что некому</b></li>
+        <li><b>Цена входа в институты</b> — TAG три тира без единой цифры, MRC ни взносов, ни аудиторских издержек; счета EY не выделены отдельной строкой ни у одного эмитента, хотя это прямой COGS их продукта доверия</li>
+      </ul>
+    </div>
+    <div class="box" style="--cc:var(--s3)">
+      <h3>Точность и правоприменение</h3>
+      <ul>
+        <li><b>Decision rate</b> — обязательная метрика, которую MRC собирает и использует для бенчмаркинга при принятии решений об аккредитации — публично не называет ни один вендор, хотя из-за privacy-ограничений она обязана расти</li>
+        <li><b>IVT-reconciliation</b> MRC не публиковала никогда, хотя аналог по viewability делала в 2015 и нашла расхождение 34% в 37% кампаний</li>
+        <li><b>Знаменатель правоприменения:</b> TAG сообщил «ноль нарушений» за 2025, не назвав числа расследований; MRC публикует решения, но не факт открытия проверки. Нельзя отличить «проверяли и чисто» от «не проверяли»</li>
+        <li><b>Состав проверяющих:</b> реестра допущенных валидаторов у TAG нет — неизвестно, кто и по какому стандарту выдал каждую из 307 печатей</li>
+        <li><b>Лаг обнаружения:</b> ни в одном публичном разборе не указана дата начала схемы, поэтому интервал между запуском и обнаружением неизвестен по построению. Methbot работал около 29 месяцев</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note"><b>Кому это удобно:</b> вендорам — несравнимость вердиктов защищает цену и снимает основание для возврата; платформам — аккредитация покрывает старый форматный костяк и не покрывает Reels, Shorts, Search и Marketplace; институтам — без знаменателя правоприменения нельзя отличить работу от её отсутствия; и рекламодателю в краткосрочной логике: печать снимает с закупщика личную ответственность за качество, независимо от того, что она удостоверяет.</p>
+
+  <footer>
+    Собрано агентом gid 26.08.2026: пять research-агентов по независимым срезам, по одному адверсариальному верификатору на срез. Верификатор дал 24 правки.
+    <br><br>
+    Что уточнено против исходных формулировок: ряд дефляции MTF <b>не монотонно ускоряется</b> (−4% → −3% это замедление); «нулевой рост объёма при растущей цене» у IAS — артефакт одного квартала, за девять месяцев картина другая; механизм отзыва аккредитации MRC <b>существует и наблюдаем</b>, но ни одно наблюдаемое действие не является карательной санкцией; исход дела DV против Adalytics для DV лучше, чем принято пересказывать, но клевета устояла только по теории defamation by implication и без установлений об истинности отчёта; «две трети выручки — не верификация» — дефиниционный выбор, а не факт, поскольку Activation по 10-K это продажа тех же оценок качества до покупки.
+    <br><br>
+    Полный справочник — <code>docs/verification-market.md</code> в репозитории проекта.
+  </footer>
+</main>

@@ -1,0 +1,421 @@
+<title>Биржи показов: как подключиться</title>
+<style>
+  :root{
+    --paper:#FAF8F4; --card:#FFFFFF; --ink:#22262D; --muted:#5C636E; --faint:#8A8F98;
+    --line:#E2DED4; --accent:#155E70; --mark:#B4540A; --chip-bg:#EFEBE1; --thead:#6B7280;
+    --s1:#00789E; --s2:#A66A00; --s3:#8A3568; --s4:#4E7A1C; --track:#EAE5DA;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+      --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+      --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15181D; --card:#1C2027; --ink:#E7E4DC; --muted:#A7ACB6; --faint:#7C828C;
+    --line:#31353D; --accent:#63AEC0; --mark:#E08A4A; --chip-bg:#262B33; --thead:#8A8F98;
+    --s1:#2E93B3; --s2:#BC8A2E; --s3:#C9749F; --s4:#72A03F; --track:#2B3038;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       font-size:15px; line-height:1.55; margin:0; padding:0 20px 80px}
+  main{max-width:1040px; margin:0 auto}
+  h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-wrap:balance; line-height:1.2}
+  h1{font-size:2.1rem; font-weight:600; margin:56px 0 10px}
+  h2{font-size:1.38rem; font-weight:600; margin:0 0 6px}
+  h3{font-size:1.02rem; font-weight:600; margin:0 0 4px}
+  .lede{color:var(--muted); max-width:72ch; margin:0 0 10px; font-size:1.02rem}
+  .meta{color:var(--faint); font-size:.82rem; margin-bottom:40px}
+  .eyebrow{font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); font-weight:600; margin:52px 0 6px}
+  p.note{color:var(--muted); max-width:78ch; margin:6px 0 16px; font-size:.92rem}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:.86em; background:var(--chip-bg); padding:1px 5px; border-radius:3px}
+  figure.diagram{margin:14px 0 0; background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px}
+  figure.diagram svg{width:100%; height:auto; display:block}
+  figure.diagram figcaption{color:var(--muted); font-size:.82rem; margin-top:12px; max-width:80ch}
+  .viz{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:18px 20px; margin-top:14px}
+  .viz .sub{color:var(--muted); font-size:.87rem; margin:2px 0 16px; max-width:74ch}
+  .bars{display:grid; gap:10px}
+  .brow{display:grid; grid-template-columns:minmax(150px,300px) 1fr 96px; gap:12px; align-items:center; position:relative}
+  .blab{font-size:.83rem; line-height:1.25}
+  .blab em{display:block; color:var(--faint); font-style:normal; font-size:.73rem; margin-top:1px}
+  .track{background:var(--track); border-radius:3px; height:16px}
+  .bar{height:16px; border-radius:2px 4px 4px 2px; background:var(--c)}
+  .bval{font-size:.83rem; font-variant-numeric:tabular-nums; text-align:right}
+  .tip{position:absolute; left:0; bottom:calc(100% + 6px); z-index:5; background:var(--ink); color:var(--paper);
+       font-size:.75rem; line-height:1.35; padding:7px 10px; border-radius:5px; max-width:420px; opacity:0;
+       pointer-events:none; transition:opacity .12s}
+  .brow:hover .tip, .brow:focus-within .tip{opacity:1}
+  .brow:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  .vizfoot{color:var(--faint); font-size:.76rem; margin:14px 0 0; max-width:82ch}
+  .tablewrap{overflow-x:auto; border:1px solid var(--line); border-radius:6px; background:var(--card); margin-top:14px}
+  table{border-collapse:collapse; width:100%; min-width:760px}
+  th{text-align:left; font-size:.71rem; letter-spacing:.09em; text-transform:uppercase; color:var(--thead);
+     font-weight:600; padding:10px 13px; border-bottom:1px solid var(--line); white-space:nowrap}
+  td{padding:10px 13px; border-bottom:1px solid var(--line); vertical-align:top; font-size:.86rem}
+  tr:last-child td{border-bottom:none}
+  td b{font-weight:600}
+  .nd{color:var(--faint); font-style:italic}
+  .cons{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px}
+  @media (max-width:800px){ .cons{grid-template-columns:1fr} .brow{grid-template-columns:1fr} }
+  .box{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:15px 18px}
+  .box h3{margin:0 0 8px}
+  .box ol,.box ul{margin:0; padding-left:19px}
+  .box li{margin-bottom:7px; font-size:.88rem}
+  footer{margin-top:60px; border-top:1px solid var(--line); padding-top:18px; color:var(--faint); font-size:.82rem; max-width:82ch}
+</style>
+<main>
+  <h1>Биржи показов: как они устроены и как к ним подключиться</h1>
+  <p class="lede">Практическая карта брокерского слоя онлайн-рекламы: что происходит между загрузкой страницы и открученным показом, кто эти площадки юридически, и что конкретно нужно сделать, чтобы начать продавать или покупать трафик.</p>
+  <p class="meta">Ресёрч gid · 20.08.2026 · шесть срезов, адверсариальная верификация: 31 правка. Приоритет источников — документация площадок, публичные оферты, отчётность эмитентов, торговые реестры</p>
+
+  <div class="eyebrow">01 · Границы</div>
+  <h2>Биржа, SSP, DSP, сеть, куратор — где названия врут</h2>
+  <p class="note">Отраслевые термины описывают не тип компании, а роль в конкретной транзакции; одна компания играет разные роли в разных сделках. Единственная граница, которая проверяется по отчётности, — <b>принципал или агент</b>, и она отделяет биржу от сети надёжнее любого самоназвания.</p>
+  <div class="viz">
+    <h3>Сколько остаётся у посредника: агентская модель против принципальной</h3>
+    <p class="sub">Отчётность FY2025. Доля денег рекламодателя, которую площадка оставляет себе.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Criteo — сегмент Performance Media<em>принципал: покупает инвентарь по CPM</em></div>
+        <div class="track"><div class="bar" style="width:54.4%; --c:var(--mark)"></div></div>
+        <div class="bval">54,4 %</div>
+        <div class="tip">Паблишерам уходит $766,1 млн из $1 681,0 млн, то есть 45,6%. Сеть покупает инвентарь на себя и перепродаёт — разница между закупкой и продажей и есть её доход, а раскрывать её она не обязана.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Criteo — компания целиком<em>ex-TAC / выручка</em></div>
+        <div class="track"><div class="bar" style="width:60.4%; --c:var(--mark)"></div></div>
+        <div class="bval">60,4 %</div>
+        <div class="tip">$1 174,6 млн Contribution ex-TAC из $1 944,9 млн выручки.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">The Trade Desk<em>агент: take rate от gross spend клиента</em></div>
+        <div class="track"><div class="bar" style="width:21.6%; --c:var(--s1)"></div></div>
+        <div class="bval">21,6 %</div>
+        <div class="tip">$2 896,3 млн выручки на $13 394,7 млн gross spend. Динамика: 20,25% (FY2023) → 20,30% (FY2024) → 21,62% (FY2025). Две оговорки: это НЕ platform fee — в числитель входит маржа на данные и value-added services; а gross spend — неаудированная операционная метрика из MD&A, по собственному предупреждению TTD несопоставимая между компаниями.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Magnite<em>ex-TAC при нераскрытом знаменателе</em></div>
+        <div class="track"><div class="bar" style="width:9.6%; --c:var(--s2)"></div></div>
+        <div class="bval">~9,6 %</div>
+        <div class="tip">Contribution ex-TAC $669,6 млн при выручке $714,0 млн — но совокупный ad spend Magnite не раскрывает вовсе, поэтому take rate из отчётности не выводится. Ходовая оценка строится на нераскрытых ~$7 млрд и берёт ex-TAC вместо выручки, поэтому напрямую с 21,6% TTD несопоставима. Magnite перестала публиковать take rate после FY2019, когда он составлял 14,5%.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Index Exchange, OpenX, Yieldmo, Equativ,<br>StackAdapt, Basis, Moloco, Adform<em>частные</em></div>
+        <div class="track"></div>
+        <div class="bval">н/д</div>
+        <div class="tip">Ни ставку, ни gross spend не публикует ни одна. Конкретные ставки живут в Order Form, который не публикуется никогда. Magnite прямо признаёт, что ставка «varies by publisher and transaction type» и крупным продавцам может быть снижена — прайс-лист дискриминационный по объёму.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Где ещё названия врут: «открытый аукцион» в 2026-м — преимущественно курированные сделки (73% бид-возможностей несут мультиселлерный Deal ID); «ad network» у Unity и AppLovin — не сеть в вебовом смысле, а in-app мономаркет (у Unity в sellers.json 19 042 записи и все 100% PUBLISHER, посредников ноль; у AppLovin 6 659 PUBLISHER против 10 INTERMEDIARY, тогда как у OpenX 5 395 INTERMEDIARY против 2 077 PUBLISHER).</p>
+  </div>
+
+  <div class="eyebrow">02 · Механика</div>
+  <h2>Путь одного показа</h2>
+  <figure class="diagram">
+    <svg viewBox="0 0 940 430" role="img" aria-label="Девять шагов от загрузки страницы до открученного показа">
+      <g font-size="11.5">
+        <text x="0" y="14" fill="var(--accent)" font-size="12" font-weight="600">КТО РЕШАЕТ И КТО БЕРЁТ ДЕНЬГИ НА КАЖДОМ ШАГЕ</text>
+        <g>
+          <rect x="0" y="30" width="180" height="58" rx="5" fill="var(--card)" stroke="var(--line)"/>
+          <text x="10" y="48" fill="var(--ink)" font-weight="600">0–1 · Враппер и ID</text>
+          <text x="10" y="64" fill="var(--muted)">решает паблишер</text>
+          <text x="10" y="78" fill="var(--faint)">таймаут 3000 мс по умолчанию</text>
+
+          <rect x="196" y="30" width="180" height="58" rx="5" fill="var(--card)" stroke="var(--line)"/>
+          <text x="206" y="48" fill="var(--ink)" font-weight="600">2–3 · Бид-реквесты</text>
+          <text x="206" y="64" fill="var(--muted)">браузер / Prebid Server</text>
+          <text x="206" y="78" fill="var(--faint)">510 адаптеров в Prebid.js</text>
+
+          <rect x="392" y="30" width="180" height="58" rx="5" fill="var(--mark)" fill-opacity="0.1" stroke="var(--mark)" stroke-width="2"/>
+          <text x="402" y="48" fill="var(--mark)" font-weight="600">4 · Traffic shaping</text>
+          <text x="402" y="64" fill="var(--muted)">решает SSP, кому не слать</text>
+          <text x="402" y="78" fill="var(--mark)">нигде не логируется</text>
+
+          <rect x="588" y="30" width="180" height="58" rx="5" fill="var(--s3)" fill-opacity="0.1" stroke="var(--s3)" stroke-width="2"/>
+          <text x="598" y="48" fill="var(--s3)" font-weight="600">5 · Курация</text>
+          <text x="598" y="64" fill="var(--muted)">Deal ID поверх чужого</text>
+          <text x="598" y="78" fill="var(--muted)">инвентаря · медиана 14%</text>
+
+          <rect x="784" y="30" width="156" height="58" rx="5" fill="var(--card)" stroke="var(--line)"/>
+          <text x="794" y="48" fill="var(--ink)" font-weight="600">6 · Bid shading</text>
+          <text x="794" y="64" fill="var(--muted)">решает DSP</text>
+          <text x="794" y="78" fill="var(--faint)">коэффициенты закрыты</text>
+        </g>
+        <path d="M180 59 L196 59 M376 59 L392 59 M572 59 L588 59 M768 59 L784 59" stroke="var(--line)" stroke-width="2"/>
+        <path d="M862 88 L862 104 L78 104 L78 120" stroke="var(--line)" stroke-width="2" fill="none"/>
+        <g>
+          <rect x="0" y="122" width="290" height="58" rx="5" fill="var(--card)" stroke="var(--line)"/>
+          <text x="10" y="140" fill="var(--ink)" font-weight="600">7 · Клиринг и флоры</text>
+          <text x="10" y="156" fill="var(--muted)">решает продавец — но в GAM флор</text>
+          <text x="10" y="171" fill="var(--muted)">сравнивается с ценой ПОСЛЕ доли Google</text>
+
+          <rect x="306" y="122" width="290" height="58" rx="5" fill="var(--card)" stroke="var(--line)"/>
+          <text x="316" y="140" fill="var(--ink)" font-weight="600">8 · Deal или открытый аукцион</text>
+          <text x="316" y="156" fill="var(--muted)">спека требует минимум 1+1;</text>
+          <text x="316" y="171" fill="var(--muted)">тихие скидки узаконены в 06.2026</text>
+
+          <rect x="612" y="122" width="328" height="58" rx="5" fill="var(--s4)" fill-opacity="0.1" stroke="var(--s4)" stroke-width="2"/>
+          <text x="622" y="140" fill="var(--s4)" font-weight="600">9 · Показ, биллинг, деньги вниз</text>
+          <text x="622" y="156" fill="var(--muted)">подставляется ${AUCTION_PRICE},</text>
+          <text x="622" y="171" fill="var(--muted)">срабатывает sequential liability</text>
+        </g>
+        <path d="M290 151 L306 151 M596 151 L612 151" stroke="var(--line)" stroke-width="2"/>
+
+        <text x="0" y="214" fill="var(--accent)" font-size="12" font-weight="600">СКОЛЬКО ПУТЕЙ ВЕДЁТ К ОДНОМУ ПОКАЗУ</text>
+        <rect x="0" y="228" width="940" height="76" rx="5" fill="var(--chip-bg)" stroke="var(--line)"/>
+        <text x="16" y="250" fill="var(--ink)" font-size="12">Средний паблишер интегрирован напрямую с <tspan font-weight="600">24,5</tspan> sell-side платформами, из которых <tspan font-weight="600">15,3</tspan> могут инициировать перепродажные аукционы.</text>
+        <text x="16" y="269" fill="var(--ink)" font-size="12">Rebroadcasting — 41% дисплейных аукционов и 26% видео; на таких путях демандный дефицит около 50%. При этом 15% реквестов,</text>
+        <text x="16" y="288" fill="var(--ink)" font-size="12">классифицируемых как бесполезный rebroadcasting, помечены DIRECT. Формальная прозрачность решена: 97,6% реквестов ведут к раскрытой записи sellers.json.</text>
+
+        <text x="0" y="336" fill="var(--accent)" font-size="12" font-weight="600">ГДЕ СЕЙЧАС СПЕЦИФИКАЦИЯ</text>
+        <rect x="0" y="350" width="940" height="72" rx="5" fill="var(--card)" stroke="var(--line)"/>
+        <text x="16" y="372" fill="var(--ink)" font-size="12">Актуальна <tspan font-weight="600">OpenRTB 2.6-202606</tspan> (11.06.2026), свежее всего AdCOM 1.0-202607. OpenRTB 3.0 не получил ни одного релиза и де-факто не внедрён,</text>
+        <text x="16" y="391" fill="var(--ink)" font-size="12">но жив как внешний справочник. <tspan fill="var(--mark)" font-weight="600">Канонический источник — GitHub: сайт iabtechlab.com отстаёт на пять релизов</tspan> (показывает 2.6-202309).</text>
+        <text x="16" y="410" fill="var(--muted)" font-size="12">В релизе 06.2026 узаконены скидки по deal-бидам: макросы ${AUCTION_DISCOUNT_PCT} и ${AUCTION_DISCOUNT_CPM}, а ${AUCTION_PRICE} — цена уже после скидки.</text>
+      </g>
+    </svg>
+    <figcaption>Два шага из девяти полностью непрозрачны для обеих сторон сделки: traffic shaping (SSP решает, кому не пересылать реквест) и bid shading (DSP решает, насколько занизить ставку). Комиссия куратора не видна конструктивно — она зашита в разницу между флором курированной сделки и флором открытого аукциона.</figcaption>
+  </figure>
+
+  <div class="eyebrow">03 · Реестр</div>
+  <h2>Кто эти площадки юридически</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Компания</th><th>Юрлицо и юрисдикция</th><th>Статус</th><th>Что раскрыто</th></tr></thead>
+      <tbody>
+        <tr><td><b>The Trade Desk</b></td><td>Delaware (2009), Ventura CA</td><td>Nasdaq TTD</td><td>Единственный, у кого take rate вычисляется из отчётности — <b>21,6%</b> FY2025</td></tr>
+        <tr><td><b>Magnite</b></td><td>Delaware; UK — MAGNITE LIMITED 06922381 (до 16.08.2020 THE RUBICON PROJECT LTD), London EC4A 3TW</td><td>Nasdaq MGNI</td><td>Выручка $713,95 млн, ex-TAC $669,63 млн. <span class="nd">Gross ad spend не раскрывает</span></td></tr>
+        <tr><td><b>PubMatic</b></td><td>Redwood City CA; UK — PUBMATIC LIMITED 07620169</td><td>Nasdaq PUBM</td><td>Выручка $282,9 млн (−3%), gross margin 64%. <span class="nd">Gross spend не упоминается</span></td></tr>
+        <tr><td><b>Criteo</b></td><td>société anonyme, Франция</td><td>Nasdaq CRTO</td><td>Принципал: оставляет 60,4%, паблишерам в Performance Media — 45,6%</td></tr>
+        <tr><td><b>Teads</b></td><td>Teads Holding Co., Delaware (бывш. Outbrain Inc., переименование 09.06.2025)</td><td>Nasdaq TEAD</td><td>Сделка ~$0,9 млрд. Смена бенефициара с Патрика Драи на структуру Outbrain зафиксирована реестром 03.02.2025 через OT UK Holdings Limited 16158677</td></tr>
+        <tr><td><b>Liftoff Mobile</b></td><td>Delaware</td><td>Nasdaq LFTO с 04.06.2026</td><td>$23,00 за акцию, брутто $437 млн; выручка FY2025 $685,7 млн (+32%), убыток $23,1 млн; Blackstone ~50,4% голосов</td></tr>
+        <tr><td><b>Nexxen</b></td><td>Израиль</td><td>Nasdaq NEXN</td><td>ex-TAC $353,1 млн</td></tr>
+        <tr><td><b>Azerion</b></td><td>Нидерланды, N.V.</td><td>Euronext AZRN</td><td>IMPROVE DIGITAL LIMITED (UK 06974245) ликвидирована 15.07.2025 — бренд консолидирован</td></tr>
+        <tr><td colspan="4" style="background:var(--chip-bg); font-weight:600">Частные — ни take rate, ни gross spend не публикует ни одна</td></tr>
+        <tr><td><b>Index Exchange</b></td><td>Двойная канадско-американская структура, два DUNS; UK — Index Exchange Limited 09643131</td><td>частная</td><td><span class="nd">Пример в базе знаний: 80/20 + Dynamic Take Rates, ставка меняется «on a transaction-by-transaction basis»</span></td></tr>
+        <tr><td><b>OpenX</b></td><td>OpenX Technologies, Inc. (Америки) + OpenX Limited (остальной мир), право Калифорнии в обоих случаях</td><td>частная</td><td>Редкий случай <b>публичной оферты</b> — Ad Exchange T&amp;C. Выплаты 60 дней, удержание до накопления $100</td></tr>
+        <tr><td><b>TripleLift</b></td><td>Vista Equity; UK — TripleLift UK Limited 09901641</td><td>частная</td><td>Купила third-party credit risk insurance</td></tr>
+        <tr><td><b>Equativ</b> (ex-Smart AdServer)</td><td>Bridgepoint; UK — Equativ Ltd 13954688</td><td>частная</td><td>—</td></tr>
+        <tr><td><b>StackAdapt</b></td><td>Teachers' Venture Growth; две UK-структуры с разным раскрытием</td><td>частная</td><td>Модель оплаты: Basic — только карта, Grow/Scale — net terms, Enterprise — custom</td></tr>
+        <tr><td><b>Adform</b></td><td>Adform A/S, CVR 26434815, Дания. ADFORM LONDON LIMITED 06989695 формально отвязана от датской материнской с 30.04.2019</td><td>частная</td><td>—</td></tr>
+        <tr><td colspan="4" style="background:var(--chip-bg); font-weight:600">Низкопороговый ярус — самообслуживание</td></tr>
+        <tr><td><b>Monetag / PropellerAds</b></td><td>Propeller Ads Ltd; propellerads.com/publishers редиректит на monetag.com</td><td>частная</td><td>Модерация &lt;24 ч, минимум выплаты $5</td></tr>
+        <tr><td><b>Adsterra</b></td><td>—</td><td>частная</td><td>NET15, минимум $5; депозиты покупателя $100 / $200 / $1 000</td></tr>
+        <tr><td><b>Galaksion</b></td><td>Galaksion Group SIA, Рига, право Латвии</td><td>частная</td><td>Инвойс от €100, оплата 1–15 числа следующего месяца</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Важная поправка о британском реестре.</b> Шесть UK-структур крупных площадок заявили отсутствие регистрируемого контролирующего лица — но это <i>не</i> общее правило и не «реестр скрывает»: заявление означает «никто не проходит порог свыше 25%», что типично для распылённых PE/VC-структур, и Companies House его не проверяет. Одновременно StackAdapt UK Limited 09150589 раскрывает физлицо, OpenX Limited 04646644 — корпоративного владельца, а по TEADS STUDIO LIMITED реестр точно зафиксировал смену бенефициара с датой. Vista, Bridgepoint и TVG в реестре не фигурируют вовсе.</p>
+
+  <div class="eyebrow">04 · Продавать</div>
+  <h2>Три двери, и выбор двери определяет всё остальное</h2>
+  <p class="note"><b>(A) Прямой контракт с биржей</b> — вход через форму и sales-звонок; порогов никто не публикует. <b>(B) Через посредника-монетизатора</b> — единственный ярус, где пороги опубликованы, потому что это их маркетинг. <b>(C) Низкопороговый ярус</b> — самообслуживание, минималки от $5.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Площадка</th><th>Порог входа</th><th>Ревшара</th><th>Выплаты</th></tr></thead>
+      <tbody>
+        <tr><td><b>Google AdSense</b></td><td>18+, владение сайтом, оригинальный контент</td><td>80% после комиссии buy-side платформы; ≈68% когда покупатель Google Ads</td><td>Порог $100, выплата 21–26 числа</td></tr>
+        <tr><td><b>Google Ad Manager</b> (free)</td><td>Порога нет; бесплатный лимит 90 млн небаннерных показов/мес (US/CA/AU/NZ), 200 млн для списка стран, 150 млн остальные</td><td>—</td><td>—</td></tr>
+        <tr><td><b>Magnite</b></td><td class="nd">Не публикует</td><td>«До 25%» — из инвесторских материалов, не из паблишерских условий; прямо пишет «may negotiate lower take rates with large sellers»</td><td>«Generally seventy-five days or less»</td></tr>
+        <tr><td><b>PubMatic</b></td><td class="nd">Не публикует</td><td class="nd">Не публикует</td><td>Срок по Order Form, <b>при молчании 90 дней</b>; агрегация от $200; вычет из выплаты после 120 дней неоплаты Demand Partner</td></tr>
+        <tr><td><b>OpenX</b></td><td class="nd">Не публикует</td><td class="nd">Не публикует</td><td><b>60 дней</b> после конца месяца; удержание до накопления $100; расторжение с уведомлением за 48 часов</td></tr>
+        <tr><td><b>Index Exchange</b></td><td class="nd">Не публикует</td><td>Пример в KB: 80/20 + Dynamic Take Rates</td><td class="nd">Не публикует</td></tr>
+        <tr><td><b>Raptive</b></td><td>100 тыс. pv/мес, большинство трафика US/CA/UK/AU/NZ</td><td class="nd">Не публикует</td><td class="nd">Не публикует</td></tr>
+        <tr><td><b>Mediavine</b></td><td>С 2026 — выручковые тиры вместо сессий: Official от <b>$5 000</b> годовой рекламной выручки. Journey — от <b>1 000 премиальных сессий/мес</b> (US/UK/CA/AU), объявлено 07.08.2026</td><td class="nd">Не публикуется — ходовая «75–90% тирами» в первоисточниках отсутствует</td><td>Net65</td></tr>
+        <tr><td><b>Playwire</b></td><td>500 тыс. pv/мес (сайты), 10 тыс. DAU (приложения), HTTPS + privacy policy</td><td class="nd">Не публикует</td><td class="nd">Не публикует</td></tr>
+        <tr><td><b>Freestar</b></td><td>1 млн pv/мес + 6 месяцев истории</td><td class="nd">Не публикует</td><td class="nd">Не публикует</td></tr>
+        <tr><td><b>Ezoic</b></td><td><b>250 тыс. MAU</b> (Business); VIP от 1 млн</td><td>10% на Standard</td><td>NET30/60/90 (+1,5% и +2,25% за отсрочку), минимум $20</td></tr>
+        <tr><td><b>Sovrn</b></td><td>Минимума нет, есть «minimum quality standards»</td><td class="nd">Не публикует</td><td>NET30, порог ~$25</td></tr>
+        <tr><td><b>MGID</b></td><td>5 000 уников/день, ≥30 статей по ≥500 слов, последняя ≤7 дней, реклама ≤30% контента</td><td class="nd">Не публикует</td><td>NET30, минимум $100 (PayPal/Payoneer), $1 000 wire</td></tr>
+        <tr><td><b>Monetag</b></td><td>«No strict minimum traffic», аппрув &lt;24 ч, собственный домен обязателен</td><td class="nd">Не публикует</td><td>4-го и 19-го (hold 4 дня); минимум $5</td></tr>
+        <tr><td><b>Adsterra</b></td><td>«No traffic limits», «10-min approval»</td><td class="nd">Не публикует</td><td>NET15; минимум $5 (Paxum), $25 (PayPal), $1 000 wire; KYC для wire</td></tr>
+        <tr><td><b>ExoClick</b></td><td class="nd">Не публикует</td><td class="nd">Не публикует</td><td>Net7 (еженедельно) или Net20; минимум €20 Paxum, €50 крипта, €200 wire</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="cons">
+    <div class="box">
+      <h3>Технический онбординг: где ломаются чаще всего</h3>
+      <ul>
+        <li><code>ads.txt</code>: <b>HTTP 404 означает «ограничений нет»</b> — отсутствие файла хуже пустого. Пустой файл невалиден, нужна заглушка <code>placeholder.example.com, placeholder, DIRECT, placeholder</code></li>
+        <li>Редиректы внутри root-домена — сколько угодно, наружу — ровно один хоп. Без <code>cache-control</code> потребители кэшируют файл <b>7 дней</b>: новый SSP «зажигается» не мгновенно</li>
+        <li>Поле 1 записи — операционный домен RTB-эндпоинта, <b>не корпоративный сайт</b>. Поле 2 — тот же ID, что приходит в бид-реквестах, лежит в sellers.json площадки и в <code>SupplyChain.nodes[].sid</code></li>
+        <li><code>app-ads.txt</code> не содержит bundle ID: связка идёт через developer website URL в листинге стора</li>
+        <li><b>Проверка после онбординга:</b> найдите себя в sellers.json площадки. Если вас записали <code>is_confidential</code>, байеры с SPO вас не увидят</li>
+        <li>GAM обрезает имена key-value на <b>20 символах</b>; лимит <b>450 line items на ордер</b> и отдельный подлимит <b>150 programmatic</b>. Гранулярность medium = 201 корзина, high = 2 001, то есть high требует пяти ордеров</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>За что режут (пороги публикуют редко, запреты — конкретно)</h3>
+      <ul>
+        <li><b>Index Exchange:</b> рефреш чаще 30 секунд или более 3 раз на страницу; автогенерация показов, скрытие и стекинг; MFA-признаки. Удалённый продавец — минимум <b>6 месяцев</b> неприемлемости и право отказать в реактивации</li>
+        <li><b>Magnite:</b> рефреш под 30 секунд без действия пользователя; денежные и криптостимулы за просмотр; расследование по жалобе стартует в 24 часа</li>
+        <li><b>OpenX:</b> 3–4 объявления на странице, одно видео, рефреш не более 20 раз за сессию; запрет pop-under, форс-редиректов, URL-маскинга. Сайты с меткой malware-детектора отключаются <b>без предупреждения</b></li>
+        <li><b>Sovrn:</b> не более 4 объявлений во вью, рекламы не больше контента</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="eyebrow">05 · Покупать</div>
+  <h2>Три механизма с разной валютой допуска</h2>
+  <p class="note">Вход делится не на «дорогие и дешёвые DSP», а на <b>договор</b>, <b>депозит</b> и <b>инженерный ресурс плюс согласие биржи</b>.</p>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Платформа</th><th>Как входить</th><th>Минимум</th><th>Что важно знать</th></tr></thead>
+      <tbody>
+        <tr><td><b>DV360</b></td><td>Контракт с Google либо сертифицированный partner</td><td class="nd">Не публикуется</td><td>Счета <b>нельзя оплатить картой</b> — только wire, чек, банковский перевод. «Partner» здесь — верхний объект иерархии аккаунта, который получает любой держатель контракта, а <i>не</i> лицензия на перепродажу</td></tr>
+        <tr><td><b>Amazon DSP</b></td><td>Managed или self-service</td><td>Managed — «<b>typically</b> requires a minimum spend of $50,000 USD»</td><td>Слово «typically» существенно: это типовая практика, не жёсткий порог. По self-service молчание страницы <b>не равно</b> «минимума нет». Доступен в 27+ территориях, продавать на Amazon не требуется</td></tr>
+        <tr><td><b>The Trade Desk</b></td><td>MSA</td><td class="nd">Публично не раскрыто ничего</td><td>Из 10-K: действует sequential liability — если рекламодатель не заплатил агентству, агентство перед TTD не отвечает. Практика по Digiday: эффективные комиссии 15–20%, скидки под квартальные пороги. Ходовые «$25–50 тыс./мес» происходят из маркетинга конкурентов — это слух</td></tr>
+        <tr><td><b>StackAdapt</b></td><td>Self-serve тирами</td><td class="nd">Не публикует</td><td>Водораздел prepay/кредит виден в тарифах: Basic — только карта, Grow/Scale/Accelerate — net terms, Enterprise — custom</td></tr>
+        <tr><td><b>Criteo GO</b></td><td>Полный self-service (US, UK, с 31.03.2026)</td><td class="nd">Не заявлен</td><td>Аккаунт + billing details</td></tr>
+        <tr><td><b>Реселлеры мест</b><br>Goodway, Vizibl</td><td>Один seat сразу к нескольким DSP</td><td>«No spend commitments»</td><td><b>Надбавку не публикует ни один.</b> Риски: вы не сторона договора с DSP; аудитории живут в чужом сиде; при уходе история кампаний и обученные модели не переносятся</td></tr>
+        <tr><td><b>Adsterra</b></td><td>Self-serve</td><td>$100 карта · $200 Inxy и digital wallets · $1 000 wire</td><td>Без верификации проходит <b>только первый депозит $100 картой</b>; все прочие методы требуют KYC сразу</td></tr>
+        <tr><td><b>Xandr</b> (свой биддер)</td><td>OpenRTB 2.4; иерархия bidder → member (1:1) → seats</td><td>—</td><td>Объекты bidder и member <b>создаёт представитель Xandr</b> — это и есть фильтр. QPS вы ставите себе сами. В объекте member есть поле <code>buyer_credit_limit</code></td></tr>
+        <tr><td><b>Google Authorized Buyers</b></td><td>Сначала комплаенс: NDA, review бизнес-модели, соответствие NAI или IAB, privacy policy, механизм opt-out</td><td>—</td><td>Средний срок сертификации ~2 недели. До 8 эндпоинтов на аккаунт; URL эндпоинта помечен <b>Output only</b> — покупатель не меняет его сам</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note"><b>Ограниченные вертикали — платите до первой закупки.</b> Google требует предварительной сертификации минимум для гэмблинга и prediction markets, и обе политики прямо распространены на пользователей DV360. Гэмблинг-сертификация выдаётся только лицензированным операторам по таблице 70+ стран и не выдаётся сайтам на бесплатных платформах. LegitScript берёт $1 395–1 595 за заявку и $2 550–3 095 в год за объект — но это прайс <b>одной программы</b> (Addiction Treatment), у аптек, CBD и гэмблинга прайсы свои. У сетей второго яруса вертикали регулируются не сертификацией, а модерацией: RichAds модерирует 10–20 минут и отклоняет фармбренды, CBD, оружие, алкоголь, политику.</p>
+
+  <div class="eyebrow">06 · Риски</div>
+  <h2>Кто платит за фрод и чужие банкротства</h2>
+  <div class="viz">
+    <h3>MediaMath: сколько убытка биржа переложила на паблишеров</h3>
+    <p class="sub">Chapter 11 от 30.06.2023, свыше $125 млн долга 200+ партнёрам. Единственный случай, где перекладывание вычислено по аудированной отчётности.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Magnite<em>реконструкция по FY2024/FY2025 10-K</em></div>
+        <div class="track"><div class="bar" style="width:77%; --c:var(--mark)"></div></div>
+        <div class="bval">~77 %</div>
+        <div class="tip">Списано $18,5 млн по одному байеру, на собственный P&L отнесено $4,2 млн → около $14,3 млн переложено на продавцов. Magnite банкрота не называет ни в одном 10-K — только «one buyer». Формулировка для прессы: «We are not required to pay publishers when we have not received payment from the DSP».</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">PubMatic<em>10-K FY2023, MediaMath назван прямо</em></div>
+        <div class="track"><div class="bar" style="width:61%; --c:var(--s2)"></div></div>
+        <div class="bval">61 %</div>
+        <div class="tip">Из $14,5 млн невзысканной дебиторки $8,8 млн переложено на паблишеров как contra payable, собственный bad debt $5,7 млн. ВНИМАНИЕ: 77% и 61% посчитаны от разных знаменателей и напрямую несравнимы.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">GumGum, Colossus SSP, Index Exchange,<br>Google Ad Manager<em>отказались от клоубэков</em></div>
+        <div class="track"><div class="bar" style="width:0%; --c:var(--s4)"></div></div>
+        <div class="bval">0 %</div>
+        <div class="tip">Убыток оставили себе. Xandr наоборот — 31.07.2023 разослала паблишерам меморандум: балансы за февраль–июнь вычитаются из будущих выплат.</div>
+      </div>
+    </div>
+    <p class="vizfoot">Асимметрия сроков — структурная. TTD в 10-K: «typically, we are contractually required to pay advertising inventory and data suppliers within a negotiated period of time, regardless of whether our clients pay us on time, or at all». Дебиторка $3,77 млрд при нетто-выручке $2,90 млрд. Агентства платят DSP через 90–120 дней, а DSP обязаны рассчитаться с SSP в пределах месяца — DSP работает как краткосрочный кредитор.</p>
+  </div>
+  <p class="note"><b>Резерв под клоубэк нужен на горизонте квартала и больше.</b> У Google по AdSense «all deductions from earnings are considered final and are not subject to appeal», детали не раскрываются «для сохранения целостности систем детекции». По Ad Manager: кредиты рекламодателям за IVT считаются за 60 дней до даты инвойса, а появление удержания занимает 30 дней и более <i>от завершения расследования</i> — то есть суммарная задержка «трафик → списание» строго больше 90 дней и сверху не ограничена. Калибровать размер резерва публичными данными нельзя: ни частота удержаний, ни их доля в выручке не публикуются.</p>
+  <p class="note">Инструменты снижения риска существуют и они платные: TripleLift купила страховку кредитного риска, PubMatic отказалась от страховки как непрактичной и вместо этого продаёт <b>Payment Protection Plan</b> — платную гарантию выплаты независимо от того, собрала ли она деньги (по словам CEO, «definitely not the majority of our customers»). BidSwitch после банкротства Sizmek ввёл правило: торговля на паузу при просрочке байера 10+ дней. Появился отдельный финансовый слой — Revving выдаёт транзакционное финансирование $50 тыс. — $50 млн с интеграциями к Magnite, OpenX и Index Exchange.</p>
+
+  <div class="eyebrow">07 · Допуск</div>
+  <h2>Что реально гейтит вход</h2>
+  <div class="viz">
+    <h3>Четыре фильтра, и их эффективность обратна их формальности</h3>
+    <p class="sub">Формальную прозрачность цепочки прошли почти все. Содержательную — почти никто.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Веб-запросы с сайтов с известным ads.txt<em>технический фильтр пройден</em></div>
+        <div class="track"><div class="bar" style="width:97%; --c:var(--s4)"></div></div>
+        <div class="bval">97 %</div>
+        <div class="tip">Данные HUMAN Security 2026, отдельной адверсариальной проверки не проходили. Платная валидация стоит $99 за домен в год — проблема не в стоимости, а в отсутствии санкции.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Веб-schain, внутренне консистентные<em>содержательная проверка</em></div>
+        <div class="track"><div class="bar" style="width:50%; --c:var(--s2)"></div></div>
+        <div class="bval">~50 %</div>
+        <div class="tip">У приложений ещё хуже — чуть больше 30%. Внешне консистентны 59% и 37% соответственно.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Веб-запросы БЕЗ декларации OWNERDOMAIN<em>поле введено ещё в августе 2022</em></div>
+        <div class="track"><div class="bar" style="width:40%; --c:var(--mark)"></div></div>
+        <div class="bval">40 %</div>
+        <div class="tip">У приложений 58%. Плюс 25% app-запросов идут от приложений вообще без известного app-ads.txt, и 8–9% запросов приходят от продавцов без записи в известном sellers.json.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Авторизованный веб-инвентарь, который<br>на деле перепродаётся<em>Pixalate, Q1 2026</em></div>
+        <div class="track"><div class="bar" style="width:20.8%; --c:var(--s3)"></div></div>
+        <div class="bval">20,8 %</div>
+        <div class="tip">Mobile 16,2%, CTV 4,1%. Entity с перепродажей свыше 50% помечаются арбитражными. В US-рейтинге на первом месте Index Exchange с 0% арбитражного инвентаря. Практический смысл: SSP с низкой долей арбитража — тот, куда труднее попасть посреднику и выгоднее попасть прямому паблишеру.</div>
+      </div>
+    </div>
+  </div>
+  <div class="viz">
+    <h3>Реально гейтит экономика — и она нигде не формализована</h3>
+    <p class="sub">Demand score = gross DSP spend на бид-реквест. Jounce Bellwether 2026 через пересказ Playwire; первоисточник отдаёт 404, методология не раскрыта.</p>
+    <div class="bars">
+      <div class="brow" tabindex="0">
+        <div class="blab">Паблишер в составе sales house<em>Bellwether sales houses</em></div>
+        <div class="track"><div class="bar" style="width:100%; --c:var(--s4)"></div></div>
+        <div class="bval">2,13</div>
+        <div class="tip">Вход через портфель или sales house даёт вдвое лучшую монетизацию, чем подключение одиночным доменом. Это и есть главный фильтр — он не формализован и его нельзя «пройти», его можно только обойти структурно.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Самостоятельный премиальный паблишер<em>standalone Bellwether</em></div>
+        <div class="track"><div class="bar" style="width:45.1%; --c:var(--s1)"></div></div>
+        <div class="bval">0,96</div>
+        <div class="tip">Корректное сравнение эффекта самого портфеля — 2,13 против 0,96, то есть ~2,2x. Ходовой тезис «разница вчетверо» (2,13 против 0,54) некорректен: он сравнивает по двум переменным сразу — членство в портфеле И статус Bellwether.</div>
+      </div>
+      <div class="brow" tabindex="0">
+        <div class="blab">Все остальные<em>non-Bellwether</em></div>
+        <div class="track"><div class="bar" style="width:25.4%; --c:var(--mark)"></div></div>
+        <div class="bval">0,54</div>
+        <div class="tip">Число значимых SSP сжалось с 32 (2023) до 18 (2026), среднее число SSP-партнёров на DSP — с 18 до 12 за два года. Топ-25 веб-портфелей забирают 76% ИЗМЕРЕННОГО открытого программатика при 26 000+ сайтах; топ-25 CTV — 99% при 8000+ bundle ID.</div>
+      </div>
+    </div>
+    <p class="vizfoot">База важна: walled gardens (Google O&amp;O, YouTube, Meta, Amazon), direct-sold и значительная часть programmatic guaranteed для этого замера структурно невидимы — «76% всех расходов DSP» читается только как доля измеренного открытого программатика.</p>
+  </div>
+  <p class="note"><b>Итог по допуску.</b> Технический фильтр проходится почти бесплатно и спроса не даёт. Сертификационный не гейтит доступ к биржам — он гейтит доступ к отдельным бренд-бюджетам (TAG в цикле 2026 выдал 307 печатей 196 компаниям; цену не публикует нигде). Регуляторный меняет обязанности крупных площадок, а не условия вашего подключения. Реально гейтит экономический — поэтому рациональная стратегия для нового продавца не «подключиться к 18 оставшимся значимым SSP», а войти через портфель, sales house или MCM-партнёра.</p>
+
+  <div class="eyebrow">08 · Слепые зоны</div>
+  <h2>Систематически не публикуется ровно то, что определяет вашу экономику</h2>
+  <div class="cons">
+    <div class="box">
+      <h3>Со стороны площадки</h3>
+      <ol>
+        <li><b>Traffic shaping.</b> По какому правилу SSP решает не переслать реквест конкретному DSP — не логируется нигде. При 24,5 SSP на паблишера именно здесь теряется неизвестная доля спроса</li>
+        <li><b>Take rate частных площадок</b> — ни у одной. Ставки живут в Order Form, который не публикуется никогда</li>
+        <li><b>Коэффициенты bid shading</b> — ни TTD, ни DV360, ни Amazon DSP</li>
+        <li><b>Комиссия куратора в конкретной сделке</b> — спрятана в разнице флоров конструктивно</li>
+        <li><b>Доля реквестов, отбрасываемых DSP до аукциона</b> — не публикует ни один DSP</li>
+        <li><b>Реальные объёмы показов.</b> sellers.json даёт число продавцов, но не объём; «X млрд показов в день» встречается только в маркетинговых материалах</li>
+      </ol>
+    </div>
+    <div class="box">
+      <h3>Со стороны условий входа</h3>
+      <ol>
+        <li><b>Критерии входа и отказа.</b> Ни одна площадка не публикует минимальный порог, требования к домену или основания отклонения. Симметрично на стороне спроса: ни TTD, ни DV360, ни StackAdapt не публикуют минимального спенда — цена места предмет переговоров, а не тариф</li>
+        <li><b>Триггеры бана и клоубэка.</b> Никто не говорит, при каком проценте IVT или несоответствия schain отключают. Формальные критерии MFA после расследований Adalytics так и не появились ни у одной площадки</li>
+        <li><b>Кредитная политика бирж</b> — лимиты на конкретные DSP, список застрахованных источников спроса, размеры холдбэков</li>
+        <li><b>Ревшара низкопорогового яруса</b> — ни Monetag, ни Adsterra, ни ExoClick, ни MGID не публикуют, какую долю от ставки рекламодателя получает паблишер</li>
+        <li><b>Надбавка реселлеров мест</b> — ни Goodway, ни Vizibl</li>
+        <li><b>Прайс-карты верификаторов и цены сертификаций.</b> DV обновил пре-бид рейт-кард в апреле 2025, но ставки скрыты; TAG не публикует ни членства, ни тиров; MRC требует оплатить аудиторские издержки, не называя сумм</li>
+      </ol>
+    </div>
+  </div>
+  <p class="note"><b>Почему это удобно.</b> Все зоны объединены одним свойством: они лежат ровно на границе между тем, что нужно раскрыть для доверия, и тем, что раскрывать невыгодно для маржи. Формальная прозрачность решена почти полностью и стоит $99 в год, потому что она не мешает зарабатывать. Содержательная не решена вовсе, потому что каждая её единица — это чья-то маржа. И механизм принуждения тут не регуляторный и не спецификационный: единственная санкция за несоответствие — покупательское поведение крупнейшего байера, который в случае Google одновременно является крупнейшим продавцом.</p>
+  <p class="note">Отдельно стоит держать в голове методологическую вещь, которая повторяется во всей теме: <b>негативное утверждение «никто не публикует порог входа» по публичным документам в принципе неопровержимо</b> — информация, если она есть, живёт в приватных IO и MSA и в квалификации через partner manager. Проверять её на сайтах бесполезно, и отсутствие находки не является доказательством отсутствия требования.</p>
+
+  <div class="eyebrow">09 · За чем следить</div>
+  <h2>Ближайшие точки</h2>
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>Когда</th><th>Что</th><th>Почему важно подключающемуся</th></tr></thead>
+      <tbody>
+        <tr><td><b>21.08.2026</b></td><td>Закрывается публичный комментарий по <b>SupplyChain v1.1</b> (анонсирован 23.06.2026)</td><td>Расширяет schain с финансовой цепочки на техническую опеку: сущности, которые касаются запроса, но не участвуют в денежном потоке (Prebid-обёртки, ad server, SSAI, SDK), помечаются <code>hp=0</code>. Если вы посредник или врапер-провайдер — единственная точка влияния в этом цикле</td></tr>
+        <tr><td><b>15.09.2026</b></td><td>Раскатка дефолтов <b>Cloudflare</b>: блокировка mixed-use AI-краулеров на страницах с рекламой</td><td>Впервые контроль ботов на CDN-уровне стал фактором объёма доступного инвентаря. Косвенный эффект уже измерим: инвентарь у паблишеров US и UK во II квартале 2026 упал год к году до 40%</td></tr>
+        <tr><td>ожидается</td><td>Финальный приказ по remedies в <b>US v. Google</b> (liability 17.04.2025, прения 21.11.2025)</td><td>DOJ требует дивестиции AdX и открытия исходников аукционной логики DFP; Google предлагает поведенческие меры. Практический вывод: обещанный «открытый доступ» — это предложение ответчика, а не норма</td></tr>
+        <tr><td>идёт</td><td>Расщепление враппера: пер-SSP TID и форк <b>OpenAds</b> от The Trade Desk</td><td>Ответ на вопрос «сколько путей ведёт к этому показу» теперь зависит от того, чей враппер стоит у паблишера</td></tr>
+        <tr><td>идёт</td><td>Агентный слой: <b>AdCP</b> (v3.1, 127+ участников) против <b>AAMP</b> от IAB Tech Lab (16.03.2026)</td><td>Слои разные: AdCP работает на уровне управления кампанией, AAMP/OpenRTB — на уровне импрешна. Ключевое ограничение: ни один протокол не регулирует, что агент делает — они стандартизируют коммуникацию, а не поведение</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    Собрано агентом gid 20.08.2026: шесть research-агентов по независимым срезам, по одному адверсариальному верификатору на срез, синтез поверх исправленных версий. Верификатор дал 31 правку — среди них подмены базы сравнения, документы, физически не способные показать то, что из них выводили, даты публикации статей, выданные за даты событий, и отраслевой фольклор, поданный как требование площадки.
+    <br><br>
+    Что снято как неподтверждённое и намеренно не используется: разбивка комиссий ANA «29% / 36 центов» (первоисточник за пейволом, плюс три структурных возражения — включая то, что log-level данные рекламодателя физически не содержат take rate SSP); заявление IAB Tech Lab от 27.08.2025 о «материальном нарушении OpenRTB» (в архиве не найдено); регистрационный взнос TAG $10 000 (сайт TAG тарифов не публикует нигде); тезис «Google сам фильтрует неавторизованный инвентарь из аукциона» (в актуальных справках не задокументирован, восходит к анонсу 2017 года); депозиты Zeropark, PropellerAds, RichAds, TrafficStars и ExoClick (первоисточниками не подтверждены).
+    <br><br>
+    Полный справочник с операционными деталями и всеми правками верификатора — <code>docs/ad-exchange-access.md</code> в репозитории проекта.
+  </footer>
+</main>
