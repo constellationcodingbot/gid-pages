@@ -1386,21 +1386,23 @@
 </main>
 <div id="rtip" role="tooltip" hidden></div>
 <script>
-// A reference number shows the record it points to. Each record is stored once, on the records page;
-// the tip reads its text from cyprus-records.json (fetched on first use) and falls back to the
-// appendix line when the file cannot be read, e.g. when the page is opened from disk.
+// A reference number shows the record it points to. Each record is stored once, on a records page;
+// the tip reads its text from that page's JSON (the appendix line's data-j, cyprus-records.json by
+// default; fetched on first use) and falls back to the appendix line when the file cannot be read,
+// e.g. when the page is opened from disk.
 (function () {
   var tip = document.getElementById('rtip');
   if (!tip) return;
-  var data = null, loading = false, current = null;
-  function load(then) {
-    if (data) return then();
-    if (loading) return;
-    loading = true;
-    fetch('cyprus-records.json')
+  var files = {}, current = null;  // file -> {data, loading}
+  function load(file, then) {
+    var f = files[file] || (files[file] = {data: null, loading: false});
+    if (f.data) return then();
+    if (f.loading) return;
+    f.loading = true;
+    fetch(file)
       .then(function (r) { return r.ok ? r.json() : {}; })
       .catch(function () { return {}; })
-      .then(function (d) { data = d || {}; then(); });
+      .then(function (d) { f.data = d || {}; then(); });
   }
   function place(a) {
     var r = a.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
@@ -1414,7 +1416,7 @@
     var li = document.getElementById('r' + a.getAttribute('data-r'));
     if (!li) return;
     var m = li.getAttribute('data-m'), s = li.querySelector('.rs').textContent;
-    var rec = data && data[m];
+    var f = files[fileOf(li)], data = f && f.data, rec = data && data[m];
     var t = rec ? rec.t : (data ? 'Record ' + m + ': the full text is on the records page.' : 'Loading record ' + m + '…');
     tip.textContent = t.length > 420 ? t.slice(0, 420) + '…' : t;
     var sm = document.createElement('small');
@@ -1423,10 +1425,14 @@
     tip.hidden = false;
     place(a);
   }
+  function fileOf(li) { return li.getAttribute('data-j') || 'cyprus-records.json'; }
   function show(a) {
     current = a;
     fill(a);
-    if (!data) load(function () { if (current === a && !tip.hidden) fill(a); });
+    var li = document.getElementById('r' + a.getAttribute('data-r'));
+    if (!li) return;
+    var file = fileOf(li), f = files[file];
+    if (!f || !f.data) load(file, function () { if (current === a && !tip.hidden) fill(a); });
   }
   function hide() { tip.hidden = true; current = null; }
   document.addEventListener('mouseover', function (e) {
